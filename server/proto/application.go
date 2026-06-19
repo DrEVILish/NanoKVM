@@ -5,6 +5,10 @@ type GetVersionRsp struct {
 	Latest  string `json:"latest"`
 }
 
-type GetLibRsp struct {
-	Exist bool `json:"exist"`
+type GetPreviewRsp struct {
+	Enabled bool `json:"enabled"`
+}
+
+type SetPreviewReq struct {
+	Enable bool `validate:"omitempty"`
 }

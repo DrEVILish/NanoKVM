@@ -1,47 +1,50 @@
 package hid
 
-func (h *Hid) Keyboard(queue <-chan []int) {
+import (
+	log "github.com/sirupsen/logrus"
+)
+
+func (h *Hid) Keyboard(queue <-chan []byte) {
+	h.keyboard(queue, HID0)
+}
+
+func (h *Hid) keyboard(queue <-chan []byte, path string) {
+	defer h.releaseKeyboard(path)
+
 	for event := range queue {
-		h.kbMutex.Lock()
-		h.writeKeyboard(event)
-		h.kbMutex.Unlock()
+		if len(event) != 8 {
+			log.Debugf("invalid keyboard event: %v", event)
+			continue
+		}
+
+		if !h.writeHIDReport(h.keyboardDevice(path), event) {
+			if dropped := drainHIDQueue(queue); dropped > 0 {
+				log.Debugf("dropped %d stale keyboard HID reports after write failure", dropped)
+			}
+			h.releaseKeyboard(path)
+		}
 	}
 }
 
-func (h *Hid) writeKeyboard(event []int) {
-	var data []byte
-
-	if event[0] > 0 {
-		code := byte(event[0])
-		modifier := getModifier(event)
-		data = []byte{modifier, 0x00, code, 0x00, 0x00, 0x00, 0x00, 0x00}
-	} else {
-		data = []byte{0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00}
-	}
-
-	h.Write(h.g0, data)
+func (h *Hid) releaseKeyboard(path string) {
+	h.writeHIDReport(h.keyboardDevice(path), keyboardReleaseReport())
 }
 
-func getModifier(event []int) byte {
-	var modifier byte = 0x00
+func keyboardReleaseReport() []byte {
+	return []byte{0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00}
+}
 
-	if event[1] == 1 {
-		modifier |= ModifierLCtrl
+func drainHIDQueue(queue <-chan []byte) int {
+	dropped := 0
+	for {
+		select {
+		case _, ok := <-queue:
+			if !ok {
+				return dropped
+			}
+			dropped++
+		default:
+			return dropped
+		}
 	}
-
-	if event[2] == 1 {
-		modifier |= ModifierLShift
-	}
-
-	if event[3] == 1 {
-		modifier |= ModifierLAlt
-	} else if event[3] == 2 {
-		modifier |= ModifierRAlt
-	}
-
-	if event[4] == 1 {
-		modifier |= ModifierLGUI
-	}
-
-	return modifier
 }

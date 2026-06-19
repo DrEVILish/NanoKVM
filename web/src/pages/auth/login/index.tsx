@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { ReactElement, useEffect, useState } from 'react';
 import { LockOutlined, UserOutlined } from '@ant-design/icons';
 import { Button, Form, Input } from 'antd';
 import { useTranslation } from 'react-i18next';
@@ -11,9 +11,11 @@ import { Head } from '@/components/head.tsx';
 
 import { Tips } from './tips.tsx';
 
-export const Login = () => {
+export const Login = (): ReactElement => {
   const navigate = useNavigate();
   const { t } = useTranslation();
+
+  const [isLoading, setIsloading] = useState(false);
   const [msg, setMsg] = useState('');
 
   useEffect(() => {
@@ -29,6 +31,9 @@ export const Login = () => {
   }, [msg]);
 
   function login(values: any) {
+    if (isLoading) return;
+    setIsloading(true);
+
     const username = values.username;
     const password = encrypt(values.password);
 
@@ -36,14 +41,12 @@ export const Login = () => {
       .login(username, password)
       .then((rsp: any) => {
         if (rsp.code !== 0) {
-          if (rsp.code === -3) {
-            setMsg(t('auth.noAccount'));
-          } else if (rsp.code === -4) {
-            setMsg(t('auth.invalidUser'));
-          } else {
-            setMsg(t('auth.error'));
-          }
+          let errorMsg = t('auth.error');
+          if (rsp.code === -2) errorMsg = t('auth.invalidUser');
+          else if (rsp.code === -5) errorMsg = t('auth.locked');
+          else if (rsp.code === -4) errorMsg = t('auth.globalLocked');
 
+          setMsg(errorMsg);
           return;
         }
 
@@ -55,6 +58,9 @@ export const Login = () => {
       })
       .catch(() => {
         setMsg(t('auth.error'));
+      })
+      .finally(() => {
+        setIsloading(false);
       });
   }
 
@@ -63,14 +69,25 @@ export const Login = () => {
       <Head title={t('head.login')} />
 
       <div className="flex h-screen w-screen flex-col items-center justify-center">
-
         <Form
           style={{ minWidth: 300, maxWidth: 500 }}
           initialValues={{ remember: true }}
           onFinish={login}
         >
-          <h2 className="text-xl font-semibold text-neutral-100 text-center">{t('auth.login')}</h2>
-
+          <div className="flex flex-col items-center justify-center pb-4">
+            <img
+              id="logo"
+              src="/sipeed.ico"
+              alt="Sipeed"
+              onClick={(evt) => {
+                evt.preventDefault();
+                (evt.target as HTMLImageElement).classList.add('animate-spin');
+                setTimeout(() => {
+                  (evt.target as HTMLImageElement).classList.remove('animate-spin');
+                }, 1000);
+              }}
+            />
+          </div>
           <Form.Item
             name="username"
             rules={[{ required: true, message: t('auth.noEmptyUsername'), min: 1 }]}
@@ -89,10 +106,10 @@ export const Login = () => {
             />
           </Form.Item>
 
-          <div className="text-red-500">{msg}</div>
+          <div className="pb-1 text-red-500">{msg}</div>
 
           <Form.Item>
-            <Button type="primary" htmlType="submit" className="w-full">
+            <Button type="primary" htmlType="submit" className="w-full" loading={isLoading}>
               {t('auth.loginButtonText')}
             </Button>
           </Form.Item>

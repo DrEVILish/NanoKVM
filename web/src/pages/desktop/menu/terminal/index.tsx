@@ -1,14 +1,14 @@
-import { useState } from 'react';
-import { Divider, Popover } from 'antd';
+import { Divider } from 'antd';
 import { SquareTerminalIcon } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
+
+import { MenuItem } from '@/components/menu-item.tsx';
 
 import { Nanokvm } from './nanokvm';
 import { SerialPort } from './serial-port';
 
 export const Terminal = () => {
   const { t } = useTranslation();
-  const [isPopoverOpen, setIsPopoverOpen] = useState(false);
 
   const content = (
     <div className="min-w-[200px]">
@@ -18,22 +18,16 @@ export const Terminal = () => {
 
       <Divider style={{ margin: '10px 0 15px 0' }} />
 
-      <Nanokvm setIsPopoverOpen={setIsPopoverOpen} />
-      <SerialPort setIsPopoverOpen={setIsPopoverOpen} />
+      <Nanokvm />
+      <SerialPort />
     </div>
   );
 
   return (
-    <Popover
+    <MenuItem
+      title={t('terminal.title')}
+      icon={<SquareTerminalIcon size={18} />}
       content={content}
-      placement="bottomLeft"
-      trigger="click"
-      open={isPopoverOpen}
-      onOpenChange={setIsPopoverOpen}
-    >
-      <div className="flex h-[30px] cursor-pointer items-center justify-center rounded px-2 text-neutral-300 hover:bg-neutral-700">
-        <SquareTerminalIcon size={18} />
-      </div>
-    </Popover>
+    />
   );
 };

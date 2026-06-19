@@ -8,6 +8,7 @@ type Screen struct {
 	FPS     int
 	Quality uint16
 	BitRate uint16
+	GOP     uint8
 }
 
 var (
@@ -46,6 +47,7 @@ func GetScreen() *Screen {
 			Quality: 80,
 			FPS:     30,
 			BitRate: 3000,
+			GOP:     30,
 		}
 	})
 
@@ -70,6 +72,24 @@ func SetScreen(key string, value int) {
 
 	case "fps":
 		screen.FPS = validateFPS(value)
+
+	case "gop":
+		screen.GOP = uint8(value)
+	}
+}
+
+func CheckScreen() {
+	if _, ok := ResolutionMap[screen.Height]; !ok {
+		screen.Width = 1920
+		screen.Height = 1080
+	}
+
+	if _, ok := QualityMap[screen.Quality]; !ok {
+		screen.Quality = 80
+	}
+
+	if _, ok := BitRateMap[screen.BitRate]; !ok {
+		screen.BitRate = 3000
 	}
 }
 

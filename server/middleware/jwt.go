@@ -16,54 +16,82 @@ type Token struct {
 	jwt.RegisteredClaims
 }
 
-const (
-	ExpireDuration = 31 * 24 * time.Hour
-)
-
 func CheckToken() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		conf := config.GetInstance()
-
-		if conf.Authentication == "disable" {
+		if allowByToken(c) {
 			c.Next()
 			return
 		}
 
-		cookie, err := c.Cookie("nano-kvm-token")
-		if err == nil {
-			_, err = ParseJWT(cookie)
-			if err == nil {
-				c.Next()
-				return
-			}
+		abortUnauthorized(c)
+	}
+}
+
+func CheckLoopbackInternalToken() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		if allowByLoopbackInternalToken(c.Request) {
+			c.Next()
+			return
 		}
 
-		c.JSON(http.StatusUnauthorized, "unauthorized")
-		c.Abort()
+		abortUnauthorized(c)
 	}
+}
+
+func CheckTokenOrLoopbackInternalToken() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		if allowByToken(c) || allowByLoopbackInternalToken(c.Request) {
+			c.Next()
+			return
+		}
+
+		abortUnauthorized(c)
+	}
+}
+
+func allowByToken(c *gin.Context) bool {
+	conf := config.GetInstance()
+
+	if conf.Authentication == "disable" {
+		return true
+	}
+
+	cookie, err := c.Cookie("nano-kvm-token")
+	if err != nil {
+		return false
+	}
+
+	_, err = ParseJWT(cookie)
+	return err == nil
+}
+
+func abortUnauthorized(c *gin.Context) {
+	c.JSON(http.StatusUnauthorized, "unauthorized")
+	c.Abort()
 }
 
 func GenerateJWT(username string) (string, error) {
 	conf := config.GetInstance()
 
+	expireDuration := time.Duration(conf.JWT.RefreshTokenDuration) * time.Second
+
 	claims := Token{
 		Username: username,
 		RegisteredClaims: jwt.RegisteredClaims{
-			ExpiresAt: jwt.NewNumericDate(time.Now().Add(ExpireDuration)),
+			ExpiresAt: jwt.NewNumericDate(time.Now().Add(expireDuration)),
 		},
 	}
 
 	t := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 
-	return t.SignedString([]byte(conf.SecretKey))
+	return t.SignedString([]byte(conf.JWT.SecretKey))
 }
 
 func ParseJWT(jwtToken string) (*Token, error) {
 	conf := config.GetInstance()
 
 	t, err := jwt.ParseWithClaims(jwtToken, &Token{}, func(token *jwt.Token) (interface{}, error) {
-		secretKey := conf.SecretKey
-		return []byte(secretKey), nil
+		return []byte(conf.JWT.SecretKey), nil
 	})
 	if err != nil {
 		log.Debugf("parse jwt error: %s", err)

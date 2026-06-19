@@ -1,56 +1,97 @@
 import { useEffect, useState } from 'react';
-import { Divider, Popover } from 'antd';
+import { Divider, Modal, Segmented, Tooltip } from 'antd';
 import clsx from 'clsx';
-import { DiscIcon } from 'lucide-react';
+import { useSetAtom } from 'jotai';
+import { DiscIcon, HardDriveIcon } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 
-import { getMountedImage } from '@/api/storage.ts';
+import * as api from '@/api/storage.ts';
+import { submenuOpenCountAtom } from '@/jotai/settings.ts';
 
 import { Images } from './images.tsx';
 import { Tips } from './tips.tsx';
 
 export const Image = () => {
   const { t } = useTranslation();
+  const setSubmenuOpenCount = useSetAtom(submenuOpenCountAtom);
 
-  const [isPopoverOpen, setIsPopoverOpen] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const [isMounted, setIsMounted] = useState(false);
+  const [mode, setMode] = useState('mass-storage');
+
+  const modes = [
+    {
+      value: 'mass-storage',
+      label: (
+        <div className="flex items-center space-x-1">
+          <HardDriveIcon size={16} />
+          <span>Mass Storage</span>
+        </div>
+      )
+    },
+    {
+      value: 'cd-rom',
+      label: (
+        <div className="flex items-center space-x-1">
+          <DiscIcon size={16} />
+          <span>CD ROM</span>
+        </div>
+      )
+    }
+  ];
 
   useEffect(() => {
-    getMountedImage().then((rsp) => {
-      if (rsp.code !== 0) return;
-      setIsMounted(!!rsp.data?.file);
+    api.getMountedImage().then((rsp) => {
+      if (rsp.code === 0) {
+        setIsMounted(!!rsp.data?.file);
+      }
+    });
+
+    api.getCdRom().then((rsp) => {
+      if (rsp.code === 0) {
+        setMode(rsp.data?.cdrom === 1 ? 'cd-rom' : 'mass-storage');
+      }
     });
   }, []);
 
-  const content = (
-    <div className="min-w-[300px]">
-      <div className="flex items-center justify-between px-1">
-        <span className="text-base font-bold text-neutral-300">{t('image.title')}</span>
-        <Tips />
-      </div>
-
-      <Divider style={{ margin: '10px 0 15px 0' }} />
-
-      {isPopoverOpen && <Images setIsMounted={setIsMounted} />}
-    </div>
-  );
+  function toggleModal(open: boolean) {
+    setIsModalOpen(open);
+    setSubmenuOpenCount((count) => (open ? count + 1 : Math.max(0, count - 1)));
+  }
 
   return (
-    <Popover
-      content={content}
-      placement="bottomLeft"
-      trigger="click"
-      open={isPopoverOpen}
-      onOpenChange={setIsPopoverOpen}
-    >
-      <div
-        className={clsx(
-          'flex h-[30px] cursor-pointer items-center justify-center rounded px-2 hover:bg-neutral-700',
-          isMounted ? 'text-blue-500' : 'text-neutral-300'
-        )}
-      >
-        <DiscIcon size={18} />
-      </div>
-    </Popover>
+    <>
+      <Tooltip title={t('image.title')} placement="bottom" mouseEnterDelay={0.6}>
+        <div
+          className={clsx(
+            'flex h-[30px] w-[30px] cursor-pointer items-center justify-center rounded hover:bg-neutral-700',
+            isMounted ? 'text-blue-500' : 'text-neutral-300 hover:text-white'
+          )}
+          onClick={() => toggleModal(true)}
+        >
+          <DiscIcon size={18} />
+        </div>
+      </Tooltip>
+
+      <Modal open={isModalOpen} footer={null} onCancel={() => toggleModal(false)}>
+        <div className="flex items-center space-x-1">
+          <span className="text-xl font-bold">{t('image.title')}</span>
+          <Tips />
+        </div>
+
+        <Divider style={{ margin: '24px 0' }} />
+
+        <div className="flex flex-col space-y-6">
+          <div className="flex items-center justify-between">
+            <span>{t('image.mountMode')}</span>
+            <Segmented value={mode} options={modes} disabled={isMounted} onChange={setMode} />
+          </div>
+
+          <Divider style={{ margin: '24px 0 0 0' }} />
+
+          <Images isOpen={isModalOpen} cdrom={mode === 'cd-rom'} setIsMounted={setIsMounted} />
+        </div>
+      </Modal>
+    </>
   );
 };

@@ -1,17 +1,18 @@
 import { ChangeEvent, useRef, useState } from 'react';
 import { UploadOutlined } from '@ant-design/icons';
-import { Button, Divider, Popconfirm, Popover } from 'antd';
+import { Button, Divider, Popconfirm } from 'antd';
 import clsx from 'clsx';
-import { ChevronRightIcon, FileCodeIcon } from 'lucide-react';
+import { ChevronRightIcon, FileJsonIcon } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 
 import * as api from '@/api/script.ts';
+import { MenuItem } from '@/components/menu-item.tsx';
 
 import { Run } from './run';
 
 export const Script = () => {
   const { t } = useTranslation();
-  const [isPopoverOpen, setIsPopoverOpen] = useState(false);
+
   const [scripts, setScripts] = useState<string[]>([]);
   const [currentScript, setCurrentScript] = useState('');
   const [isRunning, setIsRunning] = useState(false);
@@ -25,8 +26,6 @@ export const Script = () => {
     } else {
       setCurrentScript('');
     }
-
-    setIsPopoverOpen(open);
   }
 
   function selectFile() {
@@ -77,8 +76,6 @@ export const Script = () => {
         }
       });
     }
-
-    setIsPopoverOpen(false);
   }
 
   function getScripts() {
@@ -141,7 +138,7 @@ export const Script = () => {
           key={script}
           className={clsx(
             'my-1 cursor-pointer rounded',
-            script === currentScript ? 'bg-neutral-700/50' : 'hover:bg-neutral-700/50'
+            script === currentScript ? 'bg-neutral-700/50' : 'hover:bg-neutral-700/70'
           )}
         >
           <div
@@ -185,17 +182,12 @@ export const Script = () => {
 
   return (
     <>
-      <Popover
+      <MenuItem
+        title={t('script.title')}
+        icon={<FileJsonIcon size={18} />}
         content={content}
-        placement="bottomLeft"
-        trigger="click"
-        open={isPopoverOpen}
         onOpenChange={handleOpenChange}
-      >
-        <div className="flex h-[30px] cursor-pointer items-center justify-center rounded px-2 text-neutral-300 hover:bg-neutral-700">
-          <FileCodeIcon size={18} />
-        </div>
-      </Popover>
+      />
 
       {isRunning && <Run script={currentScript} setIsRunning={setIsRunning} />}
     </>

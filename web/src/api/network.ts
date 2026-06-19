@@ -1,5 +1,7 @@
 import { http } from '@/lib/http.ts';
 
+export type DNSMode = 'manual' | 'dhcp';
+
 // wake on lan
 export function wol(mac: string) {
   const data = {
@@ -14,34 +16,66 @@ export function getWolMacs() {
 }
 
 export function deleteWolMac(mac: string) {
-  return http.request({
-    method: 'delete',
-    url: '/api/network/wol/mac',
-    data: { mac }
+  const data = {
+    mac
+  };
+  return http.delete('/api/network/wol/mac', data);
+}
+
+// set Mac name
+export function setWolMacName(mac: string, name: string) {
+  return http.post('/api/network/wol/mac/name', { mac, name });
+}
+
+// get wifi information
+export function getWiFi() {
+  return http.get('/api/network/wifi');
+}
+
+// connect wifi without auth (only available in wifi configuration mode)
+export function connectWifiNoAuth(ssid: string, password: string, apPassword?: string) {
+  const data = {
+    ssid,
+    password
+  };
+  return http.post('/api/network/wifi', data, {
+    headers: {
+      'X-AP-Key': apPassword || ''
+    }
   });
 }
 
-// install tailscale
-export function installTailscale() {
-  return http.post('/api/network/tailscale/install');
+// verify ap login
+export function verifyApLogin(apPassword: string) {
+  return http.post(
+    '/api/network/wifi/verify',
+    {},
+    {
+      headers: {
+        'X-AP-Key': apPassword || ''
+      }
+    }
+  );
 }
 
-// get tailscale status
-export function getTailscaleStatus() {
-  return http.get('/api/network/tailscale/status');
+// connect wifi
+export function connectWifi(ssid: string, password: string) {
+  const data = {
+    ssid,
+    password
+  };
+  return http.post('/api/network/wifi/connect', data);
 }
 
-// update tailscale status
-export function updateTailscaleStatus(command: 'up' | 'down') {
-  return http.post('/api/network/tailscale/status', { command });
+// disconnect wifi
+export function disconnectWifi() {
+  return http.post('/api/network/wifi/disconnect');
 }
 
-// login tailscale
-export function loginTailscale() {
-  return http.post('/api/network/tailscale/login');
+export function getDNS() {
+  return http.get('/api/network/dns');
 }
 
-// logout tailscale
-export function logoutTailscale() {
-  return http.post('/api/network/tailscale/logout');
+export function setDNS(mode: DNSMode, servers: string[]) {
+  return http.post('/api/network/dns', { mode, servers });
 }

@@ -1,31 +1,26 @@
-import { useState } from 'react';
-import { Popover } from 'antd';
 import { KeyboardIcon } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
+import { MenuItem } from '@/components/menu-item.tsx';
+
+import { LeaderKey } from './leader-key.tsx';
 import { Paste } from './paste.tsx';
+import { Shortcuts } from './shortcuts';
 import { VirtualKeyboard } from './virtual-keyboard.tsx';
 
 export const Keyboard = () => {
-  const [isPopoverOpen, setIsPopoverOpen] = useState(false);
+  const { t } = useTranslation();
 
   const content = (
-    <>
-      <Paste setIsPopoverOpen={setIsPopoverOpen} />
+    <div className="flex flex-col space-y-1">
+      <Paste />
       <VirtualKeyboard />
-    </>
+      <Shortcuts />
+      <LeaderKey />
+    </div>
   );
 
   return (
-    <Popover
-      content={content}
-      placement="bottomLeft"
-      trigger="click"
-      open={isPopoverOpen}
-      onOpenChange={setIsPopoverOpen}
-    >
-      <div className="flex h-[30px] cursor-pointer items-center rounded px-2 text-neutral-300 hover:bg-neutral-700">
-        <KeyboardIcon size={18} />
-      </div>
-    </Popover>
+    <MenuItem title={t('keyboard.title')} icon={<KeyboardIcon size={18} />} content={content} />
   );
 };

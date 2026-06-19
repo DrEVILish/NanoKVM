@@ -1,12 +1,22 @@
 package proto
 
+type IP struct {
+	Name    string `json:"name"`
+	Addr    string `json:"addr"`
+	Version string `json:"version"`
+	Type    string `json:"type"`
+}
+
 type GetInfoRsp struct {
-	Ip          string `json:"ip"`
+	IPs         []IP   `json:"ips"`
 	Mdns        string `json:"mdns"`
 	Image       string `json:"image"`
 	Application string `json:"application"`
-	Hardware    string `json:"hardware"`
 	DeviceKey   string `json:"deviceKey"`
+}
+
+type GetHardwareRsp struct {
+	Version string `json:"version"`
 }
 
 type SetGpioReq struct {
@@ -45,8 +55,18 @@ type DeleteScriptReq struct {
 	Name string `validate:"required"`
 }
 
+// autostart
+type GetAutostartRsp struct {
+	Files []string `json:"files"`
+}
+
+type UploadAutostartReq struct {
+	Content string `json:"content"`
+}
+
 type GetVirtualDeviceRsp struct {
 	Network bool `json:"network"`
+	Media   bool `json:"media"`
 	Disk    bool `json:"disk"`
 }
 
@@ -56,4 +76,73 @@ type UpdateVirtualDeviceReq struct {
 
 type UpdateVirtualDeviceRsp struct {
 	On bool `json:"on"`
+}
+
+type SetMemoryLimitReq struct {
+	Enabled bool  `validate:"omitempty"`
+	Limit   int64 `validate:"omitempty"`
+}
+
+type GetMemoryLimitRsp struct {
+	Enabled bool  `json:"enabled"`
+	Limit   int64 `json:"limit"`
+}
+
+type SetOledReq struct {
+	Sleep int `validate:"omitempty"`
+}
+
+type GetOLEDRsp struct {
+	Exist bool `json:"exist"`
+	Sleep int  `json:"sleep"`
+}
+
+type GetGetHdmiStateRsp struct {
+	Enabled bool `json:"enabled"`
+}
+
+type GetSSHStateRsp struct {
+	Enabled bool `json:"enabled"`
+}
+
+type GetSwapRsp struct {
+	Size int64 `json:"size"` // unit: MB
+}
+
+type SetSwapReq struct {
+	Size int64 `validate:"omitempty"` // unit: MB
+}
+
+type GetMouseJigglerRsp struct {
+	Enabled bool   `json:"enabled"`
+	Mode    string `json:"mode"`
+}
+
+type SetMouseJigglerReq struct {
+	Enabled bool   `validate:"omitempty"`
+	Mode    string `validate:"omitempty"`
+}
+
+type GetMdnsStateRsp struct {
+	Enabled bool `json:"enabled"`
+}
+
+type SetHostnameReq struct {
+	Hostname string `validate:"required"`
+}
+
+type GetHostnameRsp struct {
+	Hostname string `json:"hostname"`
+}
+
+type SetWebTitleReq struct {
+	Title string `validate:"omitempty"`
+}
+
+type GetWebTitleRsp struct {
+	Title string `json:"title"`
+}
+
+type SetTlsReq struct {
+	Enabled bool `validate:"omitempty"`
 }

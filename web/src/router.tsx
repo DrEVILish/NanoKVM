@@ -44,8 +44,9 @@ export const router = createHashRouter([
   },
   {
     path: '/wifi',
+    caseSensitive: false,
     lazy: async () => {
-      const { Wifi } = await import('./pages/auth/wifi');
+      const { Wifi } = await import('./pages/wifi');
       return { Component: Wifi };
     }
   }

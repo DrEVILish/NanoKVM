@@ -1,33 +1,28 @@
 package auth
 
 import (
+	"NanoKVM-Server/utils"
 	"encoding/json"
 	"errors"
 	"os"
 	"path/filepath"
 
 	log "github.com/sirupsen/logrus"
-
-	"NanoKVM-Server/utils"
+	"golang.org/x/crypto/bcrypt"
 )
 
 const AccountFile = "/etc/kvm/pwd"
 
 type Account struct {
 	Username string `json:"username"`
-	Password string `json:"password"`
+	Password string `json:"password"`	// should be named HashedPassword for clarity
 }
 
-func getAccount() (*Account, error) {
-	// use default account
+func GetAccount() (*Account, error) {
 	if _, err := os.Stat(AccountFile); err != nil {
 		if errors.Is(err, os.ErrNotExist) {
-			return &Account{
-				Username: "admin",
-				Password: "admin",
-			}, nil
+			return getDefaultAccount(), nil
 		}
-
 		return nil, err
 	}
 
@@ -37,26 +32,18 @@ func getAccount() (*Account, error) {
 	}
 
 	var account Account
-	err = json.Unmarshal(content, &account)
-	if err != nil {
+	if err = json.Unmarshal(content, &account); err != nil {
 		log.Errorf("unmarshal account failed: %s", err)
 		return nil, err
 	}
 
-	password, err := utils.DecodeDecrypt(account.Password)
-	if err != nil {
-		return nil, err
-	}
-
-	account.Password = password
-
 	return &account, nil
 }
 
-func setAccount(username string, password string) error {
+func SetAccount(username string, hashedPassword string) error {
 	account, err := json.Marshal(&Account{
 		Username: username,
-		Password: password,
+		Password: hashedPassword,
 	})
 	if err != nil {
 		log.Errorf("failed to marshal account information to json: %s", err)
@@ -76,4 +63,51 @@ func setAccount(username string, password string) error {
 	}
 
 	return nil
+}
+
+func CompareAccount(username string, plainPassword string) bool {
+	account, err := GetAccount()
+	if err != nil {
+		return false
+	}
+
+	if username != account.Username {
+		return false
+	}
+
+	hashedPassword, err := utils.DecodeDecrypt(plainPassword)
+	if err != nil || hashedPassword == "" {
+		return false
+	}
+
+	err = bcrypt.CompareHashAndPassword([]byte(account.Password), []byte(hashedPassword))
+	if err != nil {
+		// Compatible with old versions
+		accountHashedPassword, _ := utils.DecodeDecrypt(account.Password)
+		if accountHashedPassword == hashedPassword {
+			return true
+		}
+
+		return false
+	}
+
+	return true
+}
+
+func DelAccount() error {
+	if err := os.Remove(AccountFile); err != nil {
+		log.Errorf("failed to delete password: %s", err)
+		return err
+	}
+
+	return nil
+}
+
+func getDefaultAccount() *Account {
+	hashedPassword, _ := bcrypt.GenerateFromPassword([]byte("admin"), bcrypt.DefaultCost)
+
+	return &Account{
+		Username: "admin",
+		Password: string(hashedPassword),
+	}
 }

@@ -12,22 +12,41 @@ type DeleteMacReq struct {
 	Mac string `form:"mac" validate:"required"`
 }
 
-type GetTailscaleStatusRsp struct {
-	Status  string `json:"status"` // notInstall | notLogin | stopped | running
-	Name    string `json:"name"`
-	IP      string `json:"ip"`
-	Account string `json:"account"`
+type SetMacNameReq struct {
+	Mac  string `form:"mac" validate:"required"`
+	Name string `form:"name" validate:"required"`
 }
 
-type UpdateTailscaleStatusReq struct {
-	Command string // up | down
+type GetWifiRsp struct {
+	Supported bool   `json:"supported"`
+	ApMode    bool   `json:"apMode"`
+	Connected bool   `json:"connected"`
+	Ssid      string `json:"ssid"`
 }
 
-type UpdateTailscaleStatusRsp struct {
-	Status string `json:"status"` // stopped | running
+type ConnectWifiReq struct {
+	Ssid     string `validate:"required"`
+	Password string `validate:"required"`
 }
 
-type LoginTailscaleRsp struct {
-	Status string `json:"status"`
-	Url    string `json:"url"`
+type GetDNSRsp struct {
+	Mode      string   `json:"mode"`
+	Servers   []string `json:"servers"`
+	Effective []string `json:"effective"`
+	DHCP      []string `json:"dhcp"`
+	Info      DNSInfo  `json:"info"`
+}
+
+type SetDNSReq struct {
+	Mode    string   `json:"mode" validate:"required,oneof=manual dhcp"`
+	Servers []string `json:"servers"`
+}
+
+type DNSInfo struct {
+	Interface     string   `json:"interface"`
+	Type          string   `json:"type"`
+	Address       string   `json:"address"`
+	SubnetMask    string   `json:"subnetMask"`
+	Gateway       string   `json:"gateway"`
+	SearchDomains []string `json:"searchDomains"`
 }

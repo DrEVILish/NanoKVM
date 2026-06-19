@@ -1,74 +1,177 @@
 import { useEffect, useRef } from 'react';
+import { useAtomValue } from 'jotai';
 
-import { client } from '@/lib/websocket.ts';
+import { getOperatingSystem } from '@/lib/browser.ts';
+import { KeyboardReport } from '@/lib/keyboard.ts';
+import { isModifier } from '@/lib/keymap';
+import { client, MessageEvent } from '@/lib/websocket.ts';
+import { isKeyboardEnableAtom } from '@/jotai/keyboard.ts';
+import { picoclawTakeoverStateAtom } from '@/jotai/picoclaw.ts';
 
-import { KeyboardCodes } from './mappings.ts';
+import { Recorder } from './recorder.tsx';
+import { useAltGr } from './useAltGr.ts';
+import { useLeaderKey } from './useLeaderKey.ts';
+import { normalizeKeyCode } from './utils.ts';
 
 export const Keyboard = () => {
-  const isMetaPressedRef = useRef(false);
-  const isAltRightPressedRef = useRef(false);
+  const os = getOperatingSystem();
 
-  // listen keyboard events
+  const isKeyboardEnabled = useAtomValue(isKeyboardEnableAtom);
+  const picoclawTakeoverState = useAtomValue(picoclawTakeoverStateAtom);
+
+  const keyboardRef = useRef(new KeyboardReport());
+  const pressedKeys = useRef(new Set<string>());
+  const isComposing = useRef(false);
+
+  // Send key event helper
+  const sendKeyEvent = (type: 'keydown' | 'keyup', code: string) => {
+    const kb = keyboardRef.current;
+    const report = type === 'keydown' ? kb.keyDown(code) : kb.keyUp(code);
+    sendReport(report);
+  };
+
+  // Init leader key handler
+  const leaderKey = useLeaderKey(pressedKeys, sendKeyEvent);
+  const leaderKeyRef = useRef(leaderKey);
+  leaderKeyRef.current = leaderKey;
+
+  // Init AltGr key handler
+  const altGr = useAltGr(os, pressedKeys, sendKeyEvent);
+  const altGrRef = useRef(altGr);
+  altGrRef.current = altGr;
+
   useEffect(() => {
-    window.addEventListener('keydown', handleKeyDown);
-    window.addEventListener('keyup', handleKeyUp);
-
-    // press button
-    function handleKeyDown(event: any) {
-      disableEvent(event);
-
-      if (['MetaLeft', 'MetaRight'].includes(event.code)) {
-        isMetaPressedRef.current = true;
-        return;
-      }
-      isMetaPressedRef.current = false;
-
-      if (event.code === 'AltRight') {
-        isAltRightPressedRef.current = true;
-      }
-
-      const code = KeyboardCodes.get(event.code);
-      if (!code) {
-        console.log('unknown code: ', event.code);
-        return;
-      }
-
-      const ctrl = event.ctrlKey ? 1 : 0;
-      const shift = event.shiftKey ? 1 : 0;
-      const alt = event.altKey ? (isAltRightPressedRef.current ? 2 : 1) : 0;
-      const meta = event.metaKey ? 1 : 0;
-
-      const data = [1, code, ctrl, shift, alt, meta];
-      client.send(data);
+    if (!picoclawTakeoverState.active) {
+      return;
     }
 
-    // release button
-    function handleKeyUp(event: any) {
-      disableEvent(event);
+    pressedKeys.current.clear();
+    leaderKeyRef.current.reset();
+    altGrRef.current.reset();
+    sendReport(keyboardRef.current.reset());
+  }, [picoclawTakeoverState.active]);
 
-      if (isMetaPressedRef.current) {
-        client.send([1, KeyboardCodes.get('MetaLeft')!, 0, 0, 0, 1]);
-        isMetaPressedRef.current = false;
+  useEffect(() => {
+    document.addEventListener('keydown', handleKeyDown);
+    document.addEventListener('keyup', handleKeyUp);
+    document.addEventListener('compositionstart', handleCompositionStart);
+    document.addEventListener('compositionend', handleCompositionEnd);
+    window.addEventListener('blur', handleBlur);
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+
+    function handleKeyDown(event: KeyboardEvent) {
+      if (!isKeyboardEnabled) return;
+      if (isComposing.current || event.isComposing) return;
+
+      event.preventDefault();
+      event.stopPropagation();
+
+      const code = normalizeKeyCode(event, os);
+      if (!code || pressedKeys.current.has(code)) return;
+
+      // Handle leader key
+      const leaderHandled = leaderKeyRef.current.handleKeyDown(code);
+      if (leaderHandled) {
+        return;
       }
 
-      if (event.code === 'AltRight') {
-        isAltRightPressedRef.current = false;
+      // Handle AltGr key
+      altGrRef.current.handleKeyDown(code, event.timeStamp);
+
+      pressedKeys.current.add(code);
+      sendKeyEvent('keydown', code);
+    }
+
+    function handleKeyUp(event: KeyboardEvent) {
+      if (!isKeyboardEnabled) return;
+      if (isComposing.current || event.isComposing) return;
+
+      event.preventDefault();
+      event.stopPropagation();
+
+      const code = normalizeKeyCode(event, os);
+      if (!code) return;
+
+      // Handle leader key release
+      const leaderHandled = leaderKeyRef.current.handleKeyUp(code);
+      if (leaderHandled) {
+        return;
       }
 
-      client.send([1, 0, 0, 0, 0, 0]);
+      // Handle AltGr key release
+      const altGrHandled = altGrRef.current.handleKeyUp(code);
+      if (altGrHandled) {
+        return;
+      }
+
+      // Release Meta combinations (macOS compatibility)
+      if (code === 'MetaLeft' || code === 'MetaRight') {
+        releaseMetaCombinations();
+      }
+
+      pressedKeys.current.delete(code);
+      sendKeyEvent('keyup', code);
+    }
+
+    function handleCompositionStart() {
+      isComposing.current = true;
+    }
+
+    function handleCompositionEnd() {
+      isComposing.current = false;
+    }
+
+    function handleBlur() {
+      releaseKeys();
+    }
+
+    function handleVisibilityChange() {
+      if (document.hidden) {
+        releaseKeys();
+      }
+    }
+
+    function releaseMetaCombinations() {
+      const keysToRelease = Array.from(pressedKeys.current).filter((code) => !isModifier(code));
+      for (const key of keysToRelease) {
+        sendKeyEvent('keyup', key);
+        pressedKeys.current.delete(key);
+      }
+    }
+
+    function releaseKeys() {
+      pressedKeys.current.forEach((code) => {
+        sendKeyEvent('keyup', code);
+      });
+      pressedKeys.current.clear();
+
+      leaderKeyRef.current.reset();
+      altGrRef.current.reset();
+
+      const report = keyboardRef.current.reset();
+      sendReport(report);
     }
 
     return () => {
-      window.removeEventListener('keydown', handleKeyDown);
-      window.removeEventListener('keyup', handleKeyUp);
-    };
-  }, []);
+      document.removeEventListener('keydown', handleKeyDown);
+      document.removeEventListener('keyup', handleKeyUp);
+      document.removeEventListener('compositionstart', handleCompositionStart);
+      document.removeEventListener('compositionend', handleCompositionEnd);
+      window.removeEventListener('blur', handleBlur);
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
 
-  // disable the default keyboard events
-  function disableEvent(event: any) {
-    event.preventDefault();
-    event.stopPropagation();
+      releaseKeys();
+    };
+  }, [isKeyboardEnabled]);
+
+  function sendReport(report: Uint8Array) {
+    const data = new Uint8Array([MessageEvent.Keyboard, ...report]);
+    client.send(data);
   }
 
-  return <></>;
+  return (
+    <>
+      <Recorder recordMode={leaderKey.recordMode} recordedKeys={leaderKey.recordedKeys} />
+    </>
+  );
 };

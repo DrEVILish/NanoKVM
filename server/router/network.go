@@ -9,15 +9,21 @@ import (
 
 func networkRouter(r *gin.Engine) {
 	service := network.NewService()
+
+	r.POST("/api/network/wifi", service.ConnectWifiNoAuth)    // connect Wi-Fi without auth (only available in ap mode)
+	r.POST("/api/network/wifi/verify", service.VerifyApLogin) // verify ap login
+
 	api := r.Group("/api").Use(middleware.CheckToken())
 
-	api.POST("/network/wol", service.WakeOnLAN)       // wake on lan
-	api.GET("/network/wol/mac", service.GetMac)       // get mac list
-	api.DELETE("/network/wol/mac", service.DeleteMac) // delete mac
+	api.POST("/network/wol", service.WakeOnLAN)           // wake on lan
+	api.GET("/network/wol/mac", service.GetMac)           // get mac list
+	api.DELETE("/network/wol/mac", service.DeleteMac)     // delete mac
+	api.POST("/network/wol/mac/name", service.SetMacName) // set mac name
 
-	api.POST("/network/tailscale/install", service.InstallTailscale)     // install tailscale
-	api.GET("/network/tailscale/status", service.GetTailscaleStatus)     // get tailscale status
-	api.POST("/network/tailscale/status", service.UpdateTailscaleStatus) // update tailscale status
-	api.POST("/network/tailscale/login", service.LoginTailscale)         // tailscale login
-	api.POST("/network/tailscale/logout", service.LogoutTailscale)       // tailscale logout
+	api.GET("/network/wifi", service.GetWifi)                    // get Wi-Fi information
+	api.POST("/network/wifi/connect", service.ConnectWifi)       // connect Wi-Fi
+	api.POST("/network/wifi/disconnect", service.DisconnectWifi) // disconnect Wi-Fi
+
+	api.GET("/network/dns", service.GetDNS)  // get DNS configuration
+	api.POST("/network/dns", service.SetDNS) // set DNS configuration
 }

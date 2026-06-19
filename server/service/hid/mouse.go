@@ -1,102 +1,71 @@
 package hid
 
 import (
-	"encoding/binary"
-	"errors"
-	"os"
-	"time"
-
 	log "github.com/sirupsen/logrus"
 )
 
-func (h *Hid) Mouse(queue <-chan []int) {
+func (h *Hid) Mouse(queue <-chan []byte) {
+	h.mouse(queue, HID1, HID2)
+}
+
+func (h *Hid) mouse(queue <-chan []byte, relativePath string, absolutePath string) {
+	defer h.releaseRelativeMouse(relativePath)
+
+	absoluteButtonsActive := false
+	var absoluteReleaseReport []byte
+	defer func() {
+		if absoluteButtonsActive {
+			h.releaseAbsoluteMouse(absolutePath, absoluteReleaseReport)
+		}
+	}()
+
 	for event := range queue {
-		h.mouseMutex.Lock()
-		switch event[0] {
-		case MouseDown:
-			h.mouseDown(event)
-		case MouseUp:
-			h.mouseUp()
-		case MouseMoveAbsolute:
-			h.mouseMoveAbsolute(event)
-		case MouseMoveRelative:
-			h.mouseMoveRelative(event)
-		case MouseScroll:
-			h.scroll(event)
+		switch len(event) {
+		case 4:
+			if !h.writeHIDReport(h.relativeMouseDevice(relativePath), event) {
+				if dropped := drainHIDQueue(queue); dropped > 0 {
+					log.Debugf("dropped %d stale mouse HID reports after relative write failure", dropped)
+				}
+				h.releaseRelativeMouse(relativePath)
+			}
+		case 6:
+			if !h.writeHIDReport(h.absoluteMouseDevice(absolutePath), event) {
+				if dropped := drainHIDQueue(queue); dropped > 0 {
+					log.Debugf("dropped %d stale mouse HID reports after absolute write failure", dropped)
+				}
+				if absoluteButtonsActive {
+					if h.releaseAbsoluteMouse(absolutePath, absoluteReleaseReport) {
+						absoluteButtonsActive = false
+					}
+				} else if event[0] != 0 {
+					h.releaseAbsoluteMouse(absolutePath, absoluteMouseReleaseReport(event))
+				}
+				continue
+			}
+			absoluteReleaseReport = absoluteMouseReleaseReport(event)
+			absoluteButtonsActive = event[0] != 0
 		default:
-			log.Debugf("invalid mouse event: %+v", event)
+			log.Debugf("invalid mouse event: %v", event)
 		}
-		h.mouseMutex.Unlock()
 	}
 }
 
-func (h *Hid) mouseDown(event []int) {
-	var button byte
+func (h *Hid) releaseRelativeMouse(path string) {
+	h.writeHIDReport(h.relativeMouseDevice(path), relativeMouseReleaseReport())
+}
 
-	switch event[1] {
-	case MouseLeft:
-		button = HidMouseLeft
-	case MouseRight:
-		button = HidMouseRight
-	case MouseWheel:
-		button = HidMouseWheel
-	default:
-		log.Debugf("invalid mouse button: %+v", event)
-		return
+func (h *Hid) releaseAbsoluteMouse(path string, report []byte) bool {
+	return h.writeHIDReport(h.absoluteMouseDevice(path), report)
+}
+
+func relativeMouseReleaseReport() []byte {
+	return []byte{0x00, 0x00, 0x00, 0x00}
+}
+
+func absoluteMouseReleaseReport(positionReport []byte) []byte {
+	report := []byte{0x00, 0x00, 0x00, 0x00, 0x00, 0x00}
+	if len(positionReport) >= 5 {
+		copy(report[1:5], positionReport[1:5])
 	}
-
-	data := []byte{button, 0, 0, 0}
-	h.writeWithTimeout(h.g1, data)
-}
-
-func (h *Hid) mouseUp() {
-	data := []byte{0, 0, 0, 0}
-	h.writeWithTimeout(h.g1, data)
-}
-
-func (h *Hid) scroll(event []int) {
-	direction := 0x01
-	if event[3] > 0 {
-		direction = -0x1
-	}
-
-	data := []byte{0, 0, 0, byte(direction)}
-	h.writeWithTimeout(h.g1, data)
-}
-
-func (h *Hid) mouseMoveAbsolute(event []int) {
-	x := make([]byte, 2)
-	y := make([]byte, 2)
-	binary.LittleEndian.PutUint16(x, uint16(event[2]))
-	binary.LittleEndian.PutUint16(y, uint16(event[3]))
-
-	data := []byte{0, x[0], x[1], y[0], y[1], 0}
-	h.writeWithTimeout(h.g2, data)
-}
-
-func (h *Hid) mouseMoveRelative(event []int) {
-	data := []byte{byte(event[1]), byte(event[2]), byte(event[3]), 0}
-	h.writeWithTimeout(h.g1, data)
-}
-
-func (h *Hid) writeWithTimeout(file *os.File, data []byte) {
-	deadline := time.Now().Add(8 * time.Millisecond)
-	_ = file.SetWriteDeadline(deadline)
-
-	_, err := file.Write(data)
-	if err != nil {
-		switch {
-		case errors.Is(err, os.ErrClosed):
-			log.Debugf("hid already closed, reopen it...")
-			h.OpenNoLock()
-		case errors.Is(err, os.ErrDeadlineExceeded):
-			log.Debugf("write to hid timeout")
-		default:
-			log.Errorf("write to hid failed: %s", err)
-		}
-
-		return
-	}
-
-	log.Debugf("write to hid: %+v", data)
+	return report
 }

@@ -8,6 +8,14 @@ export function login(username: string, password: string) {
   return http.post('/api/auth/login', data);
 }
 
+export function logout() {
+  return http.post('/api/auth/logout');
+}
+
+export function getAccount() {
+  return http.get('/api/auth/account');
+}
+
 export function changePassword(username: string, password: string) {
   const data = {
     username,
@@ -18,12 +26,4 @@ export function changePassword(username: string, password: string) {
 
 export function isPasswordUpdated() {
   return http.get('/api/auth/password');
-}
-
-export function connectWifi(ssid: string, password: string) {
-  const data = {
-    ssid,
-    password
-  };
-  return http.post('/api/auth/wifi', data);
 }
