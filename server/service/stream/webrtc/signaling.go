@@ -1,6 +1,7 @@
 package webrtc
 
 import (
+	"NanoKVM-Server/service/stream"
 	"encoding/json"
 	"errors"
 
@@ -33,16 +34,83 @@ func (s *SignalingHandler) RegisterCallbacks() {
 		}
 	})
 
-	manager := getManager()
-
 	// video connection state change
 	s.client.video.OnICEConnectionStateChange(func(state webrtc.ICEConnectionState) {
-		if state == webrtc.ICEConnectionStateConnected {
-			manager.StartVideoStream()
-		}
+		s.updateVideoStreamState(state)
 
 		log.Debugf("video connection state changed to %s", state.String())
 	})
+}
+
+func (s *SignalingHandler) Close() {
+	s.mutex.Lock()
+	defer s.mutex.Unlock()
+
+	if s.closed {
+		return
+	}
+
+	s.closed = true
+	s.unregisterH264ModeLocked()
+	if s.client != nil && s.client.WsConn() != nil {
+		getManager().RemoveClient(s.client.WsConn())
+	}
+}
+
+func (s *SignalingHandler) updateVideoStreamState(state webrtc.ICEConnectionState) {
+	s.mutex.Lock()
+	defer s.mutex.Unlock()
+
+	if s.closed {
+		return
+	}
+
+	manager := getManager()
+	if s.updateH264ModeLocked(state) {
+		manager.AddClient(s.client.WsConn(), s.client)
+		manager.StartVideoStream()
+		return
+	}
+
+	manager.RemoveClient(s.client.WsConn())
+}
+
+func (s *SignalingHandler) updateH264Mode(state webrtc.ICEConnectionState) bool {
+	s.mutex.Lock()
+	defer s.mutex.Unlock()
+
+	if s.closed {
+		return false
+	}
+
+	return s.updateH264ModeLocked(state)
+}
+
+func (s *SignalingHandler) updateH264ModeLocked(state webrtc.ICEConnectionState) bool {
+	if state == webrtc.ICEConnectionStateConnected || state == webrtc.ICEConnectionStateCompleted {
+		s.registerH264ModeLocked()
+		return true
+	}
+
+	s.unregisterH264ModeLocked()
+	return false
+}
+
+func (s *SignalingHandler) registerH264ModeLocked() {
+	if s.unregisterMode != nil {
+		return
+	}
+
+	s.unregisterMode = stream.RegisterH264Mode(stream.H264ModeWebRTC)
+}
+
+func (s *SignalingHandler) unregisterH264ModeLocked() {
+	unregisterMode := s.unregisterMode
+	s.unregisterMode = nil
+
+	if unregisterMode != nil {
+		unregisterMode()
+	}
 }
 
 // HandleMessage handle the received message
@@ -89,11 +157,6 @@ func (s *SignalingHandler) handleVideoOffer(data string) error {
 		return err
 	}
 
-	if err := s.updateHeaderExtensionID(); err != nil {
-		log.Errorf("could not update header extension ID: %v", err)
-		return err
-	}
-
 	answerByte, err := json.Marshal(answer)
 	if err != nil {
 		log.Errorf("failed to marshal answer: %s", err)
@@ -101,30 +164,6 @@ func (s *SignalingHandler) handleVideoOffer(data string) error {
 	}
 
 	return s.client.WriteMessage("video-answer", string(answerByte))
-}
-
-// set extension ID
-func (s *SignalingHandler) updateHeaderExtensionID() error {
-	receivers := s.client.video.GetReceivers()
-	if len(receivers) == 0 {
-		return errors.New("no RTP receiver found for video")
-	}
-
-	params := receivers[0].GetParameters()
-	if len(params.HeaderExtensions) == 0 {
-		return errors.New("no header extensions found in negotiated parameters")
-	}
-
-	for _, ext := range params.HeaderExtensions {
-		if ext.URI == "http://www.webrtc.org/experiments/rtp-hdrext/playout-delay" {
-			s.client.track.playoutDelayExtensionID = uint8(ext.ID)
-			log.Debugf("found and set playout delay extension ID to: %d", ext.ID)
-			return nil
-		}
-	}
-
-	log.Warnf("no track extension found in negotiated parameters, use default value 5")
-	return nil
 }
 
 // handle video candidate

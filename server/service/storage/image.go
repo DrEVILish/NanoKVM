@@ -2,56 +2,41 @@ package storage
 
 import (
 	"fmt"
-	"os"
-	"os/exec"
 	"path/filepath"
-	"strconv"
 	"strings"
-	"time"
 
 	"github.com/gin-gonic/gin"
 	log "github.com/sirupsen/logrus"
 
 	"NanoKVM-Server/proto"
-	"NanoKVM-Server/service/hid"
+	"NanoKVM-Server/service/storage/diskfs"
+	"NanoKVM-Server/utils"
 )
 
-const (
-	imageDirectory = "/data"
-	imageNone      = "/dev/mmcblk0p3"
-	cdromFlag      = "/sys/kernel/config/usb_gadget/g0/functions/mass_storage.disk0/lun.0/cdrom"
-	mountDevice    = "/sys/kernel/config/usb_gadget/g0/functions/mass_storage.disk0/lun.0/file"
-	inquiryString  = "/sys/kernel/config/usb_gadget/g0/functions/mass_storage.disk0/lun.0/inquiry_string"
-	roFlag         = "/sys/kernel/config/usb_gadget/g0/functions/mass_storage.disk0/lun.0/ro"
-)
+// The handlers in this file are the pre-2.6 image API. The web UI uses the
+// media API instead, but these routes stay so scripts written against the
+// documented endpoints keep working: same paths, same request shapes, same
+// responses. They share the media implementation underneath, which is also
+// where the guards they used to lack now live.
 
 func (s *Service) GetImages(c *gin.Context) {
 	var rsp proto.Response
-	var images []string
 
-	err := filepath.Walk(imageDirectory, func(path string, info os.FileInfo, err error) error {
-		if err != nil {
-			return err
-		}
-
-		if !info.IsDir() {
-			name := strings.ToLower(info.Name())
-			if strings.HasSuffix(name, ".iso") || strings.HasSuffix(name, ".img") {
-				images = append(images, path)
-			}
-		}
-
-		return nil
-	})
+	media, err := listMedia()
 	if err != nil {
-		rsp.ErrRsp(c, -2, "get images failed")
+		respondError(c, err)
 		return
 	}
 
-	rsp.OkRspWithData(c, &proto.GetImagesRsp{
-		Files: images,
-	})
-	log.Debugf("get images success, total %d", len(images))
+	files := make([]string, 0, len(media))
+	for _, item := range media {
+		if item.Type == proto.MediaTypeImage {
+			files = append(files, filepath.Join(mediaDirectory, filepath.FromSlash(item.Rel)))
+		}
+	}
+
+	rsp.OkRspWithData(c, &proto.GetImagesRsp{Files: files})
+	log.Debugf("get images success, total %d", len(files))
 }
 
 func (s *Service) MountImage(c *gin.Context) {
@@ -59,88 +44,41 @@ func (s *Service) MountImage(c *gin.Context) {
 	var rsp proto.Response
 
 	if err := proto.ParseFormRequest(c, &req); err != nil {
-		rsp.ErrRsp(c, -1, "invalid arguments")
+		rsp.ErrRsp(c, codeInvalidArgument, "invalid arguments")
 		return
 	}
 
-	// cdrom and ro flag
-	// set to 0 when unmount image
-	// set to 1 when mount image and the CD-ROM is enabled
-	if req.File == "" || req.Cdrom {
-		flag := "0"
-		if req.File != "" && req.Cdrom {
-			flag = "1"
-		}
-
-		// unmount
-		if err := os.WriteFile(mountDevice, []byte("\n"), 0o666); err != nil {
-			log.Errorf("unmount file failed: %s", err)
-			rsp.ErrRsp(c, -2, "unmount image failed")
-			return
-		}
-
-		// ro flag
-		if err := os.WriteFile(roFlag, []byte(flag), 0o666); err != nil {
-			log.Errorf("set ro flag failed: %s", err)
-			rsp.ErrRsp(c, -2, "set ro flag failed")
-			return
-		}
-
-		// cdrom flag
-		if err := os.WriteFile(cdromFlag, []byte(flag), 0o666); err != nil {
-			log.Errorf("set cdrom flag failed: %s", err)
-			rsp.ErrRsp(c, -2, "set cdrom flag failed")
-			return
-		}
-	}
-
-	inquiryVen := "NanoKVM"
-	inquiryPrd := "USB Mass Storage"
-	inquiryVer := 0x0520
-	if req.Cdrom {
-		inquiryPrd = "USB CD/DVD-ROM"
-	}
-	inquiryData := fmt.Sprintf("%-8s%-16s%04x", inquiryVen, inquiryPrd, inquiryVer)
-
-	if err := os.WriteFile(inquiryString, []byte(inquiryData), 0o666); err != nil {
-		log.Errorf("set inquiry %s failed: %s", inquiryData, err)
-		rsp.ErrRsp(c, -2, "set inquiry failed")
-		return
-	}
-
-	// mount
-	image := req.File
-	if image == "" {
-		image = imageNone
-	}
-
-	if err := os.WriteFile(mountDevice, []byte(image), 0o666); err != nil {
-		log.Errorf("mount file %s failed: %s", image, err)
-		rsp.ErrRsp(c, -2, "mount image failed")
-		return
-	}
-
-	h := hid.GetHid()
-	h.Lock()
-	h.CloseNoLock()
-	defer func() {
-		h.OpenNoLock()
-		h.Unlock()
-	}()
-
-	// reset usb
-	commands := []string{
-		"echo > /sys/kernel/config/usb_gadget/g0/UDC",
-		"ls /sys/class/udc/ | cat > /sys/kernel/config/usb_gadget/g0/UDC",
-	}
-
-	for _, command := range commands {
-		err := exec.Command("sh", "-c", command).Run()
+	// An empty file keeps its original meaning: attach the whole data
+	// partition, which is what the emulated disk exposes by default.
+	backing := partitionDevice
+	if req.File != "" {
+		rel, err := legacyImageRel(req.File)
 		if err != nil {
-			rsp.ErrRsp(c, -2, "execute command failed")
+			respondError(c, err)
 			return
 		}
-		time.Sleep(100 * time.Millisecond)
+
+		backing, err = utils.ResolveMediaID(rel)
+		if err != nil {
+			respondError(c, err)
+			return
+		}
+	}
+
+	if req.Cdrom {
+		kind, err := diskfs.Detect(backing)
+		if err != nil || !kind.Optical() {
+			respondError(c, fmt.Errorf("%w: %s", errNotOptical, req.File))
+			return
+		}
+	}
+
+	// An image is always served read-only, the raw partition is not.
+	ro := req.Cdrom || req.File != ""
+
+	if err := s.attachMedium(backing, req.Cdrom, ro, false); err != nil {
+		respondError(c, err)
+		return
 	}
 
 	rsp.OkRsp(c)
@@ -150,45 +88,37 @@ func (s *Service) MountImage(c *gin.Context) {
 func (s *Service) GetMountedImage(c *gin.Context) {
 	var rsp proto.Response
 
-	content, err := os.ReadFile(mountDevice)
+	status, err := readDiskStatus()
 	if err != nil {
-		rsp.ErrRsp(c, -2, "read failed")
+		rsp.ErrRsp(c, codeOperationFailed, "read failed")
 		return
 	}
 
-	image := strings.ReplaceAll(string(content), "\n", "")
-	if image == imageNone {
-		image = ""
+	// The data partition is reported as "nothing mounted", the way this
+	// endpoint has always answered.
+	file := ""
+	if status.State == diskStateImage {
+		file = status.Backing
 	}
 
-	data := &proto.GetMountedImageRsp{
-		File: image,
-	}
-
-	rsp.OkRspWithData(c, data)
+	rsp.OkRspWithData(c, &proto.GetMountedImageRsp{File: file})
 }
 
 func (s *Service) GetCdRom(c *gin.Context) {
 	var rsp proto.Response
 
-	content, err := os.ReadFile(cdromFlag)
+	cdrom, err := readLunBool(lunCDRomFlag)
 	if err != nil {
-		rsp.ErrRsp(c, -1, "read failed")
+		rsp.ErrRsp(c, codeOperationFailed, "read failed")
 		return
 	}
 
-	flag := strings.ReplaceAll(string(content), "\n", "")
-	flatInt, err := strconv.ParseInt(flag, 10, 64)
-	if err != nil {
-		rsp.ErrRsp(c, -2, "parse failed")
-		return
+	flag := int64(0)
+	if cdrom {
+		flag = 1
 	}
 
-	data := &proto.GetCdRomRsp{
-		Cdrom: flatInt,
-	}
-
-	rsp.OkRspWithData(c, data)
+	rsp.OkRspWithData(c, &proto.GetCdRomRsp{Cdrom: flag})
 }
 
 func (s *Service) DeleteImage(c *gin.Context) {
@@ -196,25 +126,45 @@ func (s *Service) DeleteImage(c *gin.Context) {
 	var rsp proto.Response
 
 	if err := proto.ParseFormRequest(c, &req); err != nil {
-		rsp.ErrRsp(c, -1, "invalid arguments")
+		rsp.ErrRsp(c, codeInvalidArgument, "invalid arguments")
 		return
 	}
 
-	filename := strings.ToLower(req.File)
-	validPrefix := strings.HasPrefix(filename, imageDirectory)
-	validSuffix := strings.HasSuffix(filename, ".iso") || strings.HasSuffix(filename, ".img")
-
-	if !validPrefix || !validSuffix {
-		rsp.ErrRsp(c, -2, "invalid arguments")
+	rel, err := legacyImageRel(req.File)
+	if err != nil {
+		respondError(c, err)
 		return
 	}
 
-	if err := os.Remove(req.File); err != nil {
-		rsp.ErrRsp(c, -3, "remove file failed")
-		log.Errorf("failed to remove file %s: %s", req.File, err)
+	target, err := utils.ResolveMediaID(rel)
+	if err != nil {
+		respondError(c, err)
+		return
+	}
+
+	if err := deleteMedium(target); err != nil {
+		log.Errorf("failed to remove file %s: %s", target, err)
+		respondError(c, err)
 		return
 	}
 
 	rsp.OkRsp(c)
 	log.Debugf("delete image %s success", req.File)
+}
+
+// legacyImageRel turns the absolute path this API has always used into a
+// medium id. The old validation was a string prefix check, which also accepted
+// "/dataevil.img" and "/data/../../etc/passwd.iso"; resolving the path
+// properly closes both.
+func legacyImageRel(file string) (string, error) {
+	if !filepath.IsAbs(file) {
+		return "", fmt.Errorf("%w: %s is not an absolute path", utils.ErrInvalidMediaID, file)
+	}
+
+	rel, err := filepath.Rel(mediaDirectory, filepath.Clean(file))
+	if err != nil || rel == ".." || strings.HasPrefix(rel, ".."+string(filepath.Separator)) {
+		return "", fmt.Errorf("%w: %s is outside %s", utils.ErrInvalidMediaID, file, mediaDirectory)
+	}
+
+	return rel, nil
 }

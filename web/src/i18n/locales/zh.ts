@@ -4,6 +4,7 @@ const zh = {
       desktop: '远程桌面',
       login: '登录',
       changePassword: '修改密码',
+      storage: '镜像挂载/文件共享',
       terminal: '终端',
       wifi: 'Wi-Fi'
     },
@@ -11,14 +12,17 @@ const zh = {
       login: '登录',
       placeholderUsername: '请输入用户名',
       placeholderPassword: '请输入密码',
+      placeholderCurrentPassword: '请输入当前密码',
       placeholderPassword2: '请再次输入密码',
       noEmptyUsername: '用户名不能为空',
       noEmptyPassword: '密码不能为空',
+      passwordLength: '密码长度必须为 8 到 72 个字符',
       noAccount: '获取用户信息失败，请刷新重试或重置密码',
       invalidUser: '用户名或密码错误',
       locked: '登录太频繁，请稍后再试',
       globalLocked: '系统防爆破保护中，请稍后再试',
       error: '未知错误',
+      invalidCurrentPassword: '当前密码错误',
       changePassword: '修改密码',
       changePasswordDesc: '为了您的设备安全，请修改密码!',
       differentPassword: '两次密码不一致',
@@ -61,6 +65,36 @@ const zh = {
       video: '视频模式',
       videoDirectTips: '该模式需启用 HTTPS，请前往「设置 - 设备」中开启',
       resolution: '分辨率',
+      controlRegion: {
+        title: '鼠标校准',
+        description:
+          '当受控设备为非 16:9 分辨率，且你发现光标在水平/垂直方向上不同步，则使用该设置。',
+        off: '关闭',
+        auto: '自动',
+        autoWarning: '若用户程序为纯黑色背景，则可能校准出错。',
+        manual: '手动',
+        selectedResolution: '框选分辨率',
+        unused: '未使用',
+        originalResolution: '原始分辨率',
+        selectResolution: '选择原始分辨率',
+        addResolution: '添加自定义分辨率',
+        add: '添加',
+        duplicateResolution: '该分辨率已存在。',
+        width: '宽度',
+        height: '高度',
+        apply: '换算并应用',
+        invalidResolution: '请在视频准备就绪后输入有效的原始分辨率。',
+        select: '框选区域',
+        clear: '恢复自动裁切',
+        saveFailed: '控制区域保存失败。',
+        tooSmall: '选择区域过小。',
+        previewUnavailable: '暂时无法预览',
+        clearConfirm: '恢复自动黑边检测？',
+        dragHint: '拖拽框选远程桌面区域',
+        finish: '完成',
+        confirm: '确定',
+        cancel: '取消'
+      },
       auto: '自动',
       autoTips:
         '在某些分辨率下可能存在花屏或鼠标偏移的情况，请调整远程主机分辨率或者不使用自动模式。',
@@ -74,6 +108,15 @@ const zh = {
       frameDetect: '帧差检测',
       frameDetectTip: '计算帧之间的差异，当检测到远程主机画面不变时，停止传输视频流',
       resetHdmi: '重置 HDMI',
+      mixedH264: {
+        title: 'H.264 视频流冲突',
+        description:
+          '检测到 H.264 Direct 和 H.264 WebRTC 同时使用，可能导致画面撕裂或花屏。请只保留一种 H.264 模式。'
+      },
+      webrtcConnectionFailed: {
+        title: 'WebRTC 连接失败',
+        description: '请检查网络连接或切换视频模式。'
+      },
       captureStatus: {
         hdmiError: 'HDMI 画面异常',
         unsupportedResolution: '当前分辨率不支持',
@@ -166,25 +209,42 @@ const zh = {
         disable: '关闭 HID-Only 模式'
       }
     },
-    image: {
-      title: '镜像',
-      loading: '加载中',
-      empty: '无镜像文件',
-      mountMode: '挂载模式',
-      mountFailed: '挂载失败',
-      mountDesc: '在某些系统中，需要在远程主机中弹出虚拟硬盘后再挂载镜像。',
-      unmountFailed: '卸载失败',
-      unmountDesc: '在某些系统中，需要在远程主机中手动弹出后再卸载镜像。',
-      refresh: '刷新镜像列表',
-      attention: '注意',
-      deleteConfirm: '确定要删除该镜像吗？',
-      okBtn: '确定',
-      cancelBtn: '取消',
+    storage: {
+      title: '镜像挂载/文件共享',
+      empty: '还没有镜像。可以上传 ISO/IMG,也可以让被控机拷到这张盘上。',
+      notAttached: '未装载任何介质',
+      attached: '已装载:{{name}}',
+      eject: '弹出',
+      mount: '装载',
+      mountMode: '装载模式',
+      mountModeDisk: '磁盘模式',
+      mountModeCdrom: '光盘模式',
+      openManager: '打开文件管理器',
+      refresh: '刷新',
+      delete: '删除',
+      deleteTitle: '删除介质',
+      deleteConfirm: '确定删除 {{name}}?里面的文件会一起丢失。',
+      downloadImage: '下载镜像',
+      typePartition: '共享文件',
+      volumeLabel: '可移动磁盘',
+      groups: {
+        share: '文件共享',
+        images: '镜像'
+      },
+      failed: '操作失败',
+      hidOnly: 'HID-Only 模式:虚拟磁盘不可用',
+      disabled: '虚拟磁盘未启用(设置 - 设备)',
+      force: {
+        title: '强制收回介质?',
+        desc: '被控机还挂着这个介质。强制收回会让 USB 设备重新枚举,它还没写盘的数据可能丢失。',
+        menuHint: '被控机正在使用该介质,请到文件管理器页面强制收回。'
+      },
       tips: {
         title: '如何上传',
         usb1: '将 NanoKVM 通过 USB 连接到你的电脑；',
-        usb2: '确保已经挂载了虚拟硬盘（设置 - 虚拟硬盘）；',
+        usb2: '在本页面以大容量存储模式挂载共享文件；',
         usb3: '在电脑上打开虚拟硬盘，将镜像文件拷贝到虚拟硬盘的根目录下。',
+        usb4: '拷贝完成后弹出磁盘，镜像随后会出现在列表中。',
         scp1: '确保 NanoKVM 和你的电脑在同一个局域网内；',
         scp2: '在电脑上打开终端软件，使用 SCP 命令将镜像文件上传到 NanoKVM 的 /data 目录。',
         scp3: '示例：scp your-image-path root@your-nanokvm-ip:/data',
@@ -194,7 +254,63 @@ const zh = {
         tf3: '将 TF 卡插入读卡器并连接到你的电脑；',
         tf4: '从电脑上拷贝镜像文件到 TF 卡的 /data 目录下；',
         tf5: '将 TF 卡重新插入 NanoKVM。'
-      }
+      },
+      job: {
+        running: '正在处理 {{name}}'
+      },
+      enableDisk: {
+        title: '启用虚拟磁盘?',
+        desc: '装载介质需要虚拟磁盘,当前它是关闭的。现在启用?被控机的键鼠会短暂断开。',
+        menuHint: '虚拟磁盘未启用,请到 设置 - 设备 打开。'
+      },
+      add: {
+        title: '添加介质',
+        upload: '上传 ISO / IMG',
+        fromUrl: '从 URL 下载',
+        url: '镜像地址',
+        urlRequired: '请输入镜像地址',
+        onlyImages: '只能挂载 .iso 和 .img 文件',
+        dropHint: '把 ISO / IMG 拖到这里，或点击选择文件',
+        cdromOnlyIso: '光盘模式只能挂载 ISO 光盘镜像',
+        uploadFailed: '上传失败',
+        downloadFailed: '下载失败',
+        uploading: '正在上传 {{name}}',
+        downloading: '正在下载 {{name}}',
+        done: '{{name}} 已就绪',
+        checksumFailed: '镜像与 SHA-256 校验值不符。',
+        blocked: '被控机正在使用这张盘',
+        copyHint: '也可以通过 SCP 把镜像放进数据分区，或在被控机上直接拷贝。'
+      },
+      files: {
+        selectMedium: '选择一个介质,查看里面的文件。',
+        reasonAttached: '该介质正装载给被控机使用。',
+        reasonAttachedHint: '请先弹出:被控机必须释放这块盘,里面的文件才能读取。',
+        reasonNotBrowsable: '这个介质里的文件系统无法在网页端打开。',
+        reasonNoLoop: '本机不支持挂载磁盘镜像(内核未启用 loop)。',
+        reasonISOImage: 'ISO 光盘镜像不支持在网页端浏览目录，镜像本身仍可正常挂载给被控机',
+        empty: '这个目录是空的',
+        noMatch: '没有匹配的文件',
+        free: '剩余 {{size}}',
+        search: '搜索当前目录',
+        sort: {
+          name: '名称',
+          size: '大小',
+          type: '类型',
+          asc: '升序',
+          desc: '降序'
+        },
+        upload: '上传文件到介质',
+        deleteFolderTitle: '删除文件夹',
+        deleteFolderConfirm: '删除文件夹 {{name}} 及其中的全部内容？此操作无法撤销。',
+        uploading: '正在上传…',
+        uploadFailed: '上传失败',
+        download: '下载',
+        delete: '删除',
+        deleteTitle: '删除文件',
+        deleteConfirm: '确定从介质中删除 {{name}}?'
+      },
+      yes: '确定',
+      no: '取消'
     },
     script: {
       title: '脚本',
@@ -236,13 +352,12 @@ const zh = {
       ok: '确定'
     },
     download: {
-      title: '下载镜像',
-      input: '请输入远程镜像 URL',
-      ok: '确定',
-      disabled: '/data 是只读分区，无法下载镜像',
-      uploadbox: '将文件拖放到此处或单击选择',
-      inputfile: '请输入图片文件',
-      NoISO: '无 ISO'
+      disabled: '共享文件夹正被被控机使用，/data 当前只读：不能写入新镜像，已有文件仍可正常下载。',
+      sha256: 'SHA-256（可选）',
+      sha256Placeholder: '请输入 64 位 SHA-256 校验和',
+      invalidSHA256: 'SHA-256 必须是 64 位十六进制字符串',
+      cancel: '取消',
+      cancelFailed: '取消下载失败'
     },
     power: {
       title: '电源',
@@ -259,6 +374,23 @@ const zh = {
     },
     settings: {
       title: '设置',
+      mcp: {
+        title: 'MCP 服务',
+        service: '远程控制 MCP',
+        serviceDesc: '允许可信的 MCP 客户端控制键盘、鼠标并获取屏幕截图',
+        securityWarning:
+          '任何持有此 API key 的人都可以控制远程主机并查看屏幕，请使用 HTTPS，并仅在可信网络中启用。',
+        endpoint: '服务地址',
+        apiKey: 'API Key',
+        regenerateConfirmTitle: '重新生成 MCP API key？',
+        regenerateConfirmDesc: '当前 key 将立即失效。',
+        enableConfirmTitle: '启用外部 MCP 控制？',
+        enableConfirmDesc: '启用 MCP 将停止 PicoClaw，并关闭当前活动的 PicoClaw 会话。',
+        failed: 'MCP 操作失败',
+        copyFailed: '复制失败，请手动复制。',
+        okBtn: '确认',
+        cancelBtn: '取消'
+      },
       about: {
         title: '关于 NanoKVM',
         information: '信息',
@@ -292,9 +424,24 @@ const zh = {
           modeOff: '关闭',
           modeAuto: '自动隐藏',
           modeAlways: '始终显示',
+          keyboardLedStatus: '键盘锁定状态指示灯',
+          keyboardLedStatusDesc: '显示远程主机的 Num Lock、Caps Lock 和 Scroll Lock 状态',
           icons: '菜单图标',
           iconsDesc: '是否在菜单栏中显示子菜单图标'
         }
+      },
+      keyboardLedStatus: {
+        groupLabel: '远程键盘锁定状态',
+        indicatorLabel: '{{label}}：{{state}}',
+        numLock: '数字锁定',
+        numLockShort: '数',
+        capsLock: '大写锁定',
+        capsLockShort: '大',
+        scrollLock: '滚动锁定',
+        scrollLockShort: '滚',
+        on: '开启',
+        off: '关闭',
+        unknown: '未知'
       },
       device: {
         title: '设备',
@@ -334,7 +481,10 @@ const zh = {
           tip: '如果您未使用此功能，建议将其关闭'
         },
         hdmi: {
-          description: '启用 HDMI/显示器 输出功能'
+          description: '启用 HDMI/显示器 输出功能',
+          idleTimeoutTitle: '无观看者自动停止采集',
+          idleTimeoutDescription: '没有活跃观看者后停止 HDMI 采集，0 表示永不停止',
+          minutes: '分钟'
         },
         autostart: {
           title: '自动启动脚本设置',
@@ -356,7 +506,12 @@ const zh = {
         reboot: '重新启动',
         rebootDesc: '您确定要重新启动 NanoKVM 吗？',
         okBtn: '是',
-        cancelBtn: '否'
+        cancelBtn: '否',
+        diskLocked: '挂载镜像期间已关闭（开启会取消镜像挂载）',
+        diskCancelMount:
+          '开启虚拟U盘会取消当前挂载的镜像，并中断正在进行的镜像下载或上传，是否继续？',
+        diskBreakDownload: '开启虚拟U盘会中断镜像下载功能，是否继续？',
+        attention: '注意'
       },
       network: {
         title: '网络',
@@ -458,10 +613,28 @@ const zh = {
         preview: '预览更新',
         previewDesc: '率先体验即将推出的新功能和优化',
         previewTip: '预览版更新可能包含一些不稳定因素或未完善的功能！',
+        customServer: {
+          title: '自定义更新服务器',
+          desc: '从指定服务器检查并下载在线更新',
+          invalidUrl:
+            '请输入有效的 HTTP 或 HTTPS 服务器目录，不能包含查询参数、片段或 latest.json。',
+          loadFailed: '读取更新服务器配置失败。',
+          saveFailed: '保存更新服务器配置失败。',
+          saved: '更新服务器配置已保存。',
+          save: '保存',
+          confirmTitle: '使用自定义更新服务器？',
+          confirmDesc:
+            'SHA-512 只能验证安装包与该服务器提供的清单一致，不能证明安装包来自 NanoKVM 官方。错误或恶意的服务器可能导致设备不可用、数据丢失或系统被接管。',
+          confirm: '仍然使用',
+          previewDisabled: '启用自定义更新服务器时，预览更新不可用'
+        },
         offline: {
           title: '离线更新',
           desc: '通过本地安装包进行更新',
           upload: '上传',
+          checksumPlaceholder: 'SHA-256 校验和（可选）',
+          invalidChecksum: 'SHA-256 校验和必须为 64 位十六进制字符。',
+          checksumMismatch: 'SHA-256 校验失败，安装包可能已损坏。',
           invalidName: '文件名格式错误，请前往 GitHub 发布页下载安装包。',
           updateFailed: '更新失败，请重试'
         }
@@ -469,12 +642,33 @@ const zh = {
       account: {
         title: '帐号',
         webAccount: '网页帐号',
+        role: '角色',
+        roles: {
+          admin: '管理员',
+          user: '普通用户'
+        },
         password: '密码',
         updateBtn: '修改',
         logoutBtn: '退出',
         logoutDesc: '确定要退出吗？',
         okBtn: '确定',
-        cancelBtn: '取消'
+        cancelBtn: '取消',
+        users: {
+          title: '用户管理',
+          create: '创建用户',
+          enabled: '已启用',
+          disabled: '已禁用',
+          deviceOwner: '设备所有者',
+          resetPassword: '重置密码',
+          delete: '删除',
+          deleteConfirm: '删除此用户并撤销其全部会话？',
+          created: '用户已创建',
+          deleted: '用户已删除',
+          passwordUpdated: '密码已更新',
+          loadFailed: '加载用户失败',
+          saveFailed: '保存用户失败',
+          deleteFailed: '删除用户失败'
+        }
       }
     },
     picoclaw: {
@@ -501,19 +695,28 @@ const zh = {
         runtimeStarted: 'PicoClaw 运行时已启动',
         runtimeStartFailed: '启动 PicoClaw 运行时失败',
         runtimeStopped: 'PicoClaw 运行时已停止',
-        runtimeStopFailed: '停止 PicoClaw 运行时失败'
+        runtimeStopFailed: '停止 PicoClaw 运行时失败',
+        controlSwitchedToMCP: '控制权已切换到外部 MCP 服务'
       },
       connection: {
         runtime: {
           checking: '检查中',
+          restoring: '正在恢复 PicoClaw',
           ready: '运行时已就绪',
           stopped: '运行时未启动',
+          blockedByMCP: '外部 MCP 控制已启用',
+          readyBlockedByMCP: '运行时正在运行，但外部 MCP 当前控制设备输入。',
+          readyWithoutControl: '运行时正在运行，请先授予 PicoClaw 设备控制权后再重新连接。',
           unavailable: '运行时不可用',
           configError: '配置错误'
         },
         transport: {
           connecting: '连接中',
-          connected: '已连接'
+          connected: '已连接',
+          disconnected: '未连接',
+          reconnect: '重新连接',
+          reconnectDescription: '重新连接到正在运行的 PicoClaw 会话。',
+          reconnectBlocked: 'PicoClaw 需要先获得设备控制权才能重新连接。'
         },
         run: {
           idle: '空闲',
@@ -527,6 +730,28 @@ const zh = {
       },
       overlay: {
         locked: 'PicoClaw 正在控制设备，手动输入已暂停。'
+      },
+      control: {
+        picoclaw: '设备控制：PicoClaw',
+        picoclawDescription: 'PicoClaw 可以写入键鼠，手动输入可能会被暂停。',
+        mcp: '设备控制：外部 MCP',
+        mcpDescription: '外部 MCP 可以写入设备，PicoClaw 不会接管键鼠。',
+        off: '设备控制：手动/无 AI',
+        offDescription: 'AI 不会写入键鼠，手动控制保持可用。',
+        transitioning: '设备控制：正在切换',
+        transitioningDescription: '正在同步设备控制权，请稍候。',
+        grant: '接管设备',
+        release: '交还控制',
+        releasing: '正在释放...',
+        switching: '正在切换...',
+        releasingLabel: '设备控制：正在释放',
+        releasingDescription: '正在交还设备控制，PicoClaw 已停止当前写入。',
+        granted: '已授予 PicoClaw 控制权',
+        released: '已交还设备控制权',
+        grantFailed: '授予 PicoClaw 控制权失败',
+        releaseFailed: '释放 PicoClaw 控制权失败',
+        grantConfirmTitle: '将设备控制切换到 PicoClaw？',
+        grantConfirmDesc: '外部 MCP 的设备写入将被中断。'
       },
       install: {
         install: '安装 PicoClaw',
@@ -587,15 +812,22 @@ const zh = {
         deleteConfirmOk: '删除',
         deleteConfirmCancel: '取消',
         messageCount_one: '{{count}} 条消息',
-        messageCount_other: '{{count}} 条消息'
+        messageCount_other: '{{count}} 条消息',
+        messageCount: '{{count}} 条消息'
       },
       config: {
         startRuntime: '启动 PicoClaw',
         stopRuntime: '停止 PicoClaw'
       },
       start: {
+        enableConfirmTitle: '切换为 PicoClaw 控制？',
+        enableConfirmDesc: '启动 PicoClaw 前会中断外部 MCP 的设备写入。',
+        enableConfirmOk: '启动 PicoClaw',
+        enableConfirmCancel: '取消',
         title: '启动 PicoClaw',
-        description: '启动运行时后即可开始使用 PicoClaw 助手。'
+        description: '启动运行时后即可开始使用 PicoClaw 助手。',
+        switchFromMCP: '切换到 PicoClaw 并启动',
+        takeoverAndStart: '接管并启动'
       }
     },
     error: {

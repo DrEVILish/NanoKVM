@@ -15,12 +15,15 @@ src
 ├── pages              // web pages
 │    ├── auth             // login and password
 │    ├── desktop          // remote desktop
+│    ├── storage          // virtual media and the files inside them
 │    └── terminal         // web terminal
 ├── router.tsx         // routers
 └── types              // types
 ```
 
 ## Local Development
+
+Requirements: Node.js >= 22 and pnpm >= 11 (the versions CI uses; enforced via the `engines` field in `package.json`).
 
 > Development requires SSH. You can enable it in the Web Settings: `Settings > SSH`.
 

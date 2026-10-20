@@ -5,7 +5,8 @@ const cz = {
       login: 'Přihlášení',
       changePassword: 'Změna hesla',
       terminal: 'Terminál',
-      wifi: 'Wi-Fi'
+      wifi: 'Wi-Fi',
+      storage: 'Obrázky a sdílení souborů'
     },
     auth: {
       login: 'Přihlášení',
@@ -40,7 +41,10 @@ const cz = {
         change2: 'Heslo pro webové přihlášení',
         change3: 'Heslo systémového uživatele root (heslo pro přihlášení SSH)',
         change4: 'Chcete-li hesla resetovat, podržte tlačítko BOOT na NanoKVM.'
-      }
+      },
+      placeholderCurrentPassword: 'Současné heslo',
+      passwordLength: 'Heslo musí mít 8 až 72 znaků',
+      invalidCurrentPassword: 'Současné heslo není správné'
     },
     wifi: {
       title: 'Wi-Fi',
@@ -65,6 +69,36 @@ const cz = {
       video: 'Režim videa',
       videoDirectTips: 'Chcete-li používat tento režim, povolte HTTPS v "Nastavení > Zařízení"',
       resolution: 'Rozlišení',
+      controlRegion: {
+        title: 'Kalibrace myši',
+        description:
+          'Toto nastavení použijte, pokud ovládané zařízení používá jiné rozlišení než 16:9 a kurzor je vodorovně nebo svisle posunutý.',
+        off: 'Vypnuto',
+        auto: 'Automaticky',
+        autoWarning: 'Kalibrace může selhat, pokud má uživatelská aplikace zcela černé pozadí.',
+        manual: 'Ručně',
+        selectedResolution: 'Rozlišení vybrané oblasti',
+        unused: 'Nepoužito',
+        originalResolution: 'Původní rozlišení',
+        selectResolution: 'Vyberte původní rozlišení',
+        addResolution: 'Přidat vlastní rozlišení',
+        add: 'Přidat',
+        duplicateResolution: 'Toto rozlišení již existuje.',
+        width: 'Šířka',
+        height: 'Výška',
+        apply: 'Vypočítat a použít',
+        invalidResolution: 'Po načtení videa zadejte platné původní rozlišení.',
+        select: 'Vybrat oblast',
+        clear: 'Obnovit automatickou detekci',
+        saveFailed: 'Vstupní oblast se nepodařilo uložit.',
+        tooSmall: 'Vybraná oblast je příliš malá.',
+        previewUnavailable: 'Náhled není k dispozici',
+        clearConfirm: 'Obnovit automatickou detekci černých okrajů?',
+        dragHint: 'Tažením vyberte oblast vzdálené plochy',
+        finish: 'Hotovo',
+        confirm: 'Potvrdit',
+        cancel: 'Zrušit'
+      },
       auto: 'Automatické',
       autoTips:
         'Může docházet k trhání obrazu nebo posunu myši při určitých rozlišeních. Zvažte úpravu rozlišení vzdáleného hostitele nebo vypněte automatický režim.',
@@ -79,6 +113,15 @@ const cz = {
       frameDetectTip:
         'Vypočítá rozdíl mezi snímky. Přenos video streamu se zastaví, pokud nejsou detekovány změny na obrazovce vzdáleného hostitele.',
       resetHdmi: 'Resetovat HDMI',
+      mixedH264: {
+        title: 'Konflikt streamu H.264',
+        description:
+          'H.264 Direct a H.264 WebRTC se používají současně. To může způsobit trhání obrazu nebo poškozené video. Používejte pouze jeden režim H.264.'
+      },
+      webrtcConnectionFailed: {
+        title: 'Připojení WebRTC se nezdařilo',
+        description: 'Zkontrolujte síťové připojení nebo přepněte režim videa.'
+      },
       captureStatus: {
         hdmiError: 'Chyba obrazu HDMI',
         unsupportedResolution: 'Aktuální rozlišení není podporováno',
@@ -175,27 +218,44 @@ const cz = {
         disable: 'Zakázat režim HID-Only'
       }
     },
-    image: {
-      title: 'Obrázky',
-      loading: 'Načítání...',
-      empty: 'Nic nenalezeno',
+    storage: {
+      title: 'Obrázky a sdílení souborů',
+      empty:
+        'Zatím žádné obrazy. Nahrajte ISO nebo IMG, nebo zkopírujte obraz na disk ze vzdáleného počítače.',
+      notAttached: 'Nic není připojeno',
+      attached: 'Připojeno: {{name}}',
+      eject: 'Vysunout',
+      mount: 'Připojit',
       mountMode: 'Režim připojení',
-      mountFailed: 'Připojení se nezdařilo',
-      mountDesc:
-        'V některých systémech je nutné před připojením obrazu vysunout virtuální disk na vzdáleném hostiteli.',
-      unmountFailed: 'Odpojení se nezdařilo',
-      unmountDesc:
-        'Na některých systémech se musíte před odpojením obrazu ručně vysunout ze vzdáleného hostitele.',
-      refresh: 'Obnovte seznam obrázků',
-      attention: 'Pozor',
-      deleteConfirm: 'Opravdu chcete smazat tento obrázek?',
-      okBtn: 'Ano',
-      cancelBtn: 'Ne',
+      mountModeDisk: 'Hromadné úložiště',
+      mountModeCdrom: 'CD-ROM',
+      openManager: 'Otevřít správce souborů',
+      refresh: 'Obnovit',
+      delete: 'Smazat',
+      deleteTitle: 'Smazat médium',
+      deleteConfirm: 'Smazat {{name}}? Soubory v něm budou ztraceny.',
+      downloadImage: 'Stáhnout obraz',
+      typePartition: 'Sdílené soubory',
+      volumeLabel: 'Vyměnitelný disk',
+      groups: {
+        share: 'Sdílení souborů',
+        images: 'Obrázky'
+      },
+      failed: 'Operace se nezdařila',
+      hidOnly: 'Režim pouze HID: virtuální disk není k dispozici',
+      disabled: 'Virtuální disk je vypnutý (Nastavení - Zařízení)',
+      force: {
+        title: 'Vzít médium zpět násilím?',
+        desc: 'Vzdálený počítač toto médium stále používá. Vzetí zpět znovu vyjmenuje zařízení USB a může ztratit vše, co ještě nezapsal na disk.',
+        menuHint:
+          'Vzdálený počítač toto médium používá. Otevřete správce souborů a vezměte ho zpět násilím.'
+      },
       tips: {
         title: 'Jak nahrát',
         usb1: 'Připojte NanoKVM k vašemu počítači přes USB.',
-        usb2: 'Ujistěte se, že je virtuální disk připojen (Nastavení - Virtuální disk).',
+        usb2: 'Na této stránce připojte sdílené soubory v režimu velkokapacitního úložiště.',
         usb3: 'Otevřete virtuální disk na vašem počítači a zkopírujte soubor s obrazem do kořenového adresáře virtuálního disku.',
+        usb4: 'Po dokončení kopírování disk vysuňte: obraz se pak objeví v seznamu.',
         scp1: 'Ujistěte se, že jsou NanoKVM a váš počítač ve stejné místní síti.',
         scp2: 'Otevřete terminál na vašem počítači a použijte příkaz SCP pro nahrání souboru s obrazem do adresáře /data na zařízení NanoKVM.',
         scp3: 'Příklad: scp cesta-k-vašemu-obrazu root@ip-nanokvm:/data',
@@ -205,7 +265,67 @@ const cz = {
         tf3: 'Vložte SD kartu do čtečky karet a připojte ji k vašemu počítači.',
         tf4: 'Zkopírujte soubor s obrazem do adresáře /data na SD kartě.',
         tf5: 'Vložte SD kartu zpět do NanoKVM.'
-      }
+      },
+      job: {
+        running: 'Zpracovává se {{name}}'
+      },
+      enableDisk: {
+        title: 'Zapnout virtuální disk?',
+        desc: 'K připojení média je potřeba virtuální disk, který je nyní vypnutý. Zapnout ho? Klávesnice a myš vzdáleného počítače se na okamžik odpojí.',
+        menuHint: 'Virtuální disk je vypnutý. Zapněte ho v Nastavení - Zařízení.'
+      },
+      add: {
+        title: 'Přidat médium',
+        upload: 'Nahrát ISO nebo IMG',
+        fromUrl: 'Stáhnout z adresy URL',
+        url: 'Adresa URL obrazu',
+        urlRequired: 'Zadejte adresu URL',
+        onlyImages: 'Připojit lze pouze soubory .iso a .img',
+        dropHint: 'Přetáhněte sem ISO nebo IMG, nebo klikněte pro výběr souboru',
+        cdromOnlyIso: 'CD-ROM může obsahovat pouze obraz ISO 9660',
+        uploadFailed: 'Nahrání se nezdařilo',
+        downloadFailed: 'Stažení se nezdařilo',
+        uploading: 'Nahrávání {{name}}',
+        downloading: 'Stahování {{name}}',
+        done: '{{name}} je připraven',
+        checksumFailed: 'Obraz neodpovídá kontrolnímu součtu SHA-256.',
+        blocked: 'Vzdálený počítač disk používá',
+        copyHint:
+          'Obraz můžete také zkopírovat do datového oddílu přes SCP nebo ze vzdáleného počítače.'
+      },
+      files: {
+        selectMedium: 'Vyberte médium a prohlédněte si soubory v něm.',
+        reasonAttached: 'Toto médium je připojeno ke vzdálenému počítači.',
+        reasonAttachedHint:
+          'Nejprve ho vysuňte: vzdálený počítač musí disk uvolnit, než bude možné jeho soubory přečíst.',
+        reasonNotBrowsable:
+          'Toto médium obsahuje souborový systém, který správce nedokáže otevřít.',
+        reasonNoLoop: 'Toto zařízení nedokáže připojit obrazy disků (chybí podpora loop).',
+        reasonISOImage:
+          'Obraz ISO 9660 zde nelze procházet. Lze ho ale připojit ke vzdálenému počítači.',
+        empty: 'Tato složka je prázdná',
+        noMatch: 'Vyhledávání neodpovídá žádný soubor.',
+        free: '{{size}} volných',
+        search: 'Hledat v této složce',
+        sort: {
+          name: 'Název',
+          size: 'Velikost',
+          type: 'Typ',
+          asc: 'Vzestupně',
+          desc: 'Sestupně'
+        },
+        upload: 'Nahrát soubor do média',
+        deleteFolderTitle: 'Smazat složku',
+        deleteFolderConfirm: 'Smazat složku {{name}} a celý její obsah? Tuto akci nelze vrátit.',
+        uploading: 'Nahrávání…',
+        uploadFailed: 'Nahrání se nezdařilo',
+        download: 'Stáhnout',
+        delete: 'Smazat',
+        deleteTitle: 'Smazat soubor',
+        deleteConfirm: 'Smazat {{name}} z média?'
+      },
+      yes: 'Ano',
+      no: 'Ne'
     },
     script: {
       title: 'Skript',
@@ -247,13 +367,13 @@ const cz = {
       ok: 'OK'
     },
     download: {
-      title: 'Stahovač obrazů',
-      input: 'Zadejte prosím vzdálený obrázek URL',
-      ok: 'OK',
-      disabled: 'Oddíl /data je RO, takže obrázek nelze stáhnout',
-      uploadbox: 'Přetáhněte soubor sem nebo kliknutím vyberte',
-      inputfile: 'Zadejte soubor obrázku',
-      NoISO: 'Žádné ISO'
+      disabled:
+        'Datový oddíl je po dobu používání vzdáleným počítačem pouze pro čtení: nové obrazy nelze zapsat, stávající soubory lze stále stáhnout.',
+      sha256: 'SHA-256 (volitelné)',
+      sha256Placeholder: 'Zadejte 64znakový kontrolní součet SHA-256',
+      invalidSHA256: 'SHA-256 musí být 64znakový hexadecimální řetězec',
+      cancel: 'Zrušit',
+      cancelFailed: 'Stažení se nepodařilo zrušit'
     },
     power: {
       title: 'Napájení',
@@ -270,6 +390,25 @@ const cz = {
     },
     settings: {
       title: 'Nastavení',
+      mcp: {
+        title: 'Služba MCP',
+        service: 'Vzdálené ovládání MCP',
+        serviceDesc:
+          'Umožnit důvěryhodným klientům MCP ovládat klávesnici a myš a pořizovat snímky obrazovky',
+        securityWarning:
+          'Kdokoli s tímto API klíčem může ovládat vzdálený hostitel a zobrazit jeho obrazovku. Používejte HTTPS a povolte službu pouze v důvěryhodných sítích.',
+        endpoint: 'Koncový bod',
+        apiKey: 'API klíč',
+        regenerateConfirmTitle: 'Vygenerovat nový MCP API klíč?',
+        regenerateConfirmDesc: 'Aktuální klíč přestane okamžitě fungovat.',
+        enableConfirmTitle: 'Povolit externí ovládání MCP?',
+        enableConfirmDesc:
+          'Povolením MCP se zastaví PicoClaw a ukončí se všechny aktivní relace PicoClaw.',
+        failed: 'Operace MCP se nezdařila',
+        copyFailed: 'Kopírování se nezdařilo. Zkopírujte ručně.',
+        okBtn: 'Potvrdit',
+        cancelBtn: 'Zrušit'
+      },
       about: {
         title: 'O NanoKVM',
         information: 'Informace',
@@ -303,9 +442,25 @@ const cz = {
           modeOff: 'Vypnuto',
           modeAuto: 'Automatické skrytí',
           modeAlways: 'Vždy viditelné',
+          keyboardLedStatus: 'Indikátory zámku klávesnice',
+          keyboardLedStatusDesc:
+            'Zobrazit stav Num Lock, Caps Lock a Scroll Lock vzdáleného počítače',
           icons: 'Ikony podnabídky',
           iconsDesc: 'Zobrazení ikon podnabídky na liště nabídek'
         }
+      },
+      keyboardLedStatus: {
+        groupLabel: 'Stav zámků vzdálené klávesnice',
+        indicatorLabel: '{{label}}: {{state}}',
+        numLock: 'Num Lock',
+        numLockShort: 'Num',
+        capsLock: 'Caps Lock',
+        capsLockShort: 'Caps',
+        scrollLock: 'Scroll Lock',
+        scrollLockShort: 'Scr',
+        on: 'Zapnuto',
+        off: 'Vypnuto',
+        unknown: 'Neznámé'
       },
       device: {
         title: 'Zařízení',
@@ -345,7 +500,10 @@ const cz = {
           tip: 'Vypnutí, pokud to není potřeba'
         },
         hdmi: {
-          description: 'Povolit výstup HDMI/monitor'
+          description: 'Povolit výstup HDMI/monitor',
+          idleTimeoutTitle: 'Časový limit nečinnosti snímání',
+          idleTimeoutDescription: 'Zastavit snímání HDMI po době bez aktivních diváků',
+          minutes: 'min'
         },
         autostart: {
           title: 'Nastavení automatického spuštění skriptů',
@@ -367,7 +525,12 @@ const cz = {
         reboot: 'Restartujte',
         rebootDesc: 'Opravdu chcete restartovat NanoKVM?',
         okBtn: 'Ano',
-        cancelBtn: 'Ne'
+        cancelBtn: 'Ne',
+        diskLocked: 'Off while an image is mounted (turning it on cancels the mount)',
+        diskCancelMount:
+          'Enabling the virtual disk cancels the mounted image and interrupts a running image download or upload. Continue?',
+        diskBreakDownload: 'Enabling the virtual disk interrupts the image download. Continue?',
+        attention: 'Pozor'
       },
       network: {
         title: 'Síť',
@@ -471,10 +634,29 @@ const cz = {
         previewDesc: 'Získejte včasný přístup k novým funkcím a vylepšením',
         previewTip:
           'Uvědomte si prosím, že předběžné verze mohou obsahovat chyby nebo neúplné funkce!',
+        customServer: {
+          title: 'Vlastní aktualizační server',
+          desc: 'Vyhledávejte a stahujte online aktualizace ze zadaného serveru',
+          invalidUrl:
+            'Zadejte platnou adresu adresáře serveru HTTP nebo HTTPS bez parametrů, fragmentu nebo souboru latest.json.',
+          loadFailed: 'Konfiguraci aktualizačního serveru se nepodařilo načíst.',
+          saveFailed: 'Konfiguraci aktualizačního serveru se nepodařilo uložit.',
+          saved: 'Konfigurace aktualizačního serveru byla uložena.',
+          save: 'Uložit',
+          confirmTitle: 'Použít vlastní aktualizační server?',
+          confirmDesc:
+            'SHA-512 pouze ověřuje, že balíček odpovídá manifestu poskytnutému tímto serverem. Neprokazuje, že je balíček oficiálním vydáním NanoKVM. Vadný nebo škodlivý server může způsobit nefunkčnost zařízení, ztrátu dat nebo narušení zabezpečení systému.',
+          confirm: 'Přesto použít',
+          previewDisabled:
+            'Testovací aktualizace nejsou při použití vlastního aktualizačního serveru dostupné.'
+        },
         offline: {
           title: 'Offline aktualizace',
           desc: 'Aktualizace prostřednictvím místního instalačního balíčku',
           upload: 'Nahrát',
+          checksumPlaceholder: 'Kontrolní součet SHA-256 (volitelný)',
+          invalidChecksum: 'Kontrolní součet SHA-256 musí obsahovat 64 hexadecimálních znaků.',
+          checksumMismatch: 'Ověření SHA-256 se nezdařilo. Balíček může být poškozený.',
           invalidName: 'Neplatný formát souboru. Stáhněte si prosím z vydání GitHubu.',
           updateFailed: 'Aktualizace se nezdařila. Zkuste to prosím znovu.'
         }
@@ -487,7 +669,28 @@ const cz = {
         logoutBtn: 'Odhlásit',
         logoutDesc: 'Opravdu se chcete odhlásit?',
         okBtn: 'Ano',
-        cancelBtn: 'Ne'
+        cancelBtn: 'Ne',
+        role: 'Role',
+        roles: {
+          admin: 'Administrátor',
+          user: 'Uživatel'
+        },
+        users: {
+          title: 'Uživatelé',
+          create: 'Vytvořit uživatele',
+          enabled: 'Zapnuto',
+          disabled: 'Vypnuto',
+          deviceOwner: 'Vlastník zařízení',
+          resetPassword: 'Obnovit heslo',
+          delete: 'Smazat',
+          deleteConfirm: 'Smazat tohoto uživatele a zrušit všechny jeho relace?',
+          created: 'Uživatel vytvořen',
+          deleted: 'Uživatel smazán',
+          passwordUpdated: 'Heslo aktualizováno',
+          loadFailed: 'Uživatele se nepodařilo načíst',
+          saveFailed: 'Uživatele se nepodařilo uložit',
+          deleteFailed: 'Uživatele se nepodařilo smazat'
+        }
       }
     },
     picoclaw: {
@@ -514,19 +717,30 @@ const cz = {
         runtimeStarted: 'Spuštěno běhové prostředí PicoClaw',
         runtimeStartFailed: 'Selhalo spuštění běhového prostředí PicoClaw',
         runtimeStopped: 'Běhové prostředí PicoClaw zastaveno',
-        runtimeStopFailed: 'Zastavení běhového prostředí PicoClaw se nezdařilo'
+        runtimeStopFailed: 'Zastavení běhového prostředí PicoClaw se nezdařilo',
+        controlSwitchedToMCP: 'Ovládání bylo přepnuto na externí službu MCP'
       },
       connection: {
         runtime: {
           checking: 'Kontrola',
+          restoring: 'Restoring PicoClaw',
           ready: 'Běhové prostředí připraveno',
           stopped: 'Běhové prostředí zastaveno',
+          blockedByMCP: 'Externí ovládání MCP je aktivní',
+          readyBlockedByMCP:
+            'The runtime is running, but external MCP currently controls device input.',
+          readyWithoutControl:
+            'The runtime is running. Grant PicoClaw device control before reconnecting.',
           unavailable: 'Běhové prostředí není k dispozici',
           configError: 'Chyba konfigurace'
         },
         transport: {
           connecting: 'Připojování',
-          connected: 'Připojeno'
+          connected: 'Připojeno',
+          disconnected: 'Disconnected',
+          reconnect: 'Reconnect',
+          reconnectDescription: 'Reconnect to the running PicoClaw session.',
+          reconnectBlocked: 'PicoClaw needs device control before reconnecting.'
         },
         run: {
           idle: 'Nečinný',
@@ -540,6 +754,30 @@ const cz = {
       },
       overlay: {
         locked: 'PicoClaw ovládá zařízení. Ruční zadávání je pozastaveno.'
+      },
+      control: {
+        picoclaw: 'Ovládání zařízení: PicoClaw',
+        picoclawDescription: 'PicoClaw can write keyboard and mouse input. Manual input may pause.',
+        mcp: 'Ovládání zařízení: externí MCP',
+        mcpDescription: 'External MCP can write to the device. PicoClaw will not take over input.',
+        off: 'Ovládání zařízení: vypnuto',
+        offDescription:
+          'AI will not write keyboard or mouse input. Manual control remains available.',
+        transitioning: 'Device control: switching',
+        transitioningDescription: 'Device control is syncing. Please wait.',
+        grant: 'Předat ovládání',
+        release: 'Uvolnit',
+        releasing: 'Releasing...',
+        switching: 'Switching...',
+        releasingLabel: 'Device control: releasing',
+        releasingDescription:
+          'Device control is being returned. PicoClaw has stopped current writes.',
+        granted: 'Ovládání PicoClaw povoleno',
+        released: 'Ovládání PicoClaw uvolněno',
+        grantFailed: 'Nepodařilo se předat ovládání PicoClaw',
+        releaseFailed: 'Nepodařilo se uvolnit ovládání PicoClaw',
+        grantConfirmTitle: 'Přepnout ovládání zařízení na PicoClaw?',
+        grantConfirmDesc: 'Zápisy zařízení z externího MCP budou přerušeny.'
       },
       install: {
         install: 'Nainstalovat PicoClaw',
@@ -601,15 +839,22 @@ const cz = {
         deleteConfirmOk: 'Smazat',
         deleteConfirmCancel: 'Zrušit',
         messageCount_one: '{{count}} zpráva',
-        messageCount_other: '{{count}} zpráv'
+        messageCount_other: '{{count}} zpráv',
+        messageCount: '{{count}} zpráv'
       },
       config: {
         startRuntime: 'Spustit PicoClaw',
         stopRuntime: 'Zastavit PicoClaw'
       },
       start: {
+        enableConfirmTitle: 'Přepnout ovládání na PicoClaw?',
+        enableConfirmDesc: 'Spuštěním PicoClaw se deaktivuje externí služba MCP.',
+        enableConfirmOk: 'Spustit PicoClaw',
+        enableConfirmCancel: 'Zrušit',
         title: 'Spustit PicoClaw',
-        description: 'Spusťte běhové prostředí a začněte používat asistenta PicoClaw.'
+        description: 'Spusťte běhové prostředí a začněte používat asistenta PicoClaw.',
+        switchFromMCP: 'Switch to PicoClaw and start',
+        takeoverAndStart: 'Take over and start'
       }
     },
     error: {

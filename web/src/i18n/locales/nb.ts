@@ -5,7 +5,8 @@ const nb = {
       login: 'Logg inn',
       changePassword: 'Endre passord',
       terminal: 'Terminal',
-      wifi: 'Wi-Fi'
+      wifi: 'Wi-Fi',
+      storage: 'Diskbilder og fildeling'
     },
     auth: {
       login: 'Logg inn',
@@ -40,7 +41,10 @@ const nb = {
         change2: 'Passord for webinnlogging',
         change3: 'Systemets root-passord (SSH-innloggingspassord)',
         change4: 'For å tilbakestille passordene holder du BOOT-knappen på NanoKVM inne.'
-      }
+      },
+      placeholderCurrentPassword: 'Nåværende passord',
+      passwordLength: 'Passordet må være mellom 8 og 72 tegn',
+      invalidCurrentPassword: 'Det nåværende passordet er feil'
     },
     wifi: {
       title: 'Wi-Fi',
@@ -65,6 +69,37 @@ const nb = {
       video: 'Video-kodek',
       videoDirectTips: 'Aktiver HTTPS i "Innstillinger > Enhet" for å bruke denne modusen',
       resolution: 'Oppløsning',
+      controlRegion: {
+        title: 'Musekalibrering',
+        description:
+          'Bruk denne innstillingen når den kontrollerte enheten bruker en oppløsning som ikke er 16:9, og markøren er forskjøvet vannrett eller loddrett.',
+        off: 'Av',
+        auto: 'Automatisk',
+        autoWarning:
+          'Kalibreringen kan mislykkes hvis brukerprogrammet har en helt svart bakgrunn.',
+        manual: 'Manuell',
+        selectedResolution: 'Oppløsning for valgt område',
+        unused: 'Ikke i bruk',
+        originalResolution: 'Opprinnelig oppløsning',
+        selectResolution: 'Velg opprinnelig oppløsning',
+        addResolution: 'Legg til egendefinert oppløsning',
+        add: 'Legg til',
+        duplicateResolution: 'Denne oppløsningen finnes allerede.',
+        width: 'Bredde',
+        height: 'Høyde',
+        apply: 'Beregn og bruk',
+        invalidResolution: 'Angi en gyldig opprinnelig oppløsning når videoen er klar.',
+        select: 'Velg område',
+        clear: 'Gjenopprett automatisk registrering',
+        saveFailed: 'Kunne ikke lagre inndataområdet.',
+        tooSmall: 'Det valgte området er for lite.',
+        previewUnavailable: 'Forhåndsvisning er utilgjengelig',
+        clearConfirm: 'Gjenopprette automatisk registrering av svarte kanter?',
+        dragHint: 'Dra for å velge området på det eksterne skrivebordet',
+        finish: 'Ferdig',
+        confirm: 'Bekreft',
+        cancel: 'Avbryt'
+      },
       auto: 'Automatisk',
       autoTips:
         'Skjermriving eller peker-forskyvning kan oppstå ved enkelte oppløsninger. Prøv å justere den eksterne vertens oppløsning eller skru av automatisk modus.',
@@ -79,6 +114,15 @@ const nb = {
       frameDetectTip:
         'Kalkuler forskjellen mellom bilder. Stopper overføring av video når det ikke oppdages forskjell på den eksterne vertens skjerm.',
       resetHdmi: 'Tilbakestill HDMI',
+      mixedH264: {
+        title: 'H.264-strømmekonflikt',
+        description:
+          'H.264 Direct og H.264 WebRTC brukes samtidig. Dette kan føre til skjermriving eller ødelagt video. Bruk bare én H.264-modus.'
+      },
+      webrtcConnectionFailed: {
+        title: 'WebRTC-tilkobling mislyktes',
+        description: 'Kontroller nettverkstilkoblingen eller bytt videomodus.'
+      },
       captureStatus: {
         hdmiError: 'HDMI-skjermfeil',
         unsupportedResolution: 'Gjeldende oppløsning støttes ikke',
@@ -174,27 +218,44 @@ const nb = {
         disable: 'Deaktiver HID-bare-modus'
       }
     },
-    image: {
-      title: 'Bilder',
-      loading: 'Laster...',
-      empty: 'Ingen funnet',
+    storage: {
+      title: 'Diskbilder og fildeling',
+      empty:
+        'Ingen bilder ennå. Last opp en ISO eller IMG, eller kopier en over til disken fra målmaskinen.',
+      notAttached: 'Ingenting montert',
+      attached: 'Montert: {{name}}',
+      eject: 'Løs ut',
+      mount: 'Monter',
       mountMode: 'Monteringsmodus',
-      mountFailed: 'Montering feilet',
-      mountDesc:
-        'På noen systemer er det nødvendig å koble fra den virtuelle disken på den eksterne verten før man kan montere arkivfilen.',
-      unmountFailed: 'Avmontering mislyktes',
-      unmountDesc:
-        'På noen systemer må du manuelt løse ut fra den eksterne verten før du demonterer bildet.',
-      refresh: 'Oppdater bildelisten',
-      attention: 'Merknad',
-      deleteConfirm: 'Er du sikker på at du vil slette dette bildet?',
-      okBtn: 'Ja',
-      cancelBtn: 'Nei',
+      mountModeDisk: 'Masselagring',
+      mountModeCdrom: 'CD-ROM',
+      openManager: 'Åpne filbehandler',
+      refresh: 'Oppdater',
+      delete: 'Slett',
+      deleteTitle: 'Slett medium',
+      deleteConfirm: 'Vil du slette {{name}}? Filene i den går tapt.',
+      downloadImage: 'Last ned bildet',
+      typePartition: 'Delte filer',
+      volumeLabel: 'Flyttbar disk',
+      groups: {
+        share: 'Fildeling',
+        images: 'Diskbilder'
+      },
+      failed: 'Handlingen mislyktes',
+      hidOnly: 'Kun HID-modus: den virtuelle disken er utilgjengelig',
+      disabled: 'Den virtuelle disken er slått av (Innstillinger - Enhet)',
+      force: {
+        title: 'Ta mediet tilbake med makt?',
+        desc: 'Målmaskinen bruker fortsatt dette mediet. Å ta det tilbake registrerer USB-enheten på nytt og kan miste alt den ennå ikke har skrevet til disken.',
+        menuHint:
+          'Målmaskinen bruker dette mediet. Åpne filbehandleren for å ta det tilbake med makt.'
+      },
       tips: {
         title: 'Hvordan laste opp',
         usb1: 'Koble til NanoKVM-enheten til din datamaskin med USB.',
-        usb2: 'Sikre at den virtuelle disken er montert (Innstillinger - Virtuell disk).',
+        usb2: 'Monter de delte filene i masselagringsmodus på denne siden.',
         usb3: 'Åpne den virtuelle disken på datamaskinen din og kopier arkivfilen til rot-mappen på den virtuelle disken.',
+        usb4: 'Løs ut disken når kopieringen er ferdig: bildet vises da i listen.',
         scp1: 'Sikre at NanoKVM-enheten og datamaskinen din er tilkoblet det samme lokale nettverket.',
         scp2: 'Åpne en terminal på datamaskinen din og bruk SCP-kommandoen til å laste opp arkivfilen til mappen /data på NanoKVM-enheten.',
         scp3: 'Eksempel: scp sti-til-din-arkivfil root@din-nanokvm-ip:/data',
@@ -204,7 +265,66 @@ const nb = {
         tf3: 'Sett inn TF-kortet i en kortleser og koble den til datamaskinen din.',
         tf4: 'Kopiér arkivfilen til mappen /data på TF-kortet.',
         tf5: 'Sett inn TF-kortet i NanoKVM-enheten.'
-      }
+      },
+      job: {
+        running: 'Arbeider med {{name}}'
+      },
+      enableDisk: {
+        title: 'Slå på den virtuelle disken?',
+        desc: 'For å montere et medium trengs den virtuelle disken, som er slått av nå. Slå den på? Tastaturet og musen til målmaskinen kobles fra et øyeblikk.',
+        menuHint: 'Den virtuelle disken er slått av. Slå den på under Innstillinger - Enhet.'
+      },
+      add: {
+        title: 'Legg til medium',
+        upload: 'Last opp en ISO eller IMG',
+        fromUrl: 'Last ned fra en URL',
+        url: 'URL til bildet',
+        urlRequired: 'Skriv inn en URL',
+        onlyImages: 'Bare .iso- og .img-filer kan monteres',
+        dropHint: 'Dra en ISO eller IMG hit, eller klikk for å velge en fil',
+        cdromOnlyIso: 'En CD-ROM kan bare inneholde et ISO 9660-bilde',
+        uploadFailed: 'Opplasting mislyktes',
+        downloadFailed: 'Nedlasting mislyktes',
+        uploading: 'Laster opp {{name}}',
+        downloading: 'Laster ned {{name}}',
+        done: '{{name}} er klar',
+        checksumFailed: 'Bildet samsvarer ikke med SHA-256-kontrollsummen.',
+        blocked: 'Målmaskinen bruker disken',
+        copyHint: 'Du kan også kopiere et bilde til datapartisjonen via SCP, eller fra målmaskinen.'
+      },
+      files: {
+        selectMedium: 'Velg et medium for å se filene på det.',
+        reasonAttached: 'Dette mediet er koblet til målmaskinen.',
+        reasonAttachedHint:
+          'Løs det ut først: målmaskinen må frigjøre disken før filene kan leses.',
+        reasonNotBrowsable:
+          'Dette mediet inneholder et filsystem som filbehandleren ikke kan åpne.',
+        reasonNoLoop: 'Denne enheten kan ikke montere diskbilder (ingen loop-støtte).',
+        reasonISOImage:
+          'Et ISO 9660-bilde kan ikke utforskes her. Det kan fortsatt monteres på målmaskinen.',
+        empty: 'Denne mappen er tom',
+        noMatch: 'Ingen filer samsvarer med søket.',
+        free: '{{size}} ledige',
+        search: 'Søk i denne mappen',
+        sort: {
+          name: 'Navn',
+          size: 'Størrelse',
+          type: 'Type',
+          asc: 'Stigende',
+          desc: 'Synkende'
+        },
+        upload: 'Last opp en fil til mediet',
+        deleteFolderTitle: 'Slett mappe',
+        deleteFolderConfirm: 'Slette mappen {{name}} og alt innholdet? Dette kan ikke angres.',
+        uploading: 'Laster opp…',
+        uploadFailed: 'Opplasting mislyktes',
+        download: 'Last ned',
+        delete: 'Slett',
+        deleteTitle: 'Slett fil',
+        deleteConfirm: 'Vil du slette {{name}} fra mediet?'
+      },
+      yes: 'Ja',
+      no: 'Nei'
     },
     script: {
       title: 'Skript',
@@ -246,13 +366,13 @@ const nb = {
       ok: 'Ok'
     },
     download: {
-      title: 'Bildedaster',
-      input: 'Vennligst skriv inn et eksternt bilde URL',
-      ok: 'Ok',
-      disabled: '/data partisjonen er RO, så vi kan ikke laste ned bildet',
-      uploadbox: 'Slipp filen her eller klikk for å velge',
-      inputfile: 'Vennligst skriv inn bildefilen',
-      NoISO: 'Ingen ISO'
+      disabled:
+        'Datapartisjonen er skrivebeskyttet mens målmaskinen bruker den: nye bilder kan ikke skrives, men eksisterende filer kan fortsatt lastes ned.',
+      sha256: 'SHA-256 (valgfritt)',
+      sha256Placeholder: 'Skriv inn en SHA-256-kontrollsum på 64 tegn',
+      invalidSHA256: 'SHA-256 må være en heksadesimal streng på 64 tegn',
+      cancel: 'Avbryt',
+      cancelFailed: 'Kunne ikke avbryte nedlastingen'
     },
     power: {
       title: 'På-knapp',
@@ -269,6 +389,24 @@ const nb = {
     },
     settings: {
       title: 'Innstillinger',
+      mcp: {
+        title: 'MCP-tjeneste',
+        service: 'MCP-fjernstyring',
+        serviceDesc: 'La klarerte MCP-klienter styre tastatur og mus og ta skjermbilder',
+        securityWarning:
+          'Alle med denne API-nøkkelen kan styre den eksterne verten og se skjermen. Bruk HTTPS, og aktiver tjenesten bare på klarerte nettverk.',
+        endpoint: 'Endepunkt',
+        apiKey: 'API-nøkkel',
+        regenerateConfirmTitle: 'Generere MCP API-nøkkelen på nytt?',
+        regenerateConfirmDesc: 'Den gjeldende nøkkelen slutter å virke umiddelbart.',
+        enableConfirmTitle: 'Aktivere ekstern MCP-styring?',
+        enableConfirmDesc:
+          'Aktivering av MCP stopper PicoClaw og lukker alle aktive PicoClaw-økter.',
+        failed: 'MCP-operasjonen mislyktes',
+        copyFailed: 'Kopiering mislyktes. Kopier manuelt.',
+        okBtn: 'Bekreft',
+        cancelBtn: 'Avbryt'
+      },
       about: {
         title: 'Om NanoKVM',
         information: 'Informasjon',
@@ -302,9 +440,25 @@ const nb = {
           modeOff: 'Av',
           modeAuto: 'Skjul automatisk',
           modeAlways: 'Alltid synlig',
+          keyboardLedStatus: 'Indikatorer for tastaturlås',
+          keyboardLedStatusDesc:
+            'Vis Num Lock-, Caps Lock- og Scroll Lock-status for den eksterne datamaskinen',
           icons: 'Undermenyikoner',
           iconsDesc: 'Vis undermenyikoner i menylinjen'
         }
+      },
+      keyboardLedStatus: {
+        groupLabel: 'Status for låser på eksternt tastatur',
+        indicatorLabel: '{{label}}: {{state}}',
+        numLock: 'Num Lock',
+        numLockShort: 'Num',
+        capsLock: 'Caps Lock',
+        capsLockShort: 'Caps',
+        scrollLock: 'Scroll Lock',
+        scrollLockShort: 'Scr',
+        on: 'På',
+        off: 'Av',
+        unknown: 'Ukjent'
       },
       device: {
         title: 'Enhet',
@@ -344,7 +498,10 @@ const nb = {
           tip: 'Slå den av hvis den ikke er nødvendig'
         },
         hdmi: {
-          description: 'Aktiver HDMI/skjermutgang'
+          description: 'Aktiver HDMI/skjermutgang',
+          idleTimeoutTitle: 'Tidsavbrudd for inaktivt opptak',
+          idleTimeoutDescription: 'Stopp HDMI-opptak etter at det ikke har vært aktive seere i',
+          minutes: 'min'
         },
         autostart: {
           title: 'Autostart skriptinnstillinger',
@@ -366,7 +523,12 @@ const nb = {
         reboot: 'Start på nytt',
         rebootDesc: 'Er du sikker på at du vil starte NanoKVM på nytt?',
         okBtn: 'Ja',
-        cancelBtn: 'Nei'
+        cancelBtn: 'Nei',
+        diskLocked: 'Off while an image is mounted (turning it on cancels the mount)',
+        diskCancelMount:
+          'Enabling the virtual disk cancels the mounted image and interrupts a running image download or upload. Continue?',
+        diskBreakDownload: 'Enabling the virtual disk interrupts the image download. Continue?',
+        attention: 'Merknad'
       },
       network: {
         title: 'Nettverk',
@@ -470,10 +632,29 @@ const nb = {
         previewDesc: 'Få tidlig tilgang til nye funksjoner og forbedringer',
         previewTip:
           'Vær oppmerksom på at forhåndsvisningsutgivelser kan inneholde feil eller ufullstendig funksjonalitet!',
+        customServer: {
+          title: 'Egendefinert oppdateringsserver',
+          desc: 'Se etter og last ned nettbaserte oppdateringer fra en angitt server',
+          invalidUrl:
+            'Angi en gyldig HTTP- eller HTTPS-servermappe uten spørring, fragment eller latest.json.',
+          loadFailed: 'Kunne ikke laste inn konfigurasjonen for oppdateringsserveren.',
+          saveFailed: 'Kunne ikke lagre konfigurasjonen for oppdateringsserveren.',
+          saved: 'Konfigurasjonen for oppdateringsserveren er lagret.',
+          save: 'Lagre',
+          confirmTitle: 'Vil du bruke en egendefinert oppdateringsserver?',
+          confirmDesc:
+            'SHA-512 kontrollerer bare at pakken samsvarer med manifestet fra denne serveren. Det beviser ikke at pakken er en offisiell NanoKVM-utgivelse. En feilkonfigurert eller ondsinnet server kan gjøre enheten ubrukelig, føre til tap av data eller kompromittere systemet.',
+          confirm: 'Bruk likevel',
+          previewDisabled:
+            'Forhåndsvisningsoppdateringer er ikke tilgjengelige mens en egendefinert oppdateringsserver er aktivert.'
+        },
         offline: {
           title: 'Offline oppdateringer',
           desc: 'Oppdater gjennom lokal installasjonspakke',
           upload: 'Last opp',
+          checksumPlaceholder: 'SHA-256-sjekksum (valgfritt)',
+          invalidChecksum: 'SHA-256-sjekksummen må inneholde 64 heksadesimale tegn.',
+          checksumMismatch: 'SHA-256-verifiseringen mislyktes. Pakken kan være skadet.',
           invalidName: 'Ugyldig filnavnformat. Last ned fra GitHub-utgivelser.',
           updateFailed: 'En feil oppstod under oppdatering. Vennligst forsøk igjen.'
         }
@@ -486,7 +667,28 @@ const nb = {
         logoutBtn: 'Logg ut',
         logoutDesc: 'Er du sikker på at du vil logge ut?',
         okBtn: 'Ja',
-        cancelBtn: 'Nei'
+        cancelBtn: 'Nei',
+        role: 'Rolle',
+        roles: {
+          admin: 'Administrator',
+          user: 'Bruker'
+        },
+        users: {
+          title: 'Brukere',
+          create: 'Opprett bruker',
+          enabled: 'Aktivert',
+          disabled: 'Deaktivert',
+          deviceOwner: 'Enhetens eier',
+          resetPassword: 'Tilbakestill passord',
+          delete: 'Slett',
+          deleteConfirm: 'Vil du slette denne brukeren og tilbakekalle alle øktene dens?',
+          created: 'Bruker opprettet',
+          deleted: 'Bruker slettet',
+          passwordUpdated: 'Passord oppdatert',
+          loadFailed: 'Kunne ikke laste brukere',
+          saveFailed: 'Kunne ikke lagre brukeren',
+          deleteFailed: 'Kunne ikke slette brukeren'
+        }
       }
     },
     picoclaw: {
@@ -513,19 +715,30 @@ const nb = {
         runtimeStarted: 'PicoClaw runtime startet',
         runtimeStartFailed: 'Kunne ikke starte PicoClaw runtime',
         runtimeStopped: 'PicoClaw runtime stoppet',
-        runtimeStopFailed: 'Kunne ikke stoppe PicoClaw runtime'
+        runtimeStopFailed: 'Kunne ikke stoppe PicoClaw runtime',
+        controlSwitchedToMCP: 'Styringen er byttet til den eksterne MCP-tjenesten'
       },
       connection: {
         runtime: {
           checking: 'Kontrollerer',
+          restoring: 'Restoring PicoClaw',
           ready: 'Runtime klar',
           stopped: 'Runtime stoppet',
+          blockedByMCP: 'Ekstern MCP-styring er aktiv',
+          readyBlockedByMCP:
+            'The runtime is running, but external MCP currently controls device input.',
+          readyWithoutControl:
+            'The runtime is running. Grant PicoClaw device control before reconnecting.',
           unavailable: 'Runtime utilgjengelig',
           configError: 'Konfigurasjonsfeil'
         },
         transport: {
           connecting: 'Kobler til',
-          connected: 'Tilkoblet'
+          connected: 'Tilkoblet',
+          disconnected: 'Disconnected',
+          reconnect: 'Reconnect',
+          reconnectDescription: 'Reconnect to the running PicoClaw session.',
+          reconnectBlocked: 'PicoClaw needs device control before reconnecting.'
         },
         run: {
           idle: 'Inaktiv',
@@ -539,6 +752,30 @@ const nb = {
       },
       overlay: {
         locked: 'PicoClaw kontrollerer enheten. Manuell inntasting er satt på pause.'
+      },
+      control: {
+        picoclaw: 'Enhetsstyring: PicoClaw',
+        picoclawDescription: 'PicoClaw can write keyboard and mouse input. Manual input may pause.',
+        mcp: 'Enhetsstyring: ekstern MCP',
+        mcpDescription: 'External MCP can write to the device. PicoClaw will not take over input.',
+        off: 'Enhetsstyring: av',
+        offDescription:
+          'AI will not write keyboard or mouse input. Manual control remains available.',
+        transitioning: 'Device control: switching',
+        transitioningDescription: 'Device control is syncing. Please wait.',
+        grant: 'Gi styring',
+        release: 'Frigi',
+        releasing: 'Releasing...',
+        switching: 'Switching...',
+        releasingLabel: 'Device control: releasing',
+        releasingDescription:
+          'Device control is being returned. PicoClaw has stopped current writes.',
+        granted: 'PicoClaw-styring gitt',
+        released: 'PicoClaw-styring frigitt',
+        grantFailed: 'Kunne ikke gi PicoClaw styring',
+        releaseFailed: 'Kunne ikke frigi PicoClaw styring',
+        grantConfirmTitle: 'Bytte enhetsstyring til PicoClaw?',
+        grantConfirmDesc: 'Eksterne MCP-enhetsskrivinger blir avbrutt.'
       },
       install: {
         install: 'Installer PicoClaw',
@@ -600,15 +837,22 @@ const nb = {
         deleteConfirmOk: 'Slett',
         deleteConfirmCancel: 'Avbryt',
         messageCount_one: '{{count}} melding',
-        messageCount_other: '{{count}} meldinger'
+        messageCount_other: '{{count}} meldinger',
+        messageCount: '{{count}} meldinger'
       },
       config: {
         startRuntime: 'Start PicoClaw',
         stopRuntime: 'Stopp PicoClaw'
       },
       start: {
+        enableConfirmTitle: 'Bytte styringen til PicoClaw?',
+        enableConfirmDesc: 'Når PicoClaw startes, deaktiveres den eksterne MCP-tjenesten.',
+        enableConfirmOk: 'Start PicoClaw',
+        enableConfirmCancel: 'Avbryt',
         title: 'Start PicoClaw',
-        description: 'Start runtime for å begynne å bruke PicoClaw-assistenten.'
+        description: 'Start runtime for å begynne å bruke PicoClaw-assistenten.',
+        switchFromMCP: 'Switch to PicoClaw and start',
+        takeoverAndStart: 'Take over and start'
       }
     },
     error: {

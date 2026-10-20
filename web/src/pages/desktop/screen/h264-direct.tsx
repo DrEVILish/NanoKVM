@@ -1,29 +1,18 @@
 import { useEffect, useRef } from 'react';
 import clsx from 'clsx';
-import { useAtom, useAtomValue } from 'jotai';
-import { w3cwebsocket as W3cWebSocket } from 'websocket';
+import { useAtomValue } from 'jotai';
 
-import * as storage from '@/lib/localstorage.ts';
 import { getBaseUrl } from '@/lib/service.ts';
 import { mouseStyleAtom } from '@/jotai/mouse';
-import { resolutionAtom, videoScaleAtom } from '@/jotai/screen.ts';
 
 import DirectWorker from './direct.worker.ts?worker';
+import { ScreenViewport } from './viewport.tsx';
 
 export const H264Direct = () => {
-  const resolution = useAtomValue(resolutionAtom);
   const mouseStyle = useAtomValue(mouseStyleAtom);
-  const [videoScale, setVideoScale] = useAtom(videoScaleAtom);
 
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const workerRef = useRef<Worker | null>(null);
-
-  useEffect(() => {
-    const scale = storage.getVideoScale();
-    if (scale) {
-      setVideoScale(scale);
-    }
-  }, [setVideoScale]);
 
   useEffect(() => {
     if (!window.VideoDecoder) {
@@ -38,50 +27,33 @@ export const H264Direct = () => {
     workerRef.current = worker;
 
     const offscreen = canvasRef.current.transferControlToOffscreen();
-    worker.postMessage({ type: 'h264', canvas: offscreen }, [offscreen]);
-
     const url = `${getBaseUrl('ws')}/api/stream/h264/direct`;
-    const ws = new W3cWebSocket(url);
-    ws.binaryType = 'arraybuffer';
-
-    ws.onmessage = (event) => {
-      try {
-        worker.postMessage({ type: 'ws_message', data: event.data }, [event.data]);
-      } catch (error) {
-        console.error('Error processing WebSocket message:', error);
+    worker.onmessage = (
+      event: MessageEvent<{ type?: string; width?: number; height?: number }>
+    ) => {
+      const { type, width, height } = event.data;
+      if (type !== 'frame-size' || !width || !height || !canvasRef.current) {
+        return;
       }
-    };
 
-    ws.onerror = () => {
-      worker.postMessage({ type: 'error' });
+      canvasRef.current.dataset.mediaWidth = String(width);
+      canvasRef.current.dataset.mediaHeight = String(height);
     };
-
-    ws.onclose = () => {
-      worker.postMessage({ type: 'close' });
-    };
+    worker.postMessage({ type: 'h264', canvas: offscreen, url }, [offscreen]);
 
     return () => {
-      if (ws.readyState === 1) {
-        ws.close();
-      }
+      worker.postMessage({ type: 'stop' });
       worker.terminate();
     };
   }, []);
 
   return (
-    <div className="flex h-full min-h-0 w-full min-w-0 items-center justify-center overflow-hidden">
+    <ScreenViewport>
       <canvas
         id="screen"
         ref={canvasRef}
-        className={clsx('block select-none', mouseStyle)}
-        style={{
-          transform: `scale(${videoScale})`,
-          transformOrigin: 'center',
-          ...(resolution?.width
-            ? { width: resolution.width, height: resolution.height, objectFit: 'cover' }
-            : { maxWidth: '100%', maxHeight: '100%', objectFit: 'scale-down' })
-        }}
+        className={clsx('block touch-none select-none', mouseStyle)}
       ></canvas>
-    </div>
+    </ScreenViewport>
   );
 };

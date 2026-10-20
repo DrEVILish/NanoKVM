@@ -5,7 +5,8 @@ const vi = {
       login: 'Đăng nhập',
       changePassword: 'Đổi mật khẩu',
       terminal: 'Terminal',
-      wifi: 'Wi-Fi'
+      wifi: 'Wi-Fi',
+      storage: 'Hình ảnh và chia sẻ tệp'
     },
     auth: {
       login: 'Đăng nhập',
@@ -39,7 +40,10 @@ const vi = {
         change2: 'Mật khẩu đăng nhập web',
         change3: 'Mật khẩu root hệ thống (mật khẩu đăng nhập SSH)',
         change4: 'Để đặt lại mật khẩu, hãy nhấn và giữ nút BOOT trên NanoKVM.'
-      }
+      },
+      placeholderCurrentPassword: 'Mật khẩu hiện tại',
+      passwordLength: 'Mật khẩu phải từ 8 đến 72 ký tự',
+      invalidCurrentPassword: 'Mật khẩu hiện tại không đúng'
     },
     wifi: {
       title: 'Wi-Fi',
@@ -64,6 +68,37 @@ const vi = {
       video: 'Chế độ video',
       videoDirectTips: 'Bật HTTPS trong "Cài đặt > Thiết bị" để sử dụng chế độ này',
       resolution: 'Độ phân giải',
+      controlRegion: {
+        title: 'Hiệu chỉnh chuột',
+        description:
+          'Sử dụng cài đặt này khi thiết bị được điều khiển dùng độ phân giải không phải tỷ lệ 16:9 và con trỏ bị lệch theo chiều ngang hoặc chiều dọc.',
+        off: 'Tắt',
+        auto: 'Tự động',
+        autoWarning:
+          'Hiệu chỉnh có thể thất bại khi ứng dụng của người dùng có nền hoàn toàn màu đen.',
+        manual: 'Thủ công',
+        selectedResolution: 'Độ phân giải vùng đã chọn',
+        unused: 'Không sử dụng',
+        originalResolution: 'Độ phân giải gốc',
+        selectResolution: 'Chọn độ phân giải gốc',
+        addResolution: 'Thêm độ phân giải tùy chỉnh',
+        add: 'Thêm',
+        duplicateResolution: 'Độ phân giải này đã tồn tại.',
+        width: 'Chiều rộng',
+        height: 'Chiều cao',
+        apply: 'Tính toán và áp dụng',
+        invalidResolution: 'Nhập độ phân giải gốc hợp lệ sau khi video sẵn sàng.',
+        select: 'Chọn vùng',
+        clear: 'Khôi phục tự động',
+        saveFailed: 'Không thể lưu vùng đầu vào.',
+        tooSmall: 'Vùng đã chọn quá nhỏ.',
+        previewUnavailable: 'Không thể xem trước',
+        clearConfirm: 'Khôi phục tính năng tự động phát hiện viền đen?',
+        dragHint: 'Kéo để chọn vùng màn hình từ xa',
+        finish: 'Xong',
+        confirm: 'Xác nhận',
+        cancel: 'Hủy'
+      },
       auto: 'Tự động',
       autoTips:
         'Màn hình bị xé hoặc lệch chuột có thể xảy ra ở các độ phân giải nhất định. Hãy xem xét điều chỉnh độ phân giải của máy remote hoặc tắt chế độ tự động.',
@@ -78,6 +113,15 @@ const vi = {
       frameDetectTip:
         'Tính toán sự khác biệt giữa các khung hình. Dừng truyền video khi không có thay đổi trên màn hình máy chủ từ xa.',
       resetHdmi: 'Đặt lại HDMI',
+      mixedH264: {
+        title: 'Xung đột luồng H.264',
+        description:
+          'H.264 Direct và H.264 WebRTC đang được sử dụng đồng thời. Điều này có thể gây xé hình hoặc video bị hỏng. Vui lòng chỉ sử dụng một chế độ H.264.'
+      },
+      webrtcConnectionFailed: {
+        title: 'Kết nối WebRTC thất bại',
+        description: 'Kiểm tra kết nối mạng hoặc chuyển đổi chế độ video.'
+      },
       captureStatus: {
         hdmiError: 'Lỗi màn hình HDMI',
         unsupportedResolution: 'Độ phân giải hiện tại không được hỗ trợ',
@@ -173,26 +217,43 @@ const vi = {
         disable: 'Tắt chế độ HID-Chỉ'
       }
     },
-    image: {
-      title: 'Hình ảnh',
-      loading: 'Đang tải...',
-      empty: 'Không tìm thấy',
+    storage: {
+      title: 'Hình ảnh và chia sẻ tệp',
+      empty:
+        'Chưa có hình ảnh nào. Hãy tải lên tệp ISO hoặc IMG, hoặc sao chép một tệp vào đĩa từ máy đích.',
+      notAttached: 'Chưa gắn kết gì',
+      attached: 'Đã gắn kết: {{name}}',
+      eject: 'Đẩy ra',
+      mount: 'Gắn kết',
       mountMode: 'Chế độ gắn kết',
-      mountFailed: 'Mount thất bại',
-      mountDesc: 'Trong một số hệ thống, cần phải eject đĩa ảo trên máy remote trước khi mount.',
-      unmountFailed: 'Tháo lắp không thành công',
-      unmountDesc:
-        'Trên một số hệ thống, bạn cần đẩy hình ảnh ra khỏi máy chủ từ xa theo cách thủ công trước khi ngắt kết nối hình ảnh.',
-      refresh: 'Làm mới danh sách hình ảnh',
-      attention: 'Chú ý',
-      deleteConfirm: 'Bạn có chắc chắn muốn xóa hình ảnh này không?',
-      okBtn: 'Có',
-      cancelBtn: 'Không',
+      mountModeDisk: 'Lưu trữ hàng loạt',
+      mountModeCdrom: 'CD-ROM',
+      openManager: 'Mở trình quản lý tệp',
+      refresh: 'Làm mới',
+      delete: 'Xóa',
+      deleteTitle: 'Xóa phương tiện',
+      deleteConfirm: 'Xóa {{name}}? Các tệp bên trong sẽ bị mất.',
+      downloadImage: 'Tải hình ảnh xuống',
+      typePartition: 'Tệp chia sẻ',
+      volumeLabel: 'Đĩa di động',
+      groups: {
+        share: 'Chia sẻ tệp',
+        images: 'Hình ảnh'
+      },
+      failed: 'Thao tác không thành công',
+      hidOnly: 'Chế độ chỉ HID: đĩa ảo không khả dụng',
+      disabled: 'Đĩa ảo đang tắt (Cài đặt - Thiết bị)',
+      force: {
+        title: 'Cưỡng chế lấy lại phương tiện?',
+        desc: 'Máy đích vẫn đang dùng phương tiện này. Lấy lại sẽ liệt kê lại thiết bị USB và có thể mất những gì nó chưa ghi vào đĩa.',
+        menuHint: 'Máy đích đang dùng phương tiện này. Mở trình quản lý tệp để cưỡng chế lấy lại.'
+      },
       tips: {
         title: 'Cách tải lên',
         usb1: 'Kết nối NanoKVM với máy tính của bạn qua USB.',
-        usb2: 'Đảm bảo rằng đĩa ảo đã được gắn kết (Cài đặt - Đĩa ảo).',
+        usb2: 'Trên trang này, gắn các tệp chia sẻ ở chế độ lưu trữ dung lượng lớn.',
         usb3: 'Mở đĩa ảo trên máy tính của bạn và sao chép vào thư mục gốc của đĩa ảo.',
+        usb4: 'Đẩy đĩa ra khi sao chép xong: ảnh đĩa sẽ xuất hiện trong danh sách.',
         scp1: 'Đảm bảo NanoKVM và máy tính của bạn đang trên cùng một mạng nội bộ.',
         scp2: 'Mở terminal trên máy tính và sử dụng lệnh SCP để tải đĩa ảo lên thư mục /data trên NanoKVM.',
         scp3: 'Ví dụ: scp đường-dẫn-image root@ip-của-nanokvm:/data',
@@ -202,7 +263,66 @@ const vi = {
         tf3: 'Chèn thẻ TF vào đầu đọc thẻ và kết nối với máy tính của bạn.',
         tf4: 'Sao chép tệp hình ảnh vào thư mục /data trên thẻ TF.',
         tf5: 'Chèn thẻ TF vào NanoKVM.'
-      }
+      },
+      job: {
+        running: 'Đang xử lý {{name}}'
+      },
+      enableDisk: {
+        title: 'Bật đĩa ảo?',
+        desc: 'Việc gắn kết phương tiện cần đĩa ảo, hiện đang tắt. Bật ngay bây giờ? Bàn phím và chuột của máy đích sẽ ngắt kết nối trong giây lát.',
+        menuHint: 'Đĩa ảo đang tắt. Hãy bật trong Cài đặt - Thiết bị.'
+      },
+      add: {
+        title: 'Thêm phương tiện',
+        upload: 'Tải lên tệp ISO hoặc IMG',
+        fromUrl: 'Tải xuống từ URL',
+        url: 'URL hình ảnh',
+        urlRequired: 'Vui lòng nhập URL',
+        onlyImages: 'Chỉ có thể gắn kết tệp .iso và .img',
+        dropHint: 'Kéo tệp ISO hoặc IMG vào đây, hoặc bấm để chọn tệp',
+        cdromOnlyIso: 'CD-ROM chỉ có thể chứa ảnh ISO 9660',
+        uploadFailed: 'Tải lên không thành công',
+        downloadFailed: 'Tải xuống không thành công',
+        uploading: 'Đang tải lên {{name}}',
+        downloading: 'Đang tải xuống {{name}}',
+        done: '{{name}} đã sẵn sàng',
+        checksumFailed: 'Ảnh đĩa không khớp với mã kiểm tra SHA-256.',
+        blocked: 'Máy đích đang dùng đĩa',
+        copyHint: 'Bạn cũng có thể sao chép ảnh vào phân vùng dữ liệu qua SCP, hoặc từ máy đích.'
+      },
+      files: {
+        selectMedium: 'Chọn một phương tiện để xem các tệp bên trong.',
+        reasonAttached: 'Phương tiện này đang gắn với máy đích.',
+        reasonAttachedHint:
+          'Hãy đẩy ra trước: máy đích phải nhả đĩa trước khi có thể đọc các tệp của nó.',
+        reasonNotBrowsable: 'Phương tiện này chứa hệ thống tệp mà trình quản lý không mở được.',
+        reasonNoLoop: 'Thiết bị này không gắn kết được ảnh đĩa (không có hỗ trợ loop).',
+        reasonISOImage:
+          'Không thể duyệt nội dung ảnh ISO 9660 tại đây. Ảnh vẫn có thể được gắn kết vào máy đích.',
+        empty: 'Thư mục này trống',
+        noMatch: 'Không có tệp nào khớp với tìm kiếm.',
+        free: '{{size}} trống',
+        search: 'Tìm trong thư mục này',
+        sort: {
+          name: 'Tên',
+          size: 'Kích thước',
+          type: 'Loại',
+          asc: 'Tăng dần',
+          desc: 'Giảm dần'
+        },
+        upload: 'Tải một tệp lên phương tiện',
+        deleteFolderTitle: 'Xóa thư mục',
+        deleteFolderConfirm:
+          'Xóa thư mục {{name}} và toàn bộ nội dung bên trong? Không thể hoàn tác thao tác này.',
+        uploading: 'Đang tải lên…',
+        uploadFailed: 'Tải lên không thành công',
+        download: 'Tải xuống',
+        delete: 'Xóa',
+        deleteTitle: 'Xóa tệp',
+        deleteConfirm: 'Xóa {{name}} khỏi phương tiện?'
+      },
+      yes: 'Có',
+      no: 'Không'
     },
     script: {
       title: 'Script',
@@ -244,13 +364,13 @@ const vi = {
       ok: 'OK'
     },
     download: {
-      title: 'Trình tải xuống hình ảnh',
-      input: 'Vui lòng nhập hình ảnh từ xa URL',
-      ok: 'OK',
-      disabled: '/data phân vùng là RO nên không tải được image',
-      uploadbox: 'Thả file vào đây hoặc bấm vào để chọn',
-      inputfile: 'Vui lòng nhập File hình ảnh',
-      NoISO: 'Không có ISO'
+      disabled:
+        'Phân vùng dữ liệu ở chế độ chỉ đọc khi máy đích đang dùng: không ghi được ảnh mới, nhưng vẫn tải xuống được các tệp hiện có.',
+      sha256: 'SHA-256 (tùy chọn)',
+      sha256Placeholder: 'Nhập mã kiểm tra SHA-256 gồm 64 ký tự',
+      invalidSHA256: 'SHA-256 phải là chuỗi thập lục phân gồm 64 ký tự',
+      cancel: 'Hủy',
+      cancelFailed: 'Không thể hủy tải xuống'
     },
     power: {
       title: 'Nguồn',
@@ -267,6 +387,24 @@ const vi = {
     },
     settings: {
       title: 'Cài đặt',
+      mcp: {
+        title: 'Dịch vụ MCP',
+        service: 'Điều khiển từ xa MCP',
+        serviceDesc:
+          'Cho phép các máy khách MCP đáng tin cậy điều khiển bàn phím và chuột và chụp ảnh màn hình',
+        securityWarning:
+          'Bất kỳ ai có khóa API này đều có thể điều khiển máy chủ từ xa và xem màn hình. Hãy sử dụng HTTPS và chỉ bật dịch vụ trên các mạng đáng tin cậy.',
+        endpoint: 'Điểm cuối',
+        apiKey: 'Khóa API',
+        regenerateConfirmTitle: 'Tạo lại khóa API MCP?',
+        regenerateConfirmDesc: 'Khóa hiện tại sẽ ngừng hoạt động ngay lập tức.',
+        enableConfirmTitle: 'Bật điều khiển MCP bên ngoài?',
+        enableConfirmDesc: 'Bật MCP sẽ dừng PicoClaw và đóng tất cả phiên PicoClaw đang hoạt động.',
+        failed: 'Thao tác MCP không thành công',
+        copyFailed: 'Sao chép thất bại. Vui lòng sao chép thủ công.',
+        okBtn: 'Xác nhận',
+        cancelBtn: 'Hủy'
+      },
       about: {
         title: 'Giới thiệu về NanoKVM',
         information: 'Thông tin',
@@ -300,9 +438,25 @@ const vi = {
           modeOff: 'Tắt',
           modeAuto: 'Tự động ẩn',
           modeAlways: 'Luôn hiển thị',
+          keyboardLedStatus: 'Chỉ báo khóa bàn phím',
+          keyboardLedStatusDesc:
+            'Hiển thị trạng thái Num Lock, Caps Lock và Scroll Lock của máy tính từ xa',
           icons: 'Biểu tượng menu con',
           iconsDesc: 'Hiển thị biểu tượng menu con trên thanh menu'
         }
+      },
+      keyboardLedStatus: {
+        groupLabel: 'Trạng thái khóa bàn phím từ xa',
+        indicatorLabel: '{{label}}: {{state}}',
+        numLock: 'Num Lock',
+        numLockShort: 'Num',
+        capsLock: 'Caps Lock',
+        capsLockShort: 'Caps',
+        scrollLock: 'Scroll Lock',
+        scrollLockShort: 'Scr',
+        on: 'Bật',
+        off: 'Tắt',
+        unknown: 'Không rõ'
       },
       device: {
         title: 'Thiết bị',
@@ -342,7 +496,11 @@ const vi = {
           tip: 'Tắt đi nếu không cần thiết'
         },
         hdmi: {
-          description: 'Kích hoạt HDMI/đầu ra màn hình'
+          description: 'Kích hoạt HDMI/đầu ra màn hình',
+          idleTimeoutTitle: 'Thời gian chờ khi không hoạt động',
+          idleTimeoutDescription:
+            'Dừng việc ghi hình HDMI sau khi không có người xem hoạt động trong',
+          minutes: 'phút'
         },
         autostart: {
           title: 'Cài đặt tập lệnh tự khởi động',
@@ -364,7 +522,12 @@ const vi = {
         reboot: 'Khởi động lại',
         rebootDesc: 'Bạn có chắc chắn muốn khởi động lại NanoKVM không?',
         okBtn: 'Có',
-        cancelBtn: 'Không'
+        cancelBtn: 'Không',
+        diskLocked: 'Off while an image is mounted (turning it on cancels the mount)',
+        diskCancelMount:
+          'Enabling the virtual disk cancels the mounted image and interrupts a running image download or upload. Continue?',
+        diskBreakDownload: 'Enabling the virtual disk interrupts the image download. Continue?',
+        attention: 'Chú ý'
       },
       network: {
         title: 'Mạng',
@@ -468,10 +631,29 @@ const vi = {
         previewDesc: 'Nhận quyền truy cập sớm vào các tính năng và cải tiến mới',
         previewTip:
           'Xin lưu ý rằng các bản phát hành xem trước có thể có lỗi hoặc chức năng chưa hoàn chỉnh!',
+        customServer: {
+          title: 'Máy chủ cập nhật tùy chỉnh',
+          desc: 'Kiểm tra và tải xuống các bản cập nhật trực tuyến từ máy chủ được chỉ định',
+          invalidUrl:
+            'Nhập thư mục máy chủ HTTP hoặc HTTPS hợp lệ, không chứa truy vấn, phân đoạn hoặc latest.json.',
+          loadFailed: 'Không thể tải cấu hình máy chủ cập nhật.',
+          saveFailed: 'Không thể lưu cấu hình máy chủ cập nhật.',
+          saved: 'Đã lưu cấu hình máy chủ cập nhật.',
+          save: 'Lưu',
+          confirmTitle: 'Sử dụng máy chủ cập nhật tùy chỉnh?',
+          confirmDesc:
+            'SHA-512 chỉ kiểm tra xem gói có khớp với tệp kê khai do máy chủ này cung cấp hay không. Điều này không chứng minh rằng gói đó là bản phát hành NanoKVM chính thức. Máy chủ bị lỗi hoặc độc hại có thể khiến thiết bị không thể sử dụng, gây mất dữ liệu hoặc xâm phạm hệ thống.',
+          confirm: 'Vẫn sử dụng',
+          previewDisabled:
+            'Không thể sử dụng Bản cập nhật xem trước khi máy chủ cập nhật tùy chỉnh đang được bật.'
+        },
         offline: {
           title: 'Cập nhật ngoại tuyến',
           desc: 'Cập nhật thông qua gói cài đặt cục bộ',
           upload: 'Tải lên',
+          checksumPlaceholder: 'Tổng kiểm SHA-256 (không bắt buộc)',
+          invalidChecksum: 'Tổng kiểm SHA-256 phải chứa 64 ký tự thập lục phân.',
+          checksumMismatch: 'Xác minh SHA-256 không thành công. Gói có thể đã bị hỏng.',
           invalidName:
             'Định dạng tên tệp không hợp lệ. Vui lòng tải xuống từ bản phát hành GitHub.',
           updateFailed: 'Cập nhật thất bại. Vui lòng thử lại.'
@@ -485,7 +667,28 @@ const vi = {
         logoutBtn: 'Đăng xuất',
         logoutDesc: 'Bạn có chắc chắn muốn đăng xuất không?',
         okBtn: 'Có',
-        cancelBtn: 'Không'
+        cancelBtn: 'Không',
+        role: 'Vai trò',
+        roles: {
+          admin: 'Quản trị viên',
+          user: 'Người dùng'
+        },
+        users: {
+          title: 'Người dùng',
+          create: 'Tạo người dùng',
+          enabled: 'Đã bật',
+          disabled: 'Đã tắt',
+          deviceOwner: 'Chủ sở hữu thiết bị',
+          resetPassword: 'Đặt lại mật khẩu',
+          delete: 'Xóa',
+          deleteConfirm: 'Xóa người dùng này và thu hồi mọi phiên của họ?',
+          created: 'Đã tạo người dùng',
+          deleted: 'Đã xóa người dùng',
+          passwordUpdated: 'Đã cập nhật mật khẩu',
+          loadFailed: 'Không tải được người dùng',
+          saveFailed: 'Không lưu được người dùng',
+          deleteFailed: 'Không xóa được người dùng'
+        }
       }
     },
     picoclaw: {
@@ -512,19 +715,30 @@ const vi = {
         runtimeStarted: 'Runtime PicoClaw đã bắt đầu',
         runtimeStartFailed: 'Không khởi động được runtime PicoClaw',
         runtimeStopped: 'Runtime PicoClaw đã dừng',
-        runtimeStopFailed: 'Không dừng được runtime PicoClaw'
+        runtimeStopFailed: 'Không dừng được runtime PicoClaw',
+        controlSwitchedToMCP: 'Quyền điều khiển đã chuyển sang dịch vụ MCP bên ngoài'
       },
       connection: {
         runtime: {
           checking: 'Đang kiểm tra',
+          restoring: 'Restoring PicoClaw',
           ready: 'Runtime đã sẵn sàng',
           stopped: 'Đã dừng runtime',
+          blockedByMCP: 'Điều khiển MCP bên ngoài đang hoạt động',
+          readyBlockedByMCP:
+            'The runtime is running, but external MCP currently controls device input.',
+          readyWithoutControl:
+            'The runtime is running. Grant PicoClaw device control before reconnecting.',
           unavailable: 'Runtime không khả dụng',
           configError: 'Lỗi cấu hình'
         },
         transport: {
           connecting: 'Đang kết nối',
-          connected: 'Đã kết nối'
+          connected: 'Đã kết nối',
+          disconnected: 'Disconnected',
+          reconnect: 'Reconnect',
+          reconnectDescription: 'Reconnect to the running PicoClaw session.',
+          reconnectBlocked: 'PicoClaw needs device control before reconnecting.'
         },
         run: {
           idle: 'Nhàn rỗi',
@@ -538,6 +752,30 @@ const vi = {
       },
       overlay: {
         locked: 'PicoClaw đang điều khiển thiết bị. Việc nhập thủ công bị tạm dừng.'
+      },
+      control: {
+        picoclaw: 'Điều khiển thiết bị: PicoClaw',
+        picoclawDescription: 'PicoClaw can write keyboard and mouse input. Manual input may pause.',
+        mcp: 'Điều khiển thiết bị: MCP bên ngoài',
+        mcpDescription: 'External MCP can write to the device. PicoClaw will not take over input.',
+        off: 'Điều khiển thiết bị: tắt',
+        offDescription:
+          'AI will not write keyboard or mouse input. Manual control remains available.',
+        transitioning: 'Device control: switching',
+        transitioningDescription: 'Device control is syncing. Please wait.',
+        grant: 'Cấp quyền điều khiển',
+        release: 'Nhả',
+        releasing: 'Releasing...',
+        switching: 'Switching...',
+        releasingLabel: 'Device control: releasing',
+        releasingDescription:
+          'Device control is being returned. PicoClaw has stopped current writes.',
+        granted: 'Đã cấp quyền điều khiển PicoClaw',
+        released: 'Đã nhả quyền điều khiển PicoClaw',
+        grantFailed: 'Không thể cấp quyền điều khiển PicoClaw',
+        releaseFailed: 'Không thể nhả quyền điều khiển PicoClaw',
+        grantConfirmTitle: 'Chuyển điều khiển thiết bị sang PicoClaw?',
+        grantConfirmDesc: 'Các thao tác ghi thiết bị của MCP bên ngoài sẽ bị gián đoạn.'
       },
       install: {
         install: 'Cài đặt PicoClaw',
@@ -600,15 +838,22 @@ const vi = {
         deleteConfirmOk: 'Xóa',
         deleteConfirmCancel: 'Hủy',
         messageCount_one: '{{count}} tin nhắn',
-        messageCount_other: '{{count}} tin nhắn'
+        messageCount_other: '{{count}} tin nhắn',
+        messageCount: '{{count}} tin nhắn'
       },
       config: {
         startRuntime: 'Bắt đầu PicoClaw',
         stopRuntime: 'Dừng PicoClaw'
       },
       start: {
+        enableConfirmTitle: 'Chuyển quyền điều khiển sang PicoClaw?',
+        enableConfirmDesc: 'Khởi động PicoClaw sẽ tắt dịch vụ MCP bên ngoài.',
+        enableConfirmOk: 'Bắt đầu PicoClaw',
+        enableConfirmCancel: 'Hủy',
         title: 'Bắt đầu PicoClaw',
-        description: 'Bắt đầu runtime để sử dụng trợ lý PicoClaw.'
+        description: 'Bắt đầu runtime để sử dụng trợ lý PicoClaw.',
+        switchFromMCP: 'Switch to PicoClaw and start',
+        takeoverAndStart: 'Take over and start'
       }
     },
     error: {

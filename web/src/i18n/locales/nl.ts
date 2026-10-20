@@ -5,7 +5,8 @@ const nl = {
       login: 'Inloggen',
       changePassword: 'Wachtwoord wijzigen',
       terminal: 'Terminal',
-      wifi: 'Wi-Fi'
+      wifi: 'Wi-Fi',
+      storage: 'Afbeeldingen en bestandsdeling'
     },
     auth: {
       login: 'Inloggen',
@@ -41,7 +42,10 @@ const nl = {
         change3: 'Systeem root-wachtwoord (SSH-inlogwachtwoord)',
         change4:
           'Om de wachtwoorden opnieuw in te stellen, houdt u de BOOT-knop op de NanoKVM ingedrukt.'
-      }
+      },
+      placeholderCurrentPassword: 'Huidig wachtwoord',
+      passwordLength: 'Het wachtwoord moet tussen 8 en 72 tekens lang zijn',
+      invalidCurrentPassword: 'Het huidige wachtwoord is onjuist'
     },
     wifi: {
       title: 'Wi-Fi',
@@ -66,6 +70,38 @@ const nl = {
       video: 'Videomodus',
       videoDirectTips: 'Schakel HTTPS in "Instellingen > Apparaat" in om deze modus te gebruiken',
       resolution: 'Resolutie',
+      controlRegion: {
+        title: 'Muiskalibratie',
+        description:
+          'Gebruik deze instelling wanneer het bestuurde apparaat een andere resolutie dan 16:9 gebruikt en de cursor horizontaal of verticaal niet goed is uitgelijnd.',
+        off: 'Uit',
+        auto: 'Automatisch',
+        autoWarning:
+          'De kalibratie kan mislukken als de gebruikerstoepassing een volledig zwarte achtergrond heeft.',
+        manual: 'Handmatig',
+        selectedResolution: 'Resolutie van geselecteerd gebied',
+        unused: 'Niet gebruikt',
+        originalResolution: 'Oorspronkelijke resolutie',
+        selectResolution: 'Oorspronkelijke resolutie selecteren',
+        addResolution: 'Aangepaste resolutie toevoegen',
+        add: 'Toevoegen',
+        duplicateResolution: 'Deze resolutie bestaat al.',
+        width: 'Breedte',
+        height: 'Hoogte',
+        apply: 'Berekenen en toepassen',
+        invalidResolution:
+          'Voer een geldige oorspronkelijke resolutie in zodra de video gereed is.',
+        select: 'Gebied selecteren',
+        clear: 'Automatische detectie herstellen',
+        saveFailed: 'Het invoergebied kan niet worden opgeslagen.',
+        tooSmall: 'Het geselecteerde gebied is te klein.',
+        previewUnavailable: 'Voorbeeld niet beschikbaar',
+        clearConfirm: 'Automatische detectie van zwarte randen herstellen?',
+        dragHint: 'Sleep om het externe bureaubladgebied te selecteren',
+        finish: 'Gereed',
+        confirm: 'Bevestigen',
+        cancel: 'Annuleren'
+      },
       auto: 'Automatisch',
       autoTips:
         'Bij bepaalde resoluties kunnen schermverscheuringen of muisverplaatsingen optreden. Overweeg de resolutie van de externe host aan te passen of schakel de automatische modus uit.',
@@ -80,6 +116,15 @@ const nl = {
       frameDetectTip:
         'Berekent het verschil tussen frames. Stopt met het verzenden van de videostream wanneer er geen veranderingen worden gedetecteerd op het scherm van de externe host.',
       resetHdmi: 'Reset HDMI',
+      mixedH264: {
+        title: 'H.264-streamconflict',
+        description:
+          'H.264 Direct en H.264 WebRTC worden tegelijkertijd gebruikt. Dit kan tearing of beschadigde video veroorzaken. Gebruik slechts één H.264-modus.'
+      },
+      webrtcConnectionFailed: {
+        title: 'WebRTC-verbinding mislukt',
+        description: 'Controleer de netwerkverbinding of wijzig de videomodus.'
+      },
       captureStatus: {
         hdmiError: 'HDMI-schermfout',
         unsupportedResolution: 'De huidige resolutie wordt niet ondersteund',
@@ -176,27 +221,44 @@ const nl = {
         disable: 'Schakel de modus HID-Alleen uit'
       }
     },
-    image: {
-      title: 'Afbeeldingen',
-      loading: 'Laden...',
-      empty: 'Niets gevonden',
+    storage: {
+      title: 'Afbeeldingen en bestandsdeling',
+      empty:
+        'Nog geen afbeeldingen. Upload een ISO of IMG, of kopieer er een naar de schijf vanaf de doelcomputer.',
+      notAttached: 'Niets gekoppeld',
+      attached: 'Gekoppeld: {{name}}',
+      eject: 'Uitwerpen',
+      mount: 'Koppelen',
       mountMode: 'Montagemodus',
-      mountFailed: 'Koppelen mislukt',
-      mountDesc:
-        'In sommige systemen is het noodzakelijk om de virtuele schijf op de externe host uit te werpen voordat het image wordt gekoppeld.',
-      unmountFailed: 'Ontkoppelen mislukt',
-      unmountDesc:
-        'Op sommige systemen moet u de image handmatig uitwerpen van de externe host voordat u de image ontkoppelt.',
-      refresh: 'Vernieuw de afbeeldingenlijst',
-      attention: 'Let op',
-      deleteConfirm: 'Weet u zeker dat u deze afbeelding wilt verwijderen?',
-      okBtn: 'Ja',
-      cancelBtn: 'Nee',
+      mountModeDisk: 'Massopslag',
+      mountModeCdrom: 'CD-ROM',
+      openManager: 'Bestandsbeheer openen',
+      refresh: 'Vernieuwen',
+      delete: 'Verwijderen',
+      deleteTitle: 'Medium verwijderen',
+      deleteConfirm: '{{name}} verwijderen? De bestanden erin gaan verloren.',
+      downloadImage: 'De afbeelding downloaden',
+      typePartition: 'Gedeelde bestanden',
+      volumeLabel: 'Verwisselbare schijf',
+      groups: {
+        share: 'Bestandsdeling',
+        images: 'Afbeeldingen'
+      },
+      failed: 'De bewerking is mislukt',
+      hidOnly: 'Alleen HID-modus: de virtuele schijf is niet beschikbaar',
+      disabled: 'De virtuele schijf is uitgeschakeld (Instellingen - Apparaat)',
+      force: {
+        title: 'Het medium met geweld terughalen?',
+        desc: 'De doelcomputer gebruikt dit medium nog. Het terughalen laat het USB-apparaat opnieuw opsommen en kan alles verliezen wat nog niet naar de schijf is geschreven.',
+        menuHint:
+          'De doelcomputer gebruikt dit medium. Open het bestandsbeheer om het met geweld terug te halen.'
+      },
       tips: {
         title: 'Hoe te uploaden',
         usb1: 'Verbind de NanoKVM met uw computer via USB.',
-        usb2: 'Zorg ervoor dat de virtuele schijf is gekoppeld (Instellingen - Virtuele schijf).',
+        usb2: 'Koppel op deze pagina de gedeelde bestanden in massaopslagmodus.',
         usb3: 'Open de virtuele schijf op uw computer en kopieer het imagebestand naar de hoofdmap van de virtuele schijf.',
+        usb4: 'Werp de schijf uit als het kopiëren klaar is: de image verschijnt dan in de lijst.',
         scp1: 'Zorg ervoor dat de NanoKVM en uw computer zich in hetzelfde lokale netwerk bevinden.',
         scp2: 'Open een terminal op uw computer en gebruik het SCP-commando om het imagebestand te uploaden naar de /data directory op de NanoKVM.',
         scp3: 'Voorbeeld: scp uw-image-pad root@uw-nanokvm-ip:/data',
@@ -206,7 +268,68 @@ const nl = {
         tf3: 'Plaats de TF-kaart in een kaartlezer en verbind deze met uw computer.',
         tf4: 'Kopieer het imagebestand naar de /data directory op de TF-kaart.',
         tf5: 'Plaats de TF-kaart terug in de NanoKVM.'
-      }
+      },
+      job: {
+        running: 'Bezig met {{name}}'
+      },
+      enableDisk: {
+        title: 'De virtuele schijf inschakelen?',
+        desc: 'Voor het koppelen van een medium is de virtuele schijf nodig, die nu uitgeschakeld is. Nu inschakelen? Het toetsenbord en de muis van de doelcomputer worden even losgekoppeld.',
+        menuHint: 'De virtuele schijf is uitgeschakeld. Schakel die in bij Instellingen - Apparaat.'
+      },
+      add: {
+        title: 'Medium toevoegen',
+        upload: 'Een ISO of IMG uploaden',
+        fromUrl: 'Vanaf een URL downloaden',
+        url: 'URL van de afbeelding',
+        urlRequired: 'Voer een URL in',
+        onlyImages: 'Alleen .iso- en .img-bestanden kunnen worden gekoppeld',
+        dropHint: 'Sleep een ISO of IMG hierheen, of klik om een bestand te kiezen',
+        cdromOnlyIso: 'Een CD-ROM kan alleen een ISO 9660-image bevatten',
+        uploadFailed: 'Uploaden mislukt',
+        downloadFailed: 'Downloaden mislukt',
+        uploading: '{{name}} wordt geüpload',
+        downloading: '{{name}} wordt gedownload',
+        done: '{{name}} is klaar',
+        checksumFailed: 'De image komt niet overeen met de SHA-256-controlesom.',
+        blocked: 'De doelcomputer gebruikt de schijf',
+        copyHint:
+          'Je kunt een image ook via SCP naar de datapartitie kopiëren, of vanaf de doelcomputer.'
+      },
+      files: {
+        selectMedium: 'Kies een medium om de bestanden erin te bekijken.',
+        reasonAttached: 'Dit medium is aan de doelcomputer gekoppeld.',
+        reasonAttachedHint:
+          'Werp het eerst uit: de doelcomputer moet de schijf vrijgeven voordat de bestanden gelezen kunnen worden.',
+        reasonNotBrowsable:
+          'Dit medium bevat een bestandssysteem dat het bestandsbeheer niet kan openen.',
+        reasonNoLoop: 'Dit apparaat kan geen schijfimages koppelen (geen loop-ondersteuning).',
+        reasonISOImage:
+          'Een ISO 9660-image kan hier niet worden doorzocht. Die kan wel gewoon aan de doelcomputer worden gekoppeld.',
+        empty: 'Deze map is leeg',
+        noMatch: 'Geen bestanden gevonden voor deze zoekopdracht.',
+        free: '{{size}} vrij',
+        search: 'In deze map zoeken',
+        sort: {
+          name: 'Naam',
+          size: 'Grootte',
+          type: 'Type',
+          asc: 'Oplopend',
+          desc: 'Aflopend'
+        },
+        upload: 'Een bestand naar het medium uploaden',
+        deleteFolderTitle: 'Map verwijderen',
+        deleteFolderConfirm:
+          'De map {{name}} en alles erin verwijderen? Dit kan niet ongedaan worden gemaakt.',
+        uploading: 'Uploaden…',
+        uploadFailed: 'Uploaden mislukt',
+        download: 'Downloaden',
+        delete: 'Verwijderen',
+        deleteTitle: 'Bestand verwijderen',
+        deleteConfirm: '{{name}} van het medium verwijderen?'
+      },
+      yes: 'Ja',
+      no: 'Nee'
     },
     script: {
       title: 'Script',
@@ -248,13 +371,13 @@ const nl = {
       ok: 'Ok'
     },
     download: {
-      title: 'Afbeeldingdownloader',
-      input: 'Voer een externe afbeelding in URL',
-      ok: 'Ok',
-      disabled: '/data partitie is RO, dus we kunnen de afbeelding niet downloaden',
-      uploadbox: 'Zet het bestand hier neer of klik om te selecteren',
-      inputfile: 'Voer het afbeeldingsbestand in',
-      NoISO: 'Geen ISO'
+      disabled:
+        'De datapartitie is alleen-lezen zolang de doelcomputer hem gebruikt: nieuwe images kunnen niet worden geschreven, bestaande bestanden zijn nog wel te downloaden.',
+      sha256: 'SHA-256 (optioneel)',
+      sha256Placeholder: 'Voer een SHA-256-controlesom van 64 tekens in',
+      invalidSHA256: 'SHA-256 moet een hexadecimale tekenreeks van 64 tekens zijn',
+      cancel: 'Annuleren',
+      cancelFailed: 'Download annuleren mislukt'
     },
     power: {
       title: 'Aan/uit',
@@ -271,6 +394,25 @@ const nl = {
     },
     settings: {
       title: 'Instellingen',
+      mcp: {
+        title: 'MCP-service',
+        service: 'MCP-afstandsbediening',
+        serviceDesc:
+          'Vertrouwde MCP-clients toestaan het toetsenbord en de muis te bedienen en schermafbeeldingen te maken',
+        securityWarning:
+          'Iedereen met deze API-sleutel kan de externe host bedienen en het scherm bekijken. Gebruik HTTPS en schakel de service alleen in op vertrouwde netwerken.',
+        endpoint: 'Eindpunt',
+        apiKey: 'API-sleutel',
+        regenerateConfirmTitle: 'MCP API-sleutel opnieuw genereren?',
+        regenerateConfirmDesc: 'De huidige sleutel werkt dan onmiddellijk niet meer.',
+        enableConfirmTitle: 'Externe MCP-bediening inschakelen?',
+        enableConfirmDesc:
+          'Als MCP wordt ingeschakeld, stopt PicoClaw en worden alle actieve PicoClaw-sessies gesloten.',
+        failed: 'MCP-bewerking mislukt',
+        copyFailed: 'Kopiëren mislukt. Kopieer handmatig.',
+        okBtn: 'Bevestigen',
+        cancelBtn: 'Annuleren'
+      },
       about: {
         title: 'Over NanoKVM',
         information: 'Informatie',
@@ -304,9 +446,25 @@ const nl = {
           modeOff: 'Uit',
           modeAuto: 'Automatisch verbergen',
           modeAlways: 'Altijd zichtbaar',
+          keyboardLedStatus: 'Toetsvergrendelingsindicatoren',
+          keyboardLedStatusDesc:
+            'Toon de Num Lock-, Caps Lock- en Scroll Lock-status van de externe computer',
           icons: 'Submenupictogrammen',
           iconsDesc: 'Submenupictogrammen weergeven in de menubalk'
         }
+      },
+      keyboardLedStatus: {
+        groupLabel: 'Toetsvergrendelingsstatus van extern toetsenbord',
+        indicatorLabel: '{{label}}: {{state}}',
+        numLock: 'Num Lock',
+        numLockShort: 'Num',
+        capsLock: 'Caps Lock',
+        capsLockShort: 'Caps',
+        scrollLock: 'Scroll Lock',
+        scrollLockShort: 'Scr',
+        on: 'Aan',
+        off: 'Uit',
+        unknown: 'Onbekend'
       },
       device: {
         title: 'Apparaat',
@@ -346,7 +504,11 @@ const nl = {
           tip: 'Schakel het uit als het niet nodig is'
         },
         hdmi: {
-          description: 'Schakel HDMI/monitoruitgang in'
+          description: 'Schakel HDMI/monitoruitgang in',
+          idleTimeoutTitle: 'Time-out voor inactieve opname',
+          idleTimeoutDescription:
+            'HDMI-opname stoppen nadat er gedurende deze tijd geen actieve kijkers zijn:',
+          minutes: 'min'
         },
         autostart: {
           title: 'Instellingen voor automatisch starten van scripts',
@@ -370,7 +532,13 @@ const nl = {
         reboot: 'Opnieuw opstarten',
         rebootDesc: 'Weet u zeker dat u NanoKVM opnieuw wilt opstarten?',
         okBtn: 'Ja',
-        cancelBtn: 'Nee'
+        cancelBtn: 'Nee',
+        diskLocked: 'Uit zolang een image is gekoppeld (aanzetten breekt het koppelen af)',
+        diskCancelMount:
+          'Het inschakelen van de virtuele schijf breekt de gekoppelde image af en onderbreekt een lopende image-download of -upload. Doorgaan?',
+        diskBreakDownload:
+          'Het inschakelen van de virtuele schijf onderbreekt de image-download. Doorgaan?',
+        attention: 'Let op'
       },
       network: {
         title: 'Netwerk',
@@ -474,10 +642,29 @@ const nl = {
         previewDesc: 'Krijg vroegtijdig toegang tot nieuwe functies en verbeteringen',
         previewTip:
           'Houd er rekening mee dat preview-releases bugs of onvolledige functionaliteit kunnen bevatten!',
+        customServer: {
+          title: 'Aangepaste updateserver',
+          desc: 'Online-updates zoeken en downloaden vanaf een opgegeven server',
+          invalidUrl:
+            'Voer een geldige HTTP- of HTTPS-servermap in zonder queryparameters, fragment of latest.json.',
+          loadFailed: 'De configuratie van de updateserver kon niet worden geladen.',
+          saveFailed: 'De configuratie van de updateserver kon niet worden opgeslagen.',
+          saved: 'De configuratie van de updateserver is opgeslagen.',
+          save: 'Opslaan',
+          confirmTitle: 'Een aangepaste updateserver gebruiken?',
+          confirmDesc:
+            'SHA-512 controleert alleen of het pakket overeenkomt met het manifest dat door deze server wordt verstrekt. Het bewijst niet dat het pakket een officiële NanoKVM-release is. Een defecte of kwaadwillende server kan het apparaat onbruikbaar maken, gegevensverlies veroorzaken of het systeem compromitteren.',
+          confirm: 'Toch gebruiken',
+          previewDisabled:
+            'Preview-updates zijn niet beschikbaar zolang een aangepaste updateserver is ingeschakeld.'
+        },
         offline: {
           title: 'Offline-updates',
           desc: 'Update via lokaal installatiepakket',
           upload: 'Uploaden',
+          checksumPlaceholder: 'SHA-256-controlesom (optioneel)',
+          invalidChecksum: 'De SHA-256-controlesom moet 64 hexadecimale tekens bevatten.',
+          checksumMismatch: 'De SHA-256-verificatie is mislukt. Het pakket is mogelijk beschadigd.',
           invalidName: 'Ongeldig bestandsnaamformaat. Download de versie van GitHub-releases.',
           updateFailed: 'Update mislukt. Probeer het opnieuw.'
         }
@@ -490,7 +677,28 @@ const nl = {
         logoutBtn: 'Afmelden',
         logoutDesc: 'Weet u zeker dat u wilt uitloggen?',
         okBtn: 'Ja',
-        cancelBtn: 'Nee'
+        cancelBtn: 'Nee',
+        role: 'Rol',
+        roles: {
+          admin: 'Beheerder',
+          user: 'Gebruiker'
+        },
+        users: {
+          title: 'Gebruikers',
+          create: 'Gebruiker aanmaken',
+          enabled: 'Ingeschakeld',
+          disabled: 'Uitgeschakeld',
+          deviceOwner: 'Apparaateigenaar',
+          resetPassword: 'Wachtwoord opnieuw instellen',
+          delete: 'Verwijderen',
+          deleteConfirm: 'Deze gebruiker verwijderen en al zijn sessies intrekken?',
+          created: 'Gebruiker aangemaakt',
+          deleted: 'Gebruiker verwijderd',
+          passwordUpdated: 'Wachtwoord bijgewerkt',
+          loadFailed: 'Gebruikers konden niet worden geladen',
+          saveFailed: 'Gebruiker kon niet worden opgeslagen',
+          deleteFailed: 'Gebruiker kon niet worden verwijderd'
+        }
       }
     },
     picoclaw: {
@@ -517,19 +725,30 @@ const nl = {
         runtimeStarted: 'PicoClaw runtime gestart',
         runtimeStartFailed: 'Kan PicoClaw runtime niet starten',
         runtimeStopped: 'PicoClaw runtime gestopt',
-        runtimeStopFailed: 'Kan PicoClaw runtime niet stoppen'
+        runtimeStopFailed: 'Kan PicoClaw runtime niet stoppen',
+        controlSwitchedToMCP: 'Bediening overgeschakeld naar de externe MCP-service'
       },
       connection: {
         runtime: {
           checking: 'Controleren',
+          restoring: 'Restoring PicoClaw',
           ready: 'Runtime gereed',
           stopped: 'Runtime gestopt',
+          blockedByMCP: 'Externe MCP-bediening is actief',
+          readyBlockedByMCP:
+            'The runtime is running, but external MCP currently controls device input.',
+          readyWithoutControl:
+            'The runtime is running. Grant PicoClaw device control before reconnecting.',
           unavailable: 'Runtime niet beschikbaar',
           configError: 'Configuratiefout'
         },
         transport: {
           connecting: 'Verbinden',
-          connected: 'Verbonden'
+          connected: 'Verbonden',
+          disconnected: 'Disconnected',
+          reconnect: 'Reconnect',
+          reconnectDescription: 'Reconnect to the running PicoClaw session.',
+          reconnectBlocked: 'PicoClaw needs device control before reconnecting.'
         },
         run: {
           idle: 'Inactief',
@@ -543,6 +762,30 @@ const nl = {
       },
       overlay: {
         locked: 'PicoClaw bestuurt het apparaat. Handmatige invoer is gepauzeerd.'
+      },
+      control: {
+        picoclaw: 'Apparaatbediening: PicoClaw',
+        picoclawDescription: 'PicoClaw can write keyboard and mouse input. Manual input may pause.',
+        mcp: 'Apparaatbediening: externe MCP',
+        mcpDescription: 'External MCP can write to the device. PicoClaw will not take over input.',
+        off: 'Apparaatbediening: uit',
+        offDescription:
+          'AI will not write keyboard or mouse input. Manual control remains available.',
+        transitioning: 'Device control: switching',
+        transitioningDescription: 'Device control is syncing. Please wait.',
+        grant: 'Bediening geven',
+        release: 'Vrijgeven',
+        releasing: 'Releasing...',
+        switching: 'Switching...',
+        releasingLabel: 'Device control: releasing',
+        releasingDescription:
+          'Device control is being returned. PicoClaw has stopped current writes.',
+        granted: 'PicoClaw-bediening gegeven',
+        released: 'PicoClaw-bediening vrijgegeven',
+        grantFailed: 'Kan PicoClaw-bediening niet geven',
+        releaseFailed: 'Kan PicoClaw-bediening niet vrijgeven',
+        grantConfirmTitle: 'Apparaatbediening overschakelen naar PicoClaw?',
+        grantConfirmDesc: 'Schrijfacties van de externe MCP naar het apparaat worden onderbroken.'
       },
       install: {
         install: 'PicoClaw installeren',
@@ -604,15 +847,23 @@ const nl = {
         deleteConfirmOk: 'Verwijderen',
         deleteConfirmCancel: 'Annuleren',
         messageCount_one: '{{count}} bericht',
-        messageCount_other: '{{count}} berichten'
+        messageCount_other: '{{count}} berichten',
+        messageCount: '{{count}} berichten'
       },
       config: {
         startRuntime: 'Start PicoClaw',
         stopRuntime: 'Stop PicoClaw'
       },
       start: {
+        enableConfirmTitle: 'Bediening overschakelen naar PicoClaw?',
+        enableConfirmDesc:
+          'Bij het starten van PicoClaw wordt de externe MCP-service uitgeschakeld.',
+        enableConfirmOk: 'PicoClaw starten',
+        enableConfirmCancel: 'Annuleren',
         title: 'Start PicoClaw',
-        description: 'Start de runtime om de PicoClaw assistent te gaan gebruiken.'
+        description: 'Start de runtime om de PicoClaw assistent te gaan gebruiken.',
+        switchFromMCP: 'Switch to PicoClaw and start',
+        takeoverAndStart: 'Take over and start'
       }
     },
     error: {

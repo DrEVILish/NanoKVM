@@ -5,7 +5,8 @@ const ko = {
       login: '로그인',
       changePassword: '비밀번호 변경',
       terminal: '터미널',
-      wifi: 'Wi-Fi'
+      wifi: 'Wi-Fi',
+      storage: '이미지 및 파일 공유'
     },
     auth: {
       login: '로그인',
@@ -38,7 +39,10 @@ const ko = {
         change2: '웹 로그인 비밀번호',
         change3: '시스템 루트 비밀번호 (SSH 로그인 비밀번호)',
         change4: '비밀번호를 재설정하려면 NanoKVM의 BOOT 버튼을 길게 누르세요.'
-      }
+      },
+      placeholderCurrentPassword: '현재 비밀번호',
+      passwordLength: '비밀번호는 8~72자여야 합니다',
+      invalidCurrentPassword: '현재 비밀번호가 올바르지 않습니다'
     },
     wifi: {
       title: 'Wi-Fi',
@@ -63,6 +67,36 @@ const ko = {
       video: '비디오 모드',
       videoDirectTips: '이 모드를 사용하려면 "설정 > 장치"에서 HTTPS를 활성화하세요',
       resolution: '해상도',
+      controlRegion: {
+        title: '마우스 보정',
+        description:
+          '제어 대상 장치가 16:9가 아닌 해상도를 사용하며 커서가 가로 또는 세로 방향으로 어긋날 때 이 설정을 사용하세요.',
+        off: '끄기',
+        auto: '자동',
+        autoWarning: '사용자 애플리케이션의 배경이 완전히 검은색이면 보정에 실패할 수 있습니다.',
+        manual: '수동',
+        selectedResolution: '선택 영역 해상도',
+        unused: '사용 안 함',
+        originalResolution: '원본 해상도',
+        selectResolution: '원본 해상도 선택',
+        addResolution: '사용자 지정 해상도 추가',
+        add: '추가',
+        duplicateResolution: '이미 존재하는 해상도입니다.',
+        width: '너비',
+        height: '높이',
+        apply: '계산 후 적용',
+        invalidResolution: '비디오가 준비되면 올바른 원본 해상도를 입력하세요.',
+        select: '영역 선택',
+        clear: '자동으로 복원',
+        saveFailed: '입력 영역을 저장하지 못했습니다.',
+        tooSmall: '선택한 영역이 너무 작습니다.',
+        previewUnavailable: '미리보기를 사용할 수 없습니다',
+        clearConfirm: '자동 검은색 테두리 감지로 복원하시겠습니까?',
+        dragHint: '드래그하여 원격 데스크톱 영역을 선택하세요',
+        finish: '완료',
+        confirm: '확인',
+        cancel: '취소'
+      },
       auto: '자동 설정',
       autoTips:
         '일부 해상도에서는 화면이 왜곡되거나 마우스 동작이 비정상적으로 나타날 수 있습니다. 원격 컴퓨터의 해상도를 변경하거나 자동 설정 대신 수동 설정을 사용해 보세요.',
@@ -77,6 +111,15 @@ const ko = {
       frameDetectTip:
         '프레임 간의 차이를 계산합니다. 원격 호스트 화면에 변경 사항이 감지되지 않으면 비디오 스트림 전송을 중지합니다.',
       resetHdmi: 'HDMI 초기화',
+      mixedH264: {
+        title: 'H.264 스트림 충돌',
+        description:
+          'H.264 Direct와 H.264 WebRTC가 동시에 사용되고 있습니다. 화면 찢어짐이나 손상된 영상이 발생할 수 있습니다. H.264 모드는 하나만 사용하세요.'
+      },
+      webrtcConnectionFailed: {
+        title: 'WebRTC 연결에 실패했습니다',
+        description: '네트워크 연결을 확인하거나 비디오 모드를 전환하세요.'
+      },
       captureStatus: {
         hdmiError: 'HDMI 화면 오류',
         unsupportedResolution: '현재 해상도는 지원되지 않습니다',
@@ -170,27 +213,44 @@ const ko = {
         disable: 'HID 전용 모드 비활성화'
       }
     },
-    image: {
-      title: '이미지',
-      loading: '불러오는 중...',
-      empty: '아무것도 없습니다.',
+    storage: {
+      title: '이미지 및 파일 공유',
+      empty:
+        '아직 이미지가 없습니다. ISO 또는 IMG를 업로드하거나 대상 컴퓨터에서 디스크로 복사하세요.',
+      notAttached: '마운트된 항목 없음',
+      attached: '마운트됨: {{name}}',
+      eject: '꺼내기',
+      mount: '마운트',
       mountMode: '마운트 모드',
-      mountFailed: '마운트 실패',
-      mountDesc:
-        '일부 시스템에서는 이미지를 마운트하기 전에 원격 호스트에서 가상 디스크를 제거해야 합니다.',
-      unmountFailed: '언마운트 실패',
-      unmountDesc:
-        '일부 시스템에서는 이미지를 언마운트하기 전에 원격 호스트에서 수동으로 제거하여야 합니다.',
-      refresh: '이미지 목록 새로고침',
-      attention: '주의',
-      deleteConfirm: '이 이미지를 제거하시겠습니까?',
-      okBtn: '네',
-      cancelBtn: '아니오',
+      mountModeDisk: '대용량 저장소',
+      mountModeCdrom: 'CD-ROM',
+      openManager: '파일 관리자 열기',
+      refresh: '새로 고침',
+      delete: '삭제',
+      deleteTitle: '미디어 삭제',
+      deleteConfirm: '{{name}}을(를) 삭제할까요? 안에 있는 파일이 사라집니다.',
+      downloadImage: '이미지 다운로드',
+      typePartition: '공유 파일',
+      volumeLabel: '이동식 디스크',
+      groups: {
+        share: '파일 공유',
+        images: '이미지'
+      },
+      failed: '작업 실패',
+      hidOnly: 'HID 전용 모드: 가상 디스크를 사용할 수 없습니다',
+      disabled: '가상 디스크가 꺼져 있습니다 (설정 - 장치)',
+      force: {
+        title: '미디어를 강제로 되찾을까요?',
+        desc: '대상 컴퓨터가 아직 이 미디어를 사용하고 있습니다. 되찾으면 USB 장치가 다시 열거되고 아직 디스크에 기록하지 않은 내용이 사라질 수 있습니다.',
+        menuHint:
+          '대상 컴퓨터가 이 미디어를 사용하고 있습니다. 파일 관리자를 열어 강제로 되찾으세요.'
+      },
       tips: {
         title: '업로드 방법',
         usb1: 'USB를 통해 NanoKVM을 컴퓨터에 연결하세요.',
-        usb2: '가상 디스크가 마운트되었는지 확인하세요. (설정 - 가상 디스크).',
+        usb2: '이 페이지에서 공유 파일을 대용량 저장 장치 모드로 마운트합니다.',
         usb3: '컴퓨터에서 가상 디스크를 열고 이미지 파일을 가상 디스크의 루트 디렉토리로 복사하세요.',
+        usb4: '복사가 끝나면 디스크를 꺼냅니다. 그러면 이미지가 목록에 나타납니다.',
         scp1: 'NanoKVM과 컴퓨터가 동일한 로컬 네트워크에 있는지 확인하세요.',
         scp2: '컴퓨터에서 터미널을 열고 SCP 명령을 사용하여 이미지 파일을 NanoKVM의 /data 디렉터리에 업로드하세요.',
         scp3: '예시: scp [이미지 파일 경로] root@[NanoKVM IP 주소]:/data',
@@ -200,7 +260,66 @@ const ko = {
         tf3: 'TF 카드를 카드 리더기에 삽입하고 컴퓨터에 연결하세요.',
         tf4: '이미지 파일을 TF 카드의 /data 디렉터리에 복사하세요.',
         tf5: 'TF 카드를 NanoKVM에 삽입하세요.'
-      }
+      },
+      job: {
+        running: '{{name}} 처리 중'
+      },
+      enableDisk: {
+        title: '가상 디스크를 켤까요?',
+        desc: '미디어를 마운트하려면 현재 꺼져 있는 가상 디스크가 필요합니다. 지금 켤까요? 대상 컴퓨터의 키보드와 마우스가 잠시 연결 해제됩니다.',
+        menuHint: '가상 디스크가 꺼져 있습니다. 설정 - 장치에서 켜세요.'
+      },
+      add: {
+        title: '미디어 추가',
+        upload: 'ISO 또는 IMG 업로드',
+        fromUrl: 'URL에서 다운로드',
+        url: '이미지 URL',
+        urlRequired: 'URL을 입력하세요',
+        onlyImages: '.iso 및 .img 파일만 마운트할 수 있습니다',
+        dropHint: 'ISO 또는 IMG를 여기로 끌어오거나 클릭하여 파일을 선택하세요',
+        cdromOnlyIso: 'CD-ROM에는 ISO 9660 이미지만 넣을 수 있습니다',
+        uploadFailed: '업로드 실패',
+        downloadFailed: '다운로드 실패',
+        uploading: '{{name}} 업로드 중',
+        downloading: '{{name}} 다운로드 중',
+        done: '{{name}} 준비 완료',
+        checksumFailed: '이미지가 SHA-256 체크섬과 일치하지 않습니다.',
+        blocked: '대상 컴퓨터가 디스크를 사용 중입니다',
+        copyHint:
+          'SCP로 데이터 파티션에 이미지를 복사하거나 대상 컴퓨터에서 직접 복사할 수도 있습니다.'
+      },
+      files: {
+        selectMedium: '미디어를 선택하면 안에 있는 파일을 볼 수 있습니다.',
+        reasonAttached: '이 미디어는 대상 컴퓨터에 연결되어 있습니다.',
+        reasonAttachedHint: '먼저 꺼내세요. 대상 컴퓨터가 디스크를 놓아야 파일을 읽을 수 있습니다.',
+        reasonNotBrowsable: '이 미디어에는 파일 관리자가 열 수 없는 파일 시스템이 있습니다.',
+        reasonNoLoop: '이 장치는 디스크 이미지를 마운트할 수 없습니다(loop 미지원).',
+        reasonISOImage:
+          'ISO 9660 이미지의 내용은 여기에서 볼 수 없습니다. 대상 컴퓨터에는 그대로 마운트할 수 있습니다.',
+        empty: '이 폴더는 비어 있습니다',
+        noMatch: '검색과 일치하는 파일이 없습니다.',
+        free: '{{size}} 남음',
+        search: '이 폴더에서 검색',
+        sort: {
+          name: '이름',
+          size: '크기',
+          type: '종류',
+          asc: '오름차순',
+          desc: '내림차순'
+        },
+        upload: '미디어에 파일 업로드',
+        deleteFolderTitle: '폴더 삭제',
+        deleteFolderConfirm:
+          '폴더 {{name}}와(과) 그 안의 모든 내용을 삭제할까요? 되돌릴 수 없습니다.',
+        uploading: '업로드 중…',
+        uploadFailed: '업로드 실패',
+        download: '다운로드',
+        delete: '삭제',
+        deleteTitle: '파일 삭제',
+        deleteConfirm: '미디어에서 {{name}}을(를) 삭제할까요?'
+      },
+      yes: '예',
+      no: '아니요'
     },
     script: {
       title: '스크립트',
@@ -242,13 +361,13 @@ const ko = {
       ok: '확인'
     },
     download: {
-      title: '이미지 다운로드',
-      input: '원격 이미지 URL을 입력하세요.',
-      ok: '확인',
-      disabled: '/data 파티션이 읽기 전용(RO) 상태이므로 이미지를 다운로드할 수 없습니다.',
-      uploadbox: '여기에 파일을 놓거나 클릭하여 선택하세요.',
-      inputfile: '이미지 파일을 입력해주세요',
-      NoISO: 'ISO 없음'
+      disabled:
+        '대상 컴퓨터가 사용하는 동안 데이터 파티션은 읽기 전용입니다. 새 이미지는 쓸 수 없지만 기존 파일은 내려받을 수 있습니다.',
+      sha256: 'SHA-256 (선택 사항)',
+      sha256Placeholder: '64자 SHA-256 체크섬을 입력하세요',
+      invalidSHA256: 'SHA-256은 64자의 16진수 문자열이어야 합니다',
+      cancel: '취소',
+      cancelFailed: '다운로드 취소 실패'
     },
     power: {
       title: '전원',
@@ -265,6 +384,25 @@ const ko = {
     },
     settings: {
       title: '설정',
+      mcp: {
+        title: 'MCP 서비스',
+        service: 'MCP 원격 제어',
+        serviceDesc:
+          '신뢰할 수 있는 MCP 클라이언트가 키보드와 마우스를 제어하고 스크린샷을 캡처하도록 허용합니다',
+        securityWarning:
+          '이 API 키를 가진 사람은 누구나 원격 호스트를 제어하고 화면을 볼 수 있습니다. HTTPS를 사용하고 신뢰할 수 있는 네트워크에서만 활성화하세요.',
+        endpoint: '엔드포인트',
+        apiKey: 'API 키',
+        regenerateConfirmTitle: 'MCP API 키를 다시 생성하시겠습니까?',
+        regenerateConfirmDesc: '현재 키는 즉시 작동을 중지합니다.',
+        enableConfirmTitle: '외부 MCP 제어를 활성화하시겠습니까?',
+        enableConfirmDesc:
+          'MCP를 활성화하면 PicoClaw가 중지되고 활성 PicoClaw 세션이 모두 닫힙니다.',
+        failed: 'MCP 작업에 실패했습니다',
+        copyFailed: '복사에 실패했습니다. 수동으로 복사하세요.',
+        okBtn: '확인',
+        cancelBtn: '취소'
+      },
       about: {
         title: 'NanoKVM 정보',
         information: '정보',
@@ -298,9 +436,24 @@ const ko = {
           modeOff: '꺼짐',
           modeAuto: '자동 숨기기',
           modeAlways: '항상 보이기',
+          keyboardLedStatus: '키보드 잠금 표시기',
+          keyboardLedStatusDesc: '원격 컴퓨터의 Num Lock, Caps Lock, Scroll Lock 상태 표시',
           icons: '하위 메뉴 아이콘',
           iconsDesc: '메뉴 바에 하위 메뉴 아이콘을 표시합니다'
         }
+      },
+      keyboardLedStatus: {
+        groupLabel: '원격 키보드 잠금 상태',
+        indicatorLabel: '{{label}}: {{state}}',
+        numLock: 'Num Lock',
+        numLockShort: 'Num',
+        capsLock: 'Caps Lock',
+        capsLockShort: 'Caps',
+        scrollLock: 'Scroll Lock',
+        scrollLockShort: 'Scr',
+        on: '켜짐',
+        off: '꺼짐',
+        unknown: '알 수 없음'
       },
       device: {
         title: '장치',
@@ -340,7 +493,11 @@ const ko = {
           tip: '사용하지 않는 경우 끄는 것이 좋습니다'
         },
         hdmi: {
-          description: 'HDMI/모니터 출력 활성화'
+          description: 'HDMI/모니터 출력 활성화',
+          idleTimeoutTitle: '캡처 유휴 시간 제한',
+          idleTimeoutDescription:
+            '활성 시청자가 없는 상태가 다음 시간 동안 지속되면 HDMI 캡처 중지',
+          minutes: '분'
         },
         autostart: {
           title: '자동 시작 스크립트 설정',
@@ -362,7 +519,12 @@ const ko = {
         reboot: '재부팅',
         rebootDesc: 'NanoKVM을 재부팅하시겠습니까?',
         okBtn: '네',
-        cancelBtn: '아니오'
+        cancelBtn: '아니오',
+        diskLocked: '이미지가 마운트된 동안 꺼짐 (켜면 마운트가 해제됩니다)',
+        diskCancelMount:
+          '가상 디스크를 켜면 마운트된 이미지가 해제되고 진행 중인 이미지 다운로드/업로드도 중단됩니다. 계속하시겠습니까?',
+        diskBreakDownload: '가상 디스크를 켜면 이미지 다운로드가 중단됩니다. 계속하시겠습니까?',
+        attention: '주의'
       },
       network: {
         title: '네트워크',
@@ -464,10 +626,29 @@ const ko = {
         preview: '미리보기 업데이트',
         previewDesc: '새로운 기능과 개선 사항에 미리 접근하세요',
         previewTip: '미리보기 버전에는 버그나 완성되지 않은 기능이 포함될 수 있으니 주의하세요!',
+        customServer: {
+          title: '사용자 지정 업데이트 서버',
+          desc: '지정한 서버에서 온라인 업데이트를 확인하고 다운로드합니다',
+          invalidUrl:
+            '쿼리, 프래그먼트 또는 latest.json이 포함되지 않은 올바른 HTTP 또는 HTTPS 서버 디렉터리를 입력하세요.',
+          loadFailed: '업데이트 서버 구성을 불러오지 못했습니다.',
+          saveFailed: '업데이트 서버 구성을 저장하지 못했습니다.',
+          saved: '업데이트 서버 구성을 저장했습니다.',
+          save: '저장',
+          confirmTitle: '사용자 지정 업데이트 서버를 사용하시겠습니까?',
+          confirmDesc:
+            'SHA-512는 패키지가 이 서버에서 제공한 매니페스트와 일치하는지만 확인합니다. 해당 패키지가 공식 NanoKVM 릴리스임을 보장하지는 않습니다. 결함이 있거나 악의적인 서버를 사용하면 장치를 사용할 수 없게 되거나, 데이터가 손실되거나, 시스템이 침해될 수 있습니다.',
+          confirm: '그래도 사용',
+          previewDisabled:
+            '사용자 지정 업데이트 서버가 활성화되어 있는 동안에는 미리 보기 업데이트를 사용할 수 없습니다.'
+        },
         offline: {
           title: '오프라인 업데이트',
           desc: '로컬 설치 패키지를 통한 업데이트',
           upload: '업로드',
+          checksumPlaceholder: 'SHA-256 체크섬(선택 사항)',
+          invalidChecksum: 'SHA-256 체크섬은 64개의 16진수 문자를 포함해야 합니다.',
+          checksumMismatch: 'SHA-256 검증에 실패했습니다. 패키지가 손상되었을 수 있습니다.',
           invalidName: '유효하지 않은 파일 이름 형식입니다. GitHub 릴리즈에서 다운로드하세요.',
           updateFailed: '업데이트에 실패했습니다. 재시도하세요.'
         }
@@ -480,7 +661,28 @@ const ko = {
         logoutBtn: '로그아웃',
         logoutDesc: '정말로 로그아웃 하시겠습니까?',
         okBtn: '네',
-        cancelBtn: '아니오'
+        cancelBtn: '아니오',
+        role: '역할',
+        roles: {
+          admin: '관리자',
+          user: '사용자'
+        },
+        users: {
+          title: '사용자',
+          create: '사용자 만들기',
+          enabled: '사용',
+          disabled: '사용 안 함',
+          deviceOwner: '장치 소유자',
+          resetPassword: '비밀번호 재설정',
+          delete: '삭제',
+          deleteConfirm: '이 사용자를 삭제하고 모든 세션을 취소할까요?',
+          created: '사용자 생성됨',
+          deleted: '사용자 삭제됨',
+          passwordUpdated: '비밀번호 업데이트됨',
+          loadFailed: '사용자를 불러오지 못했습니다',
+          saveFailed: '사용자를 저장하지 못했습니다',
+          deleteFailed: '사용자를 삭제하지 못했습니다'
+        }
       }
     },
     picoclaw: {
@@ -507,19 +709,30 @@ const ko = {
         runtimeStarted: 'PicoClaw 런타임이 시작되었습니다',
         runtimeStartFailed: 'PicoClaw 런타임 시작에 실패했습니다',
         runtimeStopped: 'PicoClaw 런타임이 중지되었습니다',
-        runtimeStopFailed: 'PicoClaw 런타임 중지에 실패했습니다'
+        runtimeStopFailed: 'PicoClaw 런타임 중지에 실패했습니다',
+        controlSwitchedToMCP: '제어가 외부 MCP 서비스로 전환되었습니다'
       },
       connection: {
         runtime: {
           checking: '확인 중',
+          restoring: 'Restoring PicoClaw',
           ready: '런타임 준비됨',
           stopped: '런타임 중지됨',
+          blockedByMCP: '외부 MCP 제어가 활성화되어 있습니다',
+          readyBlockedByMCP:
+            'The runtime is running, but external MCP currently controls device input.',
+          readyWithoutControl:
+            'The runtime is running. Grant PicoClaw device control before reconnecting.',
           unavailable: '런타임 사용 불가',
           configError: '구성 에러'
         },
         transport: {
           connecting: '연결 중',
-          connected: '연결됨'
+          connected: '연결됨',
+          disconnected: 'Disconnected',
+          reconnect: 'Reconnect',
+          reconnectDescription: 'Reconnect to the running PicoClaw session.',
+          reconnectBlocked: 'PicoClaw needs device control before reconnecting.'
         },
         run: {
           idle: '대기',
@@ -533,6 +746,30 @@ const ko = {
       },
       overlay: {
         locked: 'PicoClaw가 기기를 제어하고 있습니다. 수동 입력이 일시 중지됩니다.'
+      },
+      control: {
+        picoclaw: '장치 제어: PicoClaw',
+        picoclawDescription: 'PicoClaw can write keyboard and mouse input. Manual input may pause.',
+        mcp: '장치 제어: 외부 MCP',
+        mcpDescription: 'External MCP can write to the device. PicoClaw will not take over input.',
+        off: '장치 제어: 꺼짐',
+        offDescription:
+          'AI will not write keyboard or mouse input. Manual control remains available.',
+        transitioning: 'Device control: switching',
+        transitioningDescription: 'Device control is syncing. Please wait.',
+        grant: '제어 권한 부여',
+        release: '해제',
+        releasing: 'Releasing...',
+        switching: 'Switching...',
+        releasingLabel: 'Device control: releasing',
+        releasingDescription:
+          'Device control is being returned. PicoClaw has stopped current writes.',
+        granted: 'PicoClaw 제어 권한이 부여되었습니다',
+        released: 'PicoClaw 제어가 해제되었습니다',
+        grantFailed: 'PicoClaw 제어 권한 부여에 실패했습니다',
+        releaseFailed: 'PicoClaw 제어 해제에 실패했습니다',
+        grantConfirmTitle: '장치 제어를 PicoClaw로 전환할까요?',
+        grantConfirmDesc: '외부 MCP 장치 쓰기가 중단됩니다.'
       },
       install: {
         install: 'PicoClaw 설치',
@@ -593,15 +830,22 @@ const ko = {
         deleteConfirmOk: '삭제',
         deleteConfirmCancel: '취소',
         messageCount_one: '{{count}}개의 메시지',
-        messageCount_other: '{{count}}개의 메시지'
+        messageCount_other: '{{count}}개의 메시지',
+        messageCount: '{{count}}개의 메시지'
       },
       config: {
         startRuntime: 'PicoClaw 시작',
         stopRuntime: 'PicoClaw 중지'
       },
       start: {
+        enableConfirmTitle: '제어를 PicoClaw로 전환하시겠습니까?',
+        enableConfirmDesc: 'PicoClaw를 시작하면 외부 MCP 서비스가 비활성화됩니다.',
+        enableConfirmOk: 'PicoClaw 시작',
+        enableConfirmCancel: '취소',
         title: 'PicoClaw 시작',
-        description: '런타임을 시작하여 PicoClaw 어시스턴트 사용을 시작하세요.'
+        description: '런타임을 시작하여 PicoClaw 어시스턴트 사용을 시작하세요.',
+        switchFromMCP: 'Switch to PicoClaw and start',
+        takeoverAndStart: 'Take over and start'
       }
     },
     error: {

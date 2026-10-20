@@ -2,14 +2,15 @@ package webrtc
 
 import (
 	"NanoKVM-Server/config"
+	"NanoKVM-Server/middleware"
 	"encoding/json"
-	"net/http"
 	"sync"
 	"time"
 
 	"github.com/gin-gonic/gin"
 	"github.com/gorilla/websocket"
 	"github.com/pion/dtls/v3"
+	"github.com/pion/interceptor"
 	"github.com/pion/webrtc/v4"
 	log "github.com/sirupsen/logrus"
 )
@@ -17,9 +18,7 @@ import (
 var (
 	upgrader = websocket.Upgrader{
 		WriteBufferSize: 256 * 1024,
-		CheckOrigin: func(r *http.Request) bool {
-			return true
-		},
+		CheckOrigin:     middleware.CheckWebSocketOrigin,
 	}
 	globalManager *WebRTCManager
 	managerOnce   sync.Once
@@ -39,6 +38,8 @@ func Connect(c *gin.Context) {
 		log.Errorf("failed to create h264 websocket: %s", err)
 		return
 	}
+	stopSessionWatcher := middleware.WatchWebSocket(c.Request.Context(), wsConn)
+	defer stopSessionWatcher()
 	defer func() {
 		_ = wsConn.Close()
 		log.Debugf("h264 websocket disconnected: %s", c.ClientIP())
@@ -74,12 +75,9 @@ func Connect(c *gin.Context) {
 		return
 	}
 
-	manager := getManager()
-	manager.AddClient(wsConn, client)
-	defer manager.RemoveClient(wsConn)
-
 	// handle signaling
 	signalingHandler := NewSignalingHandler(client)
+	defer signalingHandler.Close()
 	signalingHandler.RegisterCallbacks()
 	if err := sendICEServers(client, iceServers); err != nil {
 		log.Errorf("failed to send ICE servers: %s", err)
@@ -154,14 +152,6 @@ func createMediaEngine() (*webrtc.MediaEngine, error) {
 		return nil, err
 	}
 
-	if err := mediaEngine.RegisterHeaderExtension(
-		webrtc.RTPHeaderExtensionCapability{URI: "http://www.webrtc.org/experiments/rtp-hdrext/playout-delay"},
-		webrtc.RTPCodecTypeVideo,
-	); err != nil {
-		log.Errorf("failed to register header extension: %s", err)
-		return nil, err
-	}
-
 	return mediaEngine, nil
 }
 
@@ -176,6 +166,14 @@ func createPeerConnection(iceServers []webrtc.ICEServer, mediaEngine *webrtc.Med
 		webrtc.WithSettingEngine(settingEngine),
 	}
 	if mediaEngine != nil {
+		registry := &interceptor.Registry{}
+		if err := webrtc.ConfigureNack(mediaEngine, registry); err != nil {
+			return nil, err
+		}
+		if err := webrtc.ConfigureRTCPReports(registry); err != nil {
+			return nil, err
+		}
+		apiOptions = append(apiOptions, webrtc.WithInterceptorRegistry(registry))
 		apiOptions = append(apiOptions, webrtc.WithMediaEngine(mediaEngine))
 	}
 

@@ -1,3 +1,81 @@
+## 2.5.1 (2026-09-09)
+
+### Features
+
+* Added device-level multi-user support with `admin` and `user` roles and a user management page under Settings, separating administrative areas (terminal, scripts, storage, network, updates, MCP, PicoClaw and Tailscale) from the video, keyboard, mouse, paste, wake-on-LAN and power controls every account keeps
+* Moved sessions to HttpOnly cookies with a per-user token version, so changing a password or disabling an account immediately ends that user's open web and WebSocket sessions
+* Added support for a custom update server, so the application can be updated from your own mirror, with credentials in the URL, manifest validation and a settings page for configuring it
+* Added SHA-256 verification of offline update packages before they are installed
+* Added configurable mouse input regions for absolute mode, with automatic black-border detection, manual selection of the controllable area on screen, and original-resolution presets, so the pointer stays aligned when the target machine outputs a letterboxed or non-16:9 signal
+* Added touch gestures to relative mouse mode, including tap, drag, long press, double-tap drag and two-finger scroll, so relative mode is now usable from a phone or tablet
+* Added a `signal` field to `/api/vm/hdmi` reporting whether an HDMI source is actually present, not just whether capture is enabled
+* Added a default root shell profile showing the user, host and working directory in the prompt over SSH and the Web terminal
+
+### Bug Fixes
+
+* Fixed mouse coordinates being offset in Direct H.264 mode when the target machine pads the picture with black bars
+* Fixed touch input in absolute mode, and stopped taps on the black letterbox area from being sent to the target machine
+* Fixed the video area not fitting the window, by scaling H.264 and MJPEG playback to contain and letting the page handle touch instead of the browser
+* Fixed WebRTC H.264 failures leaving a silent black screen; signaling, negotiation, ICE and playback failures now report what went wrong and offer a retry
+* Fixed a slow WebRTC viewer stalling the shared H.264 source for everyone else, by dropping its buffered frames until the next key frame
+* Fixed application updates running from a temporary directory that could be too small or shared with another update; online and offline updates are now staged in isolated persistent workspaces with archive, manifest and free-space checks, and the last rollback backup is kept when space runs short
+* Fixed the update lock being released before the server finished restarting, which allowed a second update to start and be killed mid-install
+* Fixed Web terminal sessions not loading the root profile, by starting them as login shells in `/root`
+
+### Performance
+
+* Routed Direct and WebRTC viewers through a single shared H.264 capture source instead of each reading the encoder separately
+
+### Localization
+
+* Synchronized translations of other languages according to English
+
+### Chores
+
+* Upgraded the web build tooling to Vite 8 and switched to Vite's native tsconfig path resolution
+* Added a dev container for full-stack development
+* Prefixed GitHub Release titles with `nanokvm`
+* Added release asset verification with per-device package size limits to the packaging workflow
+
+## 2.5.0 (2026-08-04)
+
+### Features
+
+* Added an MCP service that lets trusted MCP clients capture screenshots and control the keyboard and mouse with an API key, including a settings page for enabling it and regenerating the key
+* Added coordinated device control so MCP, PicoClaw and manual input hand ownership over to each other instead of writing HID input at the same time
+* Added remote keyboard lock indicators that show the target machine's Num Lock, Caps Lock and Scroll Lock state
+* Added an optional SHA-256 checksum and cancellation to remote image downloads
+
+### Bug Fixes
+
+* Fixed the USB network gadget getting a random host-side MAC on every bind, which made the attached PC register a new network adapter after each reboot; both the device and host MAC are now derived from the chip UID (thanks to [@BeaconCat](https://github.com/BeaconCat))
+* Fixed OLED sleep durations above 255 seconds being truncated, so the 5 min, 10 min, 30 min and 1 hour options now behave as selected
+* Fixed the mounted image API returning an error in HID-Only mode
+* Fixed image downloads and application updates interfering with each other when running at the same time
+* Fixed Direct H.264 playback falling behind when the decoder queue backed up, by resynchronizing at the next key frame and preferring hardware decoding
+* Added a warning when Direct and WebRTC H.264 stream modes are used at the same time
+* Made the video input state shared between processes and read it without shell pipelines, so HDMI status stays consistent between `NanoKVM-Server` and `kvm_system`
+
+### Performance
+
+* Reduced latency in 60 Hz mode with decode-driven flow control, GOP-aware bounded queues, and dedicated writer goroutines with write deadlines so a slow client no longer stalls the others
+* Integrated zero-copy H.264 capture into the video pipeline instead of relying on a preload hook
+* Stopped HDMI capture when no user is logged in or all viewers are idle, reducing power consumption
+
+### UI Improvements
+
+* Tidied the image download dialog layout and truncated long file names in the upload box
+
+### Localization
+
+* Synchronized translations of other languages according to English
+
+### Chores
+
+* Split release automation into separate package, tag and release workflows, and produced identifiable build artifacts with checksums for pull requests
+* Allowed overriding the builder image, installed `patchelf` in the build environment, and fixed the exit codes of `support/sg2002/build`
+* Fixed slow container builds caused by uid/gid mismatch and reused existing container users and groups
+
 ## 2.4.3 (2026-06-09)
 
 ### Features

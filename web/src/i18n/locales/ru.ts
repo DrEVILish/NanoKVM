@@ -5,7 +5,8 @@ const ru = {
       login: 'Войти',
       changePassword: 'Изменить пароль',
       terminal: 'Терминал',
-      wifi: 'Wi-Fi'
+      wifi: 'Wi-Fi',
+      storage: 'Образы и обмен файлами'
     },
     auth: {
       login: 'Войти',
@@ -39,7 +40,10 @@ const ru = {
         change2: 'Пароль для входа в веб-интерфейс',
         change3: 'Пароль системного пользователя "root" (пароль для входа по SSH)',
         change4: 'Чтобы сбросить пароли, нажмите и удерживайте кнопку BOOT на NanoKVM.'
-      }
+      },
+      placeholderCurrentPassword: 'Текущий пароль',
+      passwordLength: 'Пароль должен содержать от 8 до 72 символов',
+      invalidCurrentPassword: 'Текущий пароль неверен'
     },
     wifi: {
       title: 'Wi-Fi',
@@ -64,6 +68,37 @@ const ru = {
       video: 'Видеорежим',
       videoDirectTips: 'Включите HTTPS в "Настройки > Устройство", чтобы использовать этот режим',
       resolution: 'Разрешение',
+      controlRegion: {
+        title: 'Калибровка мыши',
+        description:
+          'Используйте эту настройку, если управляемое устройство использует разрешение с соотношением сторон, отличным от 16:9, и курсор смещён по горизонтали или вертикали.',
+        off: 'Выкл.',
+        auto: 'Автоматически',
+        autoWarning:
+          'Калибровка может завершиться неудачей, если фон пользовательского приложения полностью чёрный.',
+        manual: 'Вручную',
+        selectedResolution: 'Разрешение выбранной области',
+        unused: 'Не используется',
+        originalResolution: 'Исходное разрешение',
+        selectResolution: 'Выберите исходное разрешение',
+        addResolution: 'Добавить пользовательское разрешение',
+        add: 'Добавить',
+        duplicateResolution: 'Такое разрешение уже существует.',
+        width: 'Ширина',
+        height: 'Высота',
+        apply: 'Рассчитать и применить',
+        invalidResolution: 'Введите допустимое исходное разрешение после появления видео.',
+        select: 'Выбрать область',
+        clear: 'Восстановить автоматически',
+        saveFailed: 'Не удалось сохранить область ввода.',
+        tooSmall: 'Выбранная область слишком мала.',
+        previewUnavailable: 'Предварительный просмотр недоступен',
+        clearConfirm: 'Восстановить автоматическое обнаружение чёрных полей?',
+        dragHint: 'Перетащите, чтобы выбрать область удалённого рабочего стола',
+        finish: 'Готово',
+        confirm: 'Подтвердить',
+        cancel: 'Отмена'
+      },
       auto: 'Автоматическое',
       autoTips:
         'При некоторых разрешениях экрана могут возникать артефакты изображения или смещение курсора. Пожалуйста, настройте разрешение удаленного компьютера или отключите автоматический режим для передачи видеопотока.',
@@ -78,6 +113,15 @@ const ru = {
       frameDetectTip:
         'Вычисляет разницу между кадрами и прекращает передачу видеопотока, если на экране удаленного узла не обнаружено никаких изменений.',
       resetHdmi: 'Перезагрузить HDMI подсистему',
+      mixedH264: {
+        title: 'Конфликт потоков H.264',
+        description:
+          'H.264 Direct и H.264 WebRTC используются одновременно. Это может привести к разрывам изображения или повреждению видео. Используйте только один режим H.264.'
+      },
+      webrtcConnectionFailed: {
+        title: 'Не удалось подключиться через WebRTC',
+        description: 'Проверьте сетевое подключение или переключите режим видео.'
+      },
       captureStatus: {
         hdmiError: 'Ошибка изображения HDMI',
         unsupportedResolution: 'Текущее разрешение не поддерживается',
@@ -174,27 +218,44 @@ const ru = {
         disable: 'Выключить режим только HID'
       }
     },
-    image: {
-      title: 'Образы',
-      loading: 'Загрузка...',
-      empty: 'Пусто',
+    storage: {
+      title: 'Образы и обмен файлами',
+      empty:
+        'Образов пока нет. Загрузите ISO или IMG либо скопируйте образ на диск с целевого компьютера.',
+      notAttached: 'Ничего не подключено',
+      attached: 'Подключено: {{name}}',
+      eject: 'Извлечь',
+      mount: 'Подключить',
       mountMode: 'Режим монтирования',
-      mountFailed: 'Монтирование образа не удалось',
-      mountDesc:
-        'В некоторых системах необходимо отсоединить виртуальный диск на удаленном хосте перед монтированием образа.',
-      unmountFailed: 'Не удалось размонтировать',
-      unmountDesc:
-        'В некоторых системах перед размонтированием образа необходимо вручную извлечь образ с удаленного хоста.',
-      refresh: 'Обновить список образов',
-      attention: 'Внимание',
-      deleteConfirm: 'Вы уверены, что хотите удалить это изображение?',
-      okBtn: 'Да',
-      cancelBtn: 'Нет',
+      mountModeDisk: 'Съёмный диск',
+      mountModeCdrom: 'CD-ROM',
+      openManager: 'Открыть файловый менеджер',
+      refresh: 'Обновить',
+      delete: 'Удалить',
+      deleteTitle: 'Удалить носитель',
+      deleteConfirm: 'Удалить {{name}}? Содержащиеся в нём файлы будут потеряны.',
+      downloadImage: 'Скачать образ',
+      typePartition: 'Общие файлы',
+      volumeLabel: 'Съёмный диск',
+      groups: {
+        share: 'Обмен файлами',
+        images: 'Образы'
+      },
+      failed: 'Операция не удалась',
+      hidOnly: 'Режим только HID: виртуальный диск недоступен',
+      disabled: 'Виртуальный диск отключён (Настройки - Устройство)',
+      force: {
+        title: 'Забрать носитель принудительно?',
+        desc: 'Целевой компьютер всё ещё использует этот носитель. Принудительное изъятие заново перечислит USB-устройство и может потерять всё, что ещё не записано на диск.',
+        menuHint:
+          'Целевой компьютер использует этот носитель. Откройте файловый менеджер, чтобы забрать его принудительно.'
+      },
       tips: {
         title: 'Как загрузить',
         usb1: 'Подключите NanoKVM к вашему компьютеру через USB.',
-        usb2: 'Убедитесь, что виртуальный диск подключен (Настройки - Виртуальный диск).',
+        usb2: 'На этой странице подключите общие файлы в режиме накопителя.',
         usb3: 'Откройте виртуальный диск на вашем компьютере и скопируйте файл образа в корневой каталог диска.',
+        usb4: 'После копирования извлеките диск: образ появится в списке.',
         scp1: 'Убедитесь что NanoKVM и ваш компьютер находятся в одной и той же сети.',
         scp2: 'Откройте терминал на вашем компьютере и используйте команду scp, чтобы загрузить файл образа в директорию /data, находящуюся на NanoKVM.',
         scp3: 'Например: scp путь-к-образу root@ip-вашего-nanokvm:/data',
@@ -204,7 +265,66 @@ const ru = {
         tf3: 'Вставьте карту памяти в картридер и подключите его в свой компьютер.',
         tf4: 'Скопируйте файл образа в директорию /data на карте памяти.',
         tf5: 'Вставьте карту памяти в NanoKVM.'
-      }
+      },
+      job: {
+        running: 'Обработка {{name}}'
+      },
+      enableDisk: {
+        title: 'Включить виртуальный диск?',
+        desc: 'Для подключения носителя нужен виртуальный диск, который сейчас выключен. Включить его? Клавиатура и мышь целевого компьютера на мгновение отключатся.',
+        menuHint: 'Виртуальный диск отключён. Включите его в разделе Настройки - Устройство.'
+      },
+      add: {
+        title: 'Добавить носитель',
+        upload: 'Загрузить ISO или IMG',
+        fromUrl: 'Скачать по ссылке',
+        url: 'URL образа',
+        urlRequired: 'Введите URL',
+        onlyImages: 'Подключать можно только файлы .iso и .img',
+        dropHint: 'Перетащите сюда ISO или IMG либо нажмите, чтобы выбрать файл',
+        cdromOnlyIso: 'На CD-ROM можно записать только образ ISO 9660',
+        uploadFailed: 'Не удалось загрузить',
+        downloadFailed: 'Не удалось скачать',
+        uploading: 'Загрузка {{name}}',
+        downloading: 'Скачивание {{name}}',
+        done: '{{name}} готов',
+        checksumFailed: 'Образ не совпадает с контрольной суммой SHA-256.',
+        blocked: 'Целевой компьютер использует диск',
+        copyHint: 'Образ можно также скопировать в раздел данных по SCP или с целевого компьютера.'
+      },
+      files: {
+        selectMedium: 'Выберите носитель, чтобы просмотреть файлы на нём.',
+        reasonAttached: 'Этот носитель подключён к целевому компьютеру.',
+        reasonAttachedHint:
+          'Сначала извлеките его: целевой компьютер должен освободить диск, прежде чем его файлы можно будет прочитать.',
+        reasonNotBrowsable: 'На этом носителе файловая система, которую менеджер не может открыть.',
+        reasonNoLoop: 'Это устройство не может подключать образы дисков (нет поддержки loop).',
+        reasonISOImage:
+          'Содержимое образа ISO 9660 здесь не отображается. Сам образ по-прежнему можно подключить к целевому компьютеру.',
+        empty: 'Эта папка пуста',
+        noMatch: 'Ни один файл не соответствует поиску.',
+        free: '{{size}} свободно',
+        search: 'Искать в этой папке',
+        sort: {
+          name: 'Имя',
+          size: 'Размер',
+          type: 'Тип',
+          asc: 'По возрастанию',
+          desc: 'По убыванию'
+        },
+        upload: 'Загрузить файл на носитель',
+        deleteFolderTitle: 'Удалить папку',
+        deleteFolderConfirm:
+          'Удалить папку {{name}} со всем содержимым? Это действие нельзя отменить.',
+        uploading: 'Загрузка…',
+        uploadFailed: 'Не удалось загрузить',
+        download: 'Скачать',
+        delete: 'Удалить',
+        deleteTitle: 'Удалить файл',
+        deleteConfirm: 'Удалить {{name}} с носителя?'
+      },
+      yes: 'Да',
+      no: 'Нет'
     },
     script: {
       title: 'Скрипты',
@@ -246,13 +366,13 @@ const ru = {
       ok: 'ОК'
     },
     download: {
-      title: 'Скачать образ',
-      input: 'Введите URL удаленного образа',
-      ok: 'OK',
-      disabled: 'Невозможно скачать образ, раздел /data находится в режиме только для чтения',
-      uploadbox: 'Перетащите сюда файл или нажмите, чтобы выбрать',
-      inputfile: 'Пожалуйста, введите файл изображения',
-      NoISO: 'Нет ISO'
+      disabled:
+        'Раздел данных доступен только для чтения, пока его использует целевой компьютер: новые образы записать нельзя, но существующие файлы по-прежнему можно скачать.',
+      sha256: 'SHA-256 (необязательно)',
+      sha256Placeholder: 'Введите контрольную сумму SHA-256 из 64 символов',
+      invalidSHA256: 'SHA-256 должен быть шестнадцатеричной строкой из 64 символов',
+      cancel: 'Отмена',
+      cancelFailed: 'Не удалось отменить загрузку'
     },
     power: {
       title: 'Питание',
@@ -269,6 +389,25 @@ const ru = {
     },
     settings: {
       title: 'Настройки',
+      mcp: {
+        title: 'Служба MCP',
+        service: 'Удалённое управление MCP',
+        serviceDesc:
+          'Разрешить доверенным клиентам MCP управлять клавиатурой и мышью и делать снимки экрана',
+        securityWarning:
+          'Любой, у кого есть этот ключ API, может управлять удалённым хостом и просматривать его экран. Используйте HTTPS и включайте службу только в доверенных сетях.',
+        endpoint: 'Конечная точка',
+        apiKey: 'Ключ API',
+        regenerateConfirmTitle: 'Создать новый ключ API MCP?',
+        regenerateConfirmDesc: 'Текущий ключ немедленно перестанет работать.',
+        enableConfirmTitle: 'Включить внешнее управление MCP?',
+        enableConfirmDesc:
+          'Включение MCP остановит PicoClaw и закроет все активные сеансы PicoClaw.',
+        failed: 'Операция MCP завершилась с ошибкой',
+        copyFailed: 'Не удалось скопировать. Скопируйте вручную.',
+        okBtn: 'Подтвердить',
+        cancelBtn: 'Отмена'
+      },
       about: {
         title: 'О системе NanoKVM',
         information: 'Информация',
@@ -303,9 +442,25 @@ const ru = {
           modeOff: 'Выкл.',
           modeAuto: 'Автоматическое скрытие',
           modeAlways: 'Всегда виден',
+          keyboardLedStatus: 'Индикаторы блокировки клавиатуры',
+          keyboardLedStatusDesc:
+            'Показывать состояние Num Lock, Caps Lock и Scroll Lock удалённого компьютера',
           icons: 'Значки подменю',
           iconsDesc: 'Отображение значков подменю в строке меню'
         }
+      },
+      keyboardLedStatus: {
+        groupLabel: 'Состояние блокировок удалённой клавиатуры',
+        indicatorLabel: '{{label}}: {{state}}',
+        numLock: 'Num Lock',
+        numLockShort: 'Num',
+        capsLock: 'Caps Lock',
+        capsLockShort: 'Caps',
+        scrollLock: 'Scroll Lock',
+        scrollLockShort: 'Scr',
+        on: 'Вкл.',
+        off: 'Выкл.',
+        unknown: 'Неизвестно'
       },
       device: {
         title: 'Устройство',
@@ -345,7 +500,10 @@ const ru = {
           tip: 'Выключите, если нет необходимости'
         },
         hdmi: {
-          description: 'Включить HDMI/выход монитора'
+          description: 'Включить HDMI/выход монитора',
+          idleTimeoutTitle: 'Тайм-аут неактивного захвата',
+          idleTimeoutDescription: 'Остановить захват HDMI, если активных зрителей нет в течение',
+          minutes: 'мин'
         },
         autostart: {
           title: 'Настройки сценариев автозапуска',
@@ -369,7 +527,12 @@ const ru = {
         reboot: 'Перезагрузка',
         rebootDesc: 'Вы уверены, что хотите перезагрузить NanoKVM?',
         okBtn: 'Да',
-        cancelBtn: 'Нет'
+        cancelBtn: 'Нет',
+        diskLocked: 'Отключён, пока смонтирован образ (включение отменит монтирование)',
+        diskCancelMount:
+          'Включение виртуального диска отменит смонтированный образ и прервёт текущую загрузку или выгрузку образа. Продолжить?',
+        diskBreakDownload: 'Включение виртуального диска прервёт загрузку образов. Продолжить?',
+        attention: 'Внимание'
       },
       network: {
         title: 'Сеть',
@@ -472,10 +635,30 @@ const ru = {
         previewDesc: 'Получайте ранний доступ к новым функциям и улучшениям',
         previewTip:
           'Обратите внимание: в ранних версиях могут быть ошибки или незавершённый функционал!',
+        customServer: {
+          title: 'Пользовательский сервер обновлений',
+          desc: 'Проверяйте наличие обновлений и загружайте их с указанного сервера',
+          invalidUrl:
+            'Введите корректный адрес каталога HTTP- или HTTPS-сервера без строки запроса, фрагмента или файла latest.json.',
+          loadFailed: 'Не удалось загрузить конфигурацию сервера обновлений.',
+          saveFailed: 'Не удалось сохранить конфигурацию сервера обновлений.',
+          saved: 'Конфигурация сервера обновлений сохранена.',
+          save: 'Сохранить',
+          confirmTitle: 'Использовать пользовательский сервер обновлений?',
+          confirmDesc:
+            'SHA-512 проверяет только соответствие пакета манифесту, предоставленному этим сервером. Это не подтверждает, что пакет является официальным выпуском NanoKVM. Неисправный или вредоносный сервер может вывести устройство из строя, привести к потере данных или поставить под угрозу безопасность системы.',
+          confirm: 'Всё равно использовать',
+          previewDisabled:
+            'Предварительные обновления недоступны, пока включён пользовательский сервер обновлений.'
+        },
         offline: {
           title: 'Автономные обновления',
           desc: 'Обновление через локальный установочный пакет',
           upload: 'Загрузить',
+          checksumPlaceholder: 'Контрольная сумма SHA-256 (необязательно)',
+          invalidChecksum:
+            'Контрольная сумма SHA-256 должна содержать 64 шестнадцатеричных символа.',
+          checksumMismatch: 'Проверка SHA-256 не пройдена. Возможно, пакет повреждён.',
           invalidName: 'Неверный формат имени файла. Загрузите выпуски с GitHub.',
           updateFailed: 'Обновление не удалось. Пожалуйста, попробуйте еще раз.'
         }
@@ -488,7 +671,28 @@ const ru = {
         logoutBtn: 'Выйти',
         logoutDesc: 'Вы действительно хотите выйти?',
         okBtn: 'Да',
-        cancelBtn: 'Нет'
+        cancelBtn: 'Нет',
+        role: 'Роль',
+        roles: {
+          admin: 'Администратор',
+          user: 'Пользователь'
+        },
+        users: {
+          title: 'Пользователи',
+          create: 'Создать пользователя',
+          enabled: 'Включён',
+          disabled: 'Отключён',
+          deviceOwner: 'Владелец устройства',
+          resetPassword: 'Сбросить пароль',
+          delete: 'Удалить',
+          deleteConfirm: 'Удалить этого пользователя и отозвать все его сеансы?',
+          created: 'Пользователь создан',
+          deleted: 'Пользователь удалён',
+          passwordUpdated: 'Пароль обновлён',
+          loadFailed: 'Не удалось загрузить пользователей',
+          saveFailed: 'Не удалось сохранить пользователя',
+          deleteFailed: 'Не удалось удалить пользователя'
+        }
       }
     },
     picoclaw: {
@@ -515,19 +719,30 @@ const ru = {
         runtimeStarted: 'Runtime PicoClaw запущен',
         runtimeStartFailed: 'Не удалось запустить runtime PicoClaw',
         runtimeStopped: 'Runtime PicoClaw остановлен',
-        runtimeStopFailed: 'Не удалось остановить runtime PicoClaw'
+        runtimeStopFailed: 'Не удалось остановить runtime PicoClaw',
+        controlSwitchedToMCP: 'Управление переключено на внешнюю службу MCP'
       },
       connection: {
         runtime: {
           checking: 'Проверка',
+          restoring: 'Restoring PicoClaw',
           ready: 'Runtime готов',
           stopped: 'Runtime остановлен',
+          blockedByMCP: 'Внешнее управление MCP активно',
+          readyBlockedByMCP:
+            'The runtime is running, but external MCP currently controls device input.',
+          readyWithoutControl:
+            'The runtime is running. Grant PicoClaw device control before reconnecting.',
           unavailable: 'Runtime недоступен',
           configError: 'Ошибка конфигурации'
         },
         transport: {
           connecting: 'Подключение',
-          connected: 'Подключено'
+          connected: 'Подключено',
+          disconnected: 'Disconnected',
+          reconnect: 'Reconnect',
+          reconnectDescription: 'Reconnect to the running PicoClaw session.',
+          reconnectBlocked: 'PicoClaw needs device control before reconnecting.'
         },
         run: {
           idle: 'Простой',
@@ -541,6 +756,30 @@ const ru = {
       },
       overlay: {
         locked: 'PicoClaw управляет устройством. Ручной ввод приостановлен.'
+      },
+      control: {
+        picoclaw: 'Управление устройством: PicoClaw',
+        picoclawDescription: 'PicoClaw can write keyboard and mouse input. Manual input may pause.',
+        mcp: 'Управление устройством: внешний MCP',
+        mcpDescription: 'External MCP can write to the device. PicoClaw will not take over input.',
+        off: 'Управление устройством: выкл.',
+        offDescription:
+          'AI will not write keyboard or mouse input. Manual control remains available.',
+        transitioning: 'Device control: switching',
+        transitioningDescription: 'Device control is syncing. Please wait.',
+        grant: 'Передать управление',
+        release: 'Освободить',
+        releasing: 'Releasing...',
+        switching: 'Switching...',
+        releasingLabel: 'Device control: releasing',
+        releasingDescription:
+          'Device control is being returned. PicoClaw has stopped current writes.',
+        granted: 'Управление PicoClaw предоставлено',
+        released: 'Управление PicoClaw освобождено',
+        grantFailed: 'Не удалось предоставить управление PicoClaw',
+        releaseFailed: 'Не удалось освободить управление PicoClaw',
+        grantConfirmTitle: 'Переключить управление устройством на PicoClaw?',
+        grantConfirmDesc: 'Записи устройства внешним MCP будут прерваны.'
       },
       install: {
         install: 'Установить PicoClaw',
@@ -602,15 +841,22 @@ const ru = {
         deleteConfirmOk: 'Удалить',
         deleteConfirmCancel: 'Отмена',
         messageCount_one: '{{count}} сообщение',
-        messageCount_other: '{{count}} сообщения'
+        messageCount_other: '{{count}} сообщения',
+        messageCount: '{{count}} сообщения'
       },
       config: {
         startRuntime: 'Запустить PicoClaw',
         stopRuntime: 'Остановить PicoClaw'
       },
       start: {
+        enableConfirmTitle: 'Переключить управление на PicoClaw?',
+        enableConfirmDesc: 'Запуск PicoClaw отключит внешнюю службу MCP.',
+        enableConfirmOk: 'Запустить PicoClaw',
+        enableConfirmCancel: 'Отмена',
         title: 'Запустить PicoClaw',
-        description: 'Запустите runtime, чтобы начать использовать помощник PicoClaw.'
+        description: 'Запустите runtime, чтобы начать использовать помощник PicoClaw.',
+        switchFromMCP: 'Switch to PicoClaw and start',
+        takeoverAndStart: 'Take over and start'
       }
     },
     error: {

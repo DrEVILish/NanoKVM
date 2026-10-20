@@ -5,7 +5,8 @@ const ja = {
       login: 'ログイン',
       changePassword: 'パスワード変更',
       terminal: 'ターミナル',
-      wifi: 'Wi-Fi'
+      wifi: 'Wi-Fi',
+      storage: 'イメージとファイル共有'
     },
     auth: {
       login: 'ログイン',
@@ -39,7 +40,10 @@ const ja = {
         change3: 'システム root パスワード（SSH ログインパスワード）',
         change4:
           'パスワードを忘れた場合は、NanoKVM の BOOT ボタンを長押ししてパスワードをリセットする必要があります。'
-      }
+      },
+      placeholderCurrentPassword: '現在のパスワード',
+      passwordLength: 'パスワードは 8〜72 文字である必要があります',
+      invalidCurrentPassword: '現在のパスワードが正しくありません'
     },
     wifi: {
       title: 'Wi-Fi',
@@ -64,6 +68,37 @@ const ja = {
       video: 'ビデオモード',
       videoDirectTips: 'このモードを使用するには「設定 - デバイス」で HTTPS を有効にしてください',
       resolution: '解像度',
+      controlRegion: {
+        title: 'マウス位置補正',
+        description:
+          '操作対象のデバイスが 16:9 以外の解像度を使用していて、カーソルの位置が水平方向または垂直方向にずれる場合に使用します。',
+        off: 'オフ',
+        auto: '自動',
+        autoWarning:
+          'ユーザーアプリケーションの背景が完全な黒の場合、補正に失敗することがあります。',
+        manual: '手動',
+        selectedResolution: '選択領域の解像度',
+        unused: '未使用',
+        originalResolution: '元の解像度',
+        selectResolution: '元の解像度を選択',
+        addResolution: 'カスタム解像度を追加',
+        add: '追加',
+        duplicateResolution: 'この解像度はすでに存在します。',
+        width: '幅',
+        height: '高さ',
+        apply: '計算して適用',
+        invalidResolution: 'ビデオの準備完了後、有効な元の解像度を入力してください。',
+        select: '領域を選択',
+        clear: '自動に戻す',
+        saveFailed: '入力領域を保存できませんでした。',
+        tooSmall: '選択した領域が小さすぎます。',
+        previewUnavailable: 'プレビューを利用できません',
+        clearConfirm: '黒帯の自動検出に戻しますか？',
+        dragHint: 'ドラッグしてリモートデスクトップの領域を選択',
+        finish: '完了',
+        confirm: '確認',
+        cancel: 'キャンセル'
+      },
       auto: '自動',
       autoTips:
         '特定の解像度で画面のちらつきやマウスカーソルのずれが発生する場合があります。リモートホストの解像度を調整するか、自動モードを無効にしてください。',
@@ -78,6 +113,15 @@ const ja = {
       frameDetectTip:
         'フレーム間の差異を計算し、リモートホストの画面が変更されない場合はビデオストリームの送信を停止します',
       resetHdmi: 'HDMI をリセット',
+      mixedH264: {
+        title: 'H.264 ストリームの競合',
+        description:
+          'H.264 Direct と H.264 WebRTC が同時に使用されています。画面のティアリングや映像の破損が発生する可能性があります。H.264 モードは 1 つだけ使用してください。'
+      },
+      webrtcConnectionFailed: {
+        title: 'WebRTC 接続に失敗しました',
+        description: 'ネットワーク接続を確認するか、ビデオモードを切り替えてください。'
+      },
       captureStatus: {
         hdmiError: 'HDMI 画面エラー',
         unsupportedResolution: '現在の解像度はサポートされていません',
@@ -174,27 +218,44 @@ const ja = {
         disable: 'HID-Only モードを無効化'
       }
     },
-    image: {
-      title: 'イメージ',
-      loading: '読み込み中',
-      empty: 'イメージファイルがありません',
+    storage: {
+      title: 'イメージとファイル共有',
+      empty:
+        'イメージはまだありません。ISO または IMG をアップロードするか、ターゲットマシンからディスクにコピーしてください。',
+      notAttached: '何もマウントされていません',
+      attached: 'マウント中: {{name}}',
+      eject: '取り出す',
+      mount: 'マウント',
       mountMode: 'マウントモード',
-      mountFailed: 'マウントに失敗しました',
-      mountDesc:
-        '一部のシステムでは、イメージをマウントする前にリモートホストで仮想ディスクをアンマウントする必要があります。',
-      unmountFailed: 'アンマウントに失敗しました',
-      unmountDesc:
-        '一部のシステムでは、イメージをアンマウントする前にリモートホストから手動で取り出す必要があります。',
-      refresh: 'イメージリストを更新',
-      attention: '注意',
-      deleteConfirm: 'このイメージを削除してもよろしいですか？',
-      okBtn: 'はい',
-      cancelBtn: 'いいえ',
+      mountModeDisk: 'マスストレージ',
+      mountModeCdrom: 'CD-ROM',
+      openManager: 'ファイルマネージャーを開く',
+      refresh: '更新',
+      delete: '削除',
+      deleteTitle: 'メディアを削除',
+      deleteConfirm: '{{name}} を削除しますか？中のファイルは失われます。',
+      downloadImage: 'イメージをダウンロード',
+      typePartition: '共有ファイル',
+      volumeLabel: 'リムーバブルディスク',
+      groups: {
+        share: 'ファイル共有',
+        images: 'イメージ'
+      },
+      failed: '操作に失敗しました',
+      hidOnly: 'HID のみのモード: 仮想ディスクは利用できません',
+      disabled: '仮想ディスクは無効です (設定 - デバイス)',
+      force: {
+        title: 'メディアを強制的に取り戻しますか？',
+        desc: 'ターゲットマシンがまだこのメディアを使用しています。取り戻すと USB デバイスが再列挙され、まだディスクに書き込まれていない内容が失われる可能性があります。',
+        menuHint:
+          'ターゲットマシンがこのメディアを使用しています。ファイルマネージャーを開いて強制的に取り戻してください。'
+      },
       tips: {
         title: 'アップロード方法',
         usb1: 'NanoKVM を USB 経由でコンピュータに接続します；',
-        usb2: '仮想ディスクがマウントされていることを確認します（設定 - 仮想ディスク）；',
+        usb2: 'このページで共有ファイルをマスストレージモードでマウントします。',
         usb3: 'コンピュータ上で仮想ディスクを開き、イメージファイルを仮想ディスクのルートディレクトリにコピーします。',
+        usb4: 'コピーが終わったらディスクを取り出します。イメージがリストに表示されます。',
         scp1: 'NanoKVM とコンピュータが同じローカルエリアネットワークに接続されていることを確認します；',
         scp2: 'コンピュータでターミナルを開き、SCP コマンドを使用してイメージファイルを NanoKVM の /data ディレクトリにアップロードします。',
         scp3: '例：scp your-image-path root@your-nanokvm-ip:/data',
@@ -204,7 +265,68 @@ const ja = {
         tf3: 'TF カードをカードリーダーに挿入してコンピュータに接続します；',
         tf4: 'コンピューターから TF カードの /data ディレクトリにイメージファイルをコピーします；',
         tf5: 'TF カードを NanoKVM に挿入します。'
-      }
+      },
+      job: {
+        running: '{{name}} を処理中'
+      },
+      enableDisk: {
+        title: '仮想ディスクを有効にしますか？',
+        desc: 'メディアをマウントするには仮想ディスクが必要ですが、現在は無効です。今すぐ有効にしますか？ターゲットマシンのキーボードとマウスが一時的に切断されます。',
+        menuHint: '仮想ディスクは無効です。設定 - デバイスで有効にしてください。'
+      },
+      add: {
+        title: 'メディアを追加',
+        upload: 'ISO または IMG をアップロード',
+        fromUrl: 'URL からダウンロード',
+        url: 'イメージの URL',
+        urlRequired: 'URL を入力してください',
+        onlyImages: 'マウントできるのは .iso と .img ファイルのみです',
+        dropHint: 'ISO または IMG をここにドロップするか、クリックしてファイルを選択',
+        cdromOnlyIso: 'CD-ROM には ISO 9660 イメージしか載せられません',
+        uploadFailed: 'アップロードに失敗しました',
+        downloadFailed: 'ダウンロードに失敗しました',
+        uploading: '{{name}} をアップロード中',
+        downloading: '{{name}} をダウンロード中',
+        done: '{{name}} の準備ができました',
+        checksumFailed: 'イメージが SHA-256 チェックサムと一致しません。',
+        blocked: 'ターゲットマシンがディスクを使用しています',
+        copyHint:
+          'イメージは SCP でデータパーティションにコピーするか、ターゲットマシンから直接コピーすることもできます。'
+      },
+      files: {
+        selectMedium: 'メディアを選択すると中のファイルを閲覧できます。',
+        reasonAttached: 'このメディアはターゲットマシンに接続されています。',
+        reasonAttachedHint:
+          '先に取り出してください。ターゲットマシンがディスクを解放するまでファイルは読み取れません。',
+        reasonNotBrowsable:
+          'このメディアにはファイルマネージャーで開けないファイルシステムが含まれています。',
+        reasonNoLoop: 'このデバイスはディスクイメージをマウントできません (loop サポートなし)。',
+        reasonISOImage:
+          'ISO 9660 イメージの中身はここでは閲覧できません。ターゲットマシンへのマウントは可能です。',
+        empty: 'このフォルダは空です',
+        noMatch: '検索に一致するファイルはありません。',
+        free: '空き {{size}}',
+        search: 'このフォルダを検索',
+        sort: {
+          name: '名前',
+          size: 'サイズ',
+          type: '種類',
+          asc: '昇順',
+          desc: '降順'
+        },
+        upload: 'メディアにファイルをアップロード',
+        deleteFolderTitle: 'フォルダーを削除',
+        deleteFolderConfirm:
+          'フォルダー {{name}} とその中身をすべて削除しますか？この操作は元に戻せません。',
+        uploading: 'アップロード中…',
+        uploadFailed: 'アップロードに失敗しました',
+        download: 'ダウンロード',
+        delete: '削除',
+        deleteTitle: 'ファイルを削除',
+        deleteConfirm: '{{name}} をメディアから削除しますか？'
+      },
+      yes: 'はい',
+      no: 'いいえ'
     },
     script: {
       title: 'スクリプト',
@@ -246,14 +368,13 @@ const ja = {
       ok: 'OK'
     },
     download: {
-      title: 'イメージダウンローダー',
-      input: 'リモートイメージの URL を入力してください',
-      ok: 'OK',
       disabled:
-        '/data パーティションは読み取り専用であり、イメージのダウンロードには使用できません',
-      uploadbox: 'ここにファイルをドロップするか、クリックして選択してください',
-      inputfile: '画像ファイルを入力してください',
-      NoISO: 'ISO なし'
+        'ターゲットマシンが使用している間、データパーティションは読み取り専用です。新しいイメージは書き込めませんが、既存のファイルはダウンロードできます。',
+      sha256: 'SHA-256（任意）',
+      sha256Placeholder: '64 文字の SHA-256 チェックサムを入力してください',
+      invalidSHA256: 'SHA-256 は 64 文字の 16 進数文字列である必要があります',
+      cancel: 'キャンセル',
+      cancelFailed: 'ダウンロードのキャンセルに失敗しました'
     },
     power: {
       title: '電源',
@@ -270,6 +391,25 @@ const ja = {
     },
     settings: {
       title: '設定',
+      mcp: {
+        title: 'MCP サービス',
+        service: 'MCP リモート制御',
+        serviceDesc:
+          '信頼できる MCP クライアントによるキーボードとマウスの操作、およびスクリーンショットの取得を許可します',
+        securityWarning:
+          'この API キーを持つ人は誰でもリモートホストを操作し、画面を表示できます。HTTPS を使用し、信頼できるネットワークでのみ有効にしてください。',
+        endpoint: 'エンドポイント',
+        apiKey: 'API キー',
+        regenerateConfirmTitle: 'MCP API キーを再生成しますか？',
+        regenerateConfirmDesc: '現在のキーは直ちに使用できなくなります。',
+        enableConfirmTitle: '外部 MCP 制御を有効にしますか？',
+        enableConfirmDesc:
+          'MCP を有効にすると PicoClaw が停止し、アクティブな PicoClaw セッションがすべて終了します。',
+        failed: 'MCP 操作に失敗しました',
+        copyFailed: 'コピーに失敗しました。手動でコピーしてください。',
+        okBtn: '確認',
+        cancelBtn: 'キャンセル'
+      },
       about: {
         title: 'NanoKVM について',
         information: '情報',
@@ -303,9 +443,25 @@ const ja = {
           modeOff: '閉じる',
           modeAuto: '自動非表示',
           modeAlways: '常に表示',
+          keyboardLedStatus: 'キーボードロックの表示',
+          keyboardLedStatusDesc:
+            'リモートコンピューターの Num Lock、Caps Lock、Scroll Lock の状態を表示',
           icons: 'メニューアイコン',
           iconsDesc: 'メニューバーでのサブメニューアイコンの表示'
         }
+      },
+      keyboardLedStatus: {
+        groupLabel: 'リモートキーボードのロック状態',
+        indicatorLabel: '{{label}}：{{state}}',
+        numLock: 'Num Lock',
+        numLockShort: 'Num',
+        capsLock: 'Caps Lock',
+        capsLockShort: 'Caps',
+        scrollLock: 'Scroll Lock',
+        scrollLockShort: 'Scr',
+        on: 'オン',
+        off: 'オフ',
+        unknown: '不明'
       },
       device: {
         title: 'デバイス',
@@ -345,7 +501,11 @@ const ja = {
           tip: 'この機能を使用していない場合は、オフにすることをお勧めします'
         },
         hdmi: {
-          description: 'HDMI/モニター 出力機能を有効にする'
+          description: 'HDMI/モニター 出力機能を有効にする',
+          idleTimeoutTitle: 'キャプチャのアイドルタイムアウト',
+          idleTimeoutDescription:
+            'アクティブな閲覧者がいない状態が次の時間続いたら HDMI キャプチャを停止',
+          minutes: '分'
         },
         autostart: {
           title: '自動起動スクリプト設定',
@@ -368,7 +528,13 @@ const ja = {
         reboot: '再起動',
         rebootDesc: 'NanoKVM を再起動してもよろしいですか?',
         okBtn: 'はい',
-        cancelBtn: 'いいえ'
+        cancelBtn: 'いいえ',
+        diskLocked: 'イメージのマウント中はオフです（オンにするとマウントが解除されます）',
+        diskCancelMount:
+          '仮想ディスクを有効にすると、マウント中のイメージは解除され、進行中のイメージのダウンロード/アップロードも中断されます。続行しますか？',
+        diskBreakDownload:
+          '仮想ディスクを有効にすると、イメージのダウンロードが中断されます。続行しますか？',
+        attention: '注意'
       },
       network: {
         title: 'ネットワーク',
@@ -472,10 +638,30 @@ const ja = {
         previewDesc: '新機能や改善をいち早く体験する',
         previewTip:
           'プレビューアップデートには不安定な部分や不完全な機能が含まれる場合があります！',
+        customServer: {
+          title: 'カスタム更新サーバー',
+          desc: '指定したサーバーでオンラインアップデートを確認し、ダウンロードします',
+          invalidUrl:
+            'クエリ、フラグメント、latest.json を含まない、有効な HTTP または HTTPS のサーバーディレクトリを入力してください。',
+          loadFailed: '更新サーバーの設定を読み込めませんでした。',
+          saveFailed: '更新サーバーの設定を保存できませんでした。',
+          saved: '更新サーバーの設定を保存しました。',
+          save: '保存',
+          confirmTitle: 'カスタム更新サーバーを使用しますか？',
+          confirmDesc:
+            'SHA-512 で確認できるのは、パッケージがこのサーバーから提供されたマニフェストと一致することだけです。そのパッケージが NanoKVM の公式リリースであることは保証されません。不具合のあるサーバーや悪意のあるサーバーを使用すると、デバイスが使用不能になったり、データが失われたり、システムが侵害されたりする可能性があります。',
+          confirm: 'そのまま使用',
+          previewDisabled:
+            'カスタム更新サーバーが有効な間は、プレビュー版アップデートを利用できません。'
+        },
         offline: {
           title: 'オフラインアップデート',
           desc: 'ローカルインストールパッケージでアップデートする',
           upload: 'アップロード',
+          checksumPlaceholder: 'SHA-256チェックサム（任意）',
+          invalidChecksum: 'SHA-256チェックサムは64文字の16進数である必要があります。',
+          checksumMismatch:
+            'SHA-256の検証に失敗しました。パッケージが破損している可能性があります。',
           invalidName:
             'ファイル名の形式が正しくありません。GitHub リリースページにアクセスしてインストールパッケージをダウンロードしてください。',
           updateFailed: 'アップデートに失敗しました。もう一度お試しください。'
@@ -489,7 +675,28 @@ const ja = {
         logoutBtn: 'ログアウト',
         logoutDesc: 'ログアウトしてもよろしいですか？',
         okBtn: 'はい',
-        cancelBtn: 'いいえ'
+        cancelBtn: 'いいえ',
+        role: '役割',
+        roles: {
+          admin: '管理者',
+          user: 'ユーザー'
+        },
+        users: {
+          title: 'ユーザー',
+          create: 'ユーザーを作成',
+          enabled: '有効',
+          disabled: '無効',
+          deviceOwner: 'デバイスの所有者',
+          resetPassword: 'パスワードをリセット',
+          delete: '削除',
+          deleteConfirm: 'このユーザーを削除し、すべてのセッションを取り消しますか？',
+          created: 'ユーザーを作成しました',
+          deleted: 'ユーザーを削除しました',
+          passwordUpdated: 'パスワードを更新しました',
+          loadFailed: 'ユーザーを読み込めませんでした',
+          saveFailed: 'ユーザーを保存できませんでした',
+          deleteFailed: 'ユーザーを削除できませんでした'
+        }
       }
     },
     picoclaw: {
@@ -516,19 +723,30 @@ const ja = {
         runtimeStarted: 'PicoClaw ランタイムが開始されました',
         runtimeStartFailed: 'PicoClaw ランタイムの開始に失敗しました',
         runtimeStopped: 'PicoClaw ランタイムが停止しました',
-        runtimeStopFailed: 'PicoClaw ランタイムの停止に失敗しました'
+        runtimeStopFailed: 'PicoClaw ランタイムの停止に失敗しました',
+        controlSwitchedToMCP: '制御が外部 MCP サービスに切り替わりました'
       },
       connection: {
         runtime: {
           checking: 'チェック中',
+          restoring: 'Restoring PicoClaw',
           ready: 'ランタイムの準備が完了しました',
           stopped: 'ランタイムが停止しました',
+          blockedByMCP: '外部 MCP 制御が有効です',
+          readyBlockedByMCP:
+            'The runtime is running, but external MCP currently controls device input.',
+          readyWithoutControl:
+            'The runtime is running. Grant PicoClaw device control before reconnecting.',
           unavailable: 'ランタイムが使用できません',
           configError: '構成エラー'
         },
         transport: {
           connecting: '接続中',
-          connected: '接続されました'
+          connected: '接続されました',
+          disconnected: 'Disconnected',
+          reconnect: 'Reconnect',
+          reconnectDescription: 'Reconnect to the running PicoClaw session.',
+          reconnectBlocked: 'PicoClaw needs device control before reconnecting.'
         },
         run: {
           idle: 'アイドル状態',
@@ -542,6 +760,30 @@ const ja = {
       },
       overlay: {
         locked: 'PicoClaw がデバイスを制御しています。手動入力が一時停止されます。'
+      },
+      control: {
+        picoclaw: 'デバイス制御: PicoClaw',
+        picoclawDescription: 'PicoClaw can write keyboard and mouse input. Manual input may pause.',
+        mcp: 'デバイス制御: 外部 MCP',
+        mcpDescription: 'External MCP can write to the device. PicoClaw will not take over input.',
+        off: 'デバイス制御: オフ',
+        offDescription:
+          'AI will not write keyboard or mouse input. Manual control remains available.',
+        transitioning: 'Device control: switching',
+        transitioningDescription: 'Device control is syncing. Please wait.',
+        grant: '制御を付与',
+        release: '解除',
+        releasing: 'Releasing...',
+        switching: 'Switching...',
+        releasingLabel: 'Device control: releasing',
+        releasingDescription:
+          'Device control is being returned. PicoClaw has stopped current writes.',
+        granted: 'PicoClaw 制御を付与しました',
+        released: 'PicoClaw 制御を解除しました',
+        grantFailed: 'PicoClaw 制御の付与に失敗しました',
+        releaseFailed: 'PicoClaw 制御の解除に失敗しました',
+        grantConfirmTitle: 'デバイス制御を PicoClaw に切り替えますか?',
+        grantConfirmDesc: '外部 MCP のデバイス書き込みは中断されます。'
       },
       install: {
         install: 'PicoClaw をインストールする',
@@ -604,15 +846,22 @@ const ja = {
         deleteConfirmOk: '削除',
         deleteConfirmCancel: 'キャンセル',
         messageCount_one: '{{count}} メッセージ',
-        messageCount_other: '{{count}} メッセージ'
+        messageCount_other: '{{count}} メッセージ',
+        messageCount: '{{count}} メッセージ'
       },
       config: {
         startRuntime: 'PicoClaw を開始',
         stopRuntime: 'PicoClaw を停止'
       },
       start: {
+        enableConfirmTitle: '制御を PicoClaw に切り替えますか？',
+        enableConfirmDesc: 'PicoClaw を開始すると外部 MCP サービスが無効になります。',
+        enableConfirmOk: 'PicoClaw を開始',
+        enableConfirmCancel: 'キャンセル',
         title: 'PicoClaw を開始',
-        description: 'ランタイムを起動して、PicoClaw アシスタントの使用を開始します。'
+        description: 'ランタイムを起動して、PicoClaw アシスタントの使用を開始します。',
+        switchFromMCP: 'Switch to PicoClaw and start',
+        takeoverAndStart: 'Take over and start'
       }
     },
     error: {

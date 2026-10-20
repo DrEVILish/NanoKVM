@@ -10,10 +10,12 @@ import (
 )
 
 type WebRTCManager struct {
-	clients        map[*websocket.Conn]*Client
-	clientSnapshot atomic.Pointer[[]*Client]
-	videoSending   int32
-	mutex          sync.Mutex
+	clients         map[*websocket.Conn]*Client
+	clientSnapshot  atomic.Pointer[[]*Client]
+	videoPacketizer rtp.Packetizer
+	videoSending    bool
+	mutex           sync.Mutex
+	viewerVersion   uint64
 }
 
 type Client struct {
@@ -28,14 +30,14 @@ func (c *Client) WsConn() *websocket.Conn {
 }
 
 type SignalingHandler struct {
-	client *Client
+	client         *Client
+	mutex          sync.Mutex
+	unregisterMode func()
+	closed         bool
 }
 
 type Track struct {
-	playoutDelayExtensionID   uint8
-	playoutDelayExtensionData []byte
-	videoPacketizer           rtp.Packetizer
-	video                     *webrtc.TrackLocalStaticRTP
+	video *webrtc.TrackLocalStaticRTP
 }
 
 type Message struct {

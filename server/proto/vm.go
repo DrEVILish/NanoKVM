@@ -72,6 +72,10 @@ type GetVirtualDeviceRsp struct {
 
 type UpdateVirtualDeviceReq struct {
 	Device string `validate:"required"`
+	// Enable turns the device on or off instead of toggling it. A caller that
+	// says "enable" must not switch a running device off because it happened to
+	// be already on.
+	Enable *bool `json:"enable"`
 }
 
 type UpdateVirtualDeviceRsp struct {
@@ -98,7 +102,13 @@ type GetOLEDRsp struct {
 }
 
 type GetGetHdmiStateRsp struct {
-	Enabled bool `json:"enabled"`
+	Enabled     bool `json:"enabled"`
+	Signal      bool `json:"signal"`
+	IdleTimeout int  `json:"idleTimeout"`
+}
+
+type SetHdmiIdleTimeoutReq struct {
+	Minutes int `validate:"gte=0,lte=10080"`
 }
 
 type GetSSHStateRsp struct {
@@ -145,4 +155,55 @@ type GetWebTitleRsp struct {
 
 type SetTlsReq struct {
 	Enabled bool `validate:"omitempty"`
+}
+
+type InputRegion struct {
+	Mode               string               `json:"mode"`
+	FrameWidth         int                  `json:"frameWidth"`
+	FrameHeight        int                  `json:"frameHeight"`
+	Left               int                  `json:"left"`
+	Top                int                  `json:"top"`
+	Width              int                  `json:"width"`
+	Height             int                  `json:"height"`
+	Resolutions        []OriginalResolution `json:"resolutions,omitempty"`
+	SelectedResolution string               `json:"selectedResolution"`
+	Regions            []ManualRegion       `json:"regions,omitempty"`
+	SelectedRegion     string               `json:"selectedRegion"`
+}
+
+type ManualRegion struct {
+	FrameWidth  int `json:"frameWidth"`
+	FrameHeight int `json:"frameHeight"`
+	Left        int `json:"left"`
+	Top         int `json:"top"`
+	Width       int `json:"width"`
+	Height      int `json:"height"`
+}
+
+type OriginalResolution struct {
+	Width  int `json:"width"`
+	Height int `json:"height"`
+}
+
+type SetInputRegionReq struct {
+	Mode               string                `json:"mode"`
+	FrameWidth         *int                  `json:"frameWidth,omitempty"`
+	FrameHeight        *int                  `json:"frameHeight,omitempty"`
+	Left               *int                  `json:"left,omitempty"`
+	Top                *int                  `json:"top,omitempty"`
+	Width              *int                  `json:"width,omitempty"`
+	Height             *int                  `json:"height,omitempty"`
+	Resolutions        *[]OriginalResolution `json:"resolutions,omitempty"`
+	SelectedResolution *string               `json:"selectedResolution,omitempty"`
+	Regions            *[]ManualRegion       `json:"regions,omitempty"`
+	SelectedRegion     *string               `json:"selectedRegion,omitempty"`
+}
+
+type GetInputRegionRsp struct {
+	InputRegion
+}
+
+type GetInputResolutionRsp struct {
+	Width  int `json:"width"`
+	Height int `json:"height"`
 }

@@ -5,7 +5,8 @@ const pt_br = {
       login: 'Login',
       changePassword: 'Mudar Senha',
       terminal: 'Terminal',
-      wifi: 'Wi-Fi'
+      wifi: 'Wi-Fi',
+      storage: 'Imagens e compartilhamento de arquivos'
     },
     auth: {
       login: 'Login',
@@ -39,7 +40,10 @@ const pt_br = {
         change2: 'Senha de login da Web',
         change3: 'Senha root do sistema (senha de login SSH)',
         change4: 'Para redefinir as senhas, pressione e segure o botão BOOT no NanoKVM.'
-      }
+      },
+      placeholderCurrentPassword: 'Senha atual',
+      passwordLength: 'A senha deve ter entre 8 e 72 caracteres',
+      invalidCurrentPassword: 'A senha atual está incorreta'
     },
     wifi: {
       title: 'Wi-Fi',
@@ -64,6 +68,37 @@ const pt_br = {
       video: 'Modo de Vídeo',
       videoDirectTips: 'Ative HTTPS em "Configurações > Dispositivo" para usar este modo',
       resolution: 'Resolução',
+      controlRegion: {
+        title: 'Calibração do mouse',
+        description:
+          'Use esta configuração quando o dispositivo controlado usar uma resolução diferente de 16:9 e o cursor estiver desalinhado horizontal ou verticalmente.',
+        off: 'Desativado',
+        auto: 'Automático',
+        autoWarning:
+          'A calibração pode falhar se o aplicativo do usuário tiver um fundo totalmente preto.',
+        manual: 'Manual',
+        selectedResolution: 'Resolução da área selecionada',
+        unused: 'Não utilizado',
+        originalResolution: 'Resolução original',
+        selectResolution: 'Selecionar resolução original',
+        addResolution: 'Adicionar resolução personalizada',
+        add: 'Adicionar',
+        duplicateResolution: 'Esta resolução já existe.',
+        width: 'Largura',
+        height: 'Altura',
+        apply: 'Calcular e aplicar',
+        invalidResolution: 'Insira uma resolução original válida quando o vídeo estiver pronto.',
+        select: 'Selecionar área',
+        clear: 'Restaurar detecção automática',
+        saveFailed: 'Falha ao salvar a área de entrada.',
+        tooSmall: 'A área selecionada é muito pequena.',
+        previewUnavailable: 'Pré-visualização indisponível',
+        clearConfirm: 'Restaurar a detecção automática de bordas pretas?',
+        dragHint: 'Arraste para selecionar a área da área de trabalho remota',
+        finish: 'Concluir',
+        confirm: 'Confirmar',
+        cancel: 'Cancelar'
+      },
       auto: 'Automático',
       autoTips:
         'Rasgos na tela ou desvio do mouse podem ocorrer em resoluções específicas. Considere ajustar a resolução do host remoto ou desativar o modo automático.',
@@ -78,6 +113,15 @@ const pt_br = {
       frameDetectTip:
         'Calcular a diferença entre os quadros. Parar a transmissão de vídeo quando nenhuma alteração for detectada na tela do host remoto.',
       resetHdmi: 'Redefinir HDMI',
+      mixedH264: {
+        title: 'Conflito de transmissão H.264',
+        description:
+          'H.264 Direct e H.264 WebRTC estão sendo usados ao mesmo tempo. Isso pode causar rasgos na tela ou vídeo corrompido. Use apenas um modo H.264.'
+      },
+      webrtcConnectionFailed: {
+        title: 'Falha na conexão WebRTC',
+        description: 'Verifique a conexão de rede ou alterne o modo de vídeo.'
+      },
       captureStatus: {
         hdmiError: 'Erro na imagem HDMI',
         unsupportedResolution: 'A resolução atual não é compatível',
@@ -174,27 +218,44 @@ const pt_br = {
         disable: 'Desabilitar modo Somente-HID'
       }
     },
-    image: {
-      title: 'Imagens',
-      loading: 'Carregando...',
-      empty: 'Nada Encontrado',
+    storage: {
+      title: 'Imagens e compartilhamento de arquivos',
+      empty:
+        'Ainda não há imagens. Envie uma ISO ou IMG, ou copie uma para o disco a partir da máquina remota.',
+      notAttached: 'Nada montado',
+      attached: 'Montado: {{name}}',
+      eject: 'Ejetar',
+      mount: 'Montar',
       mountMode: 'Modo de montagem',
-      mountFailed: 'Falha na Montagem',
-      mountDesc:
-        'Em alguns sistemas, é necessário ejetar o disco virtual no host remoto antes de montar a imagem.',
-      unmountFailed: 'Falha na desmontagem',
-      unmountDesc:
-        'Em alguns sistemas, é necessário ejetar manualmente do host remoto antes de desmontar a imagem.',
-      refresh: 'Atualizar a lista de imagens',
-      attention: 'Atenção',
-      deleteConfirm: 'Tem certeza que deseja excluir esta imagem?',
-      okBtn: 'Sim',
-      cancelBtn: 'Não',
+      mountModeDisk: 'Armazenamento em massa',
+      mountModeCdrom: 'CD-ROM',
+      openManager: 'Abrir o gerenciador de arquivos',
+      refresh: 'Atualizar',
+      delete: 'Excluir',
+      deleteTitle: 'Excluir mídia',
+      deleteConfirm: 'Excluir {{name}}? Os arquivos dentro dele serão perdidos.',
+      downloadImage: 'Baixar a imagem',
+      typePartition: 'Arquivos compartilhados',
+      volumeLabel: 'Disco removível',
+      groups: {
+        share: 'Compartilhamento de arquivos',
+        images: 'Imagens'
+      },
+      failed: 'A operação falhou',
+      hidOnly: 'Modo somente HID: o disco virtual não está disponível',
+      disabled: 'O disco virtual está desativado (Configurações - Dispositivo)',
+      force: {
+        title: 'Retomar a mídia à força?',
+        desc: 'A máquina remota ainda está usando esta mídia. Retomá-la reenumera o dispositivo USB e pode perder tudo o que ela ainda não gravou no disco.',
+        menuHint:
+          'A máquina remota está usando esta mídia. Abra o gerenciador de arquivos para retomá-la à força.'
+      },
       tips: {
         title: 'Como fazer upload',
         usb1: 'Conecte o NanoKVM ao seu computador via USB.',
-        usb2: 'Certifique-se de que o disco virtual está montado (Configurações - Disco Virtual).',
+        usb2: 'Nesta página, monte os arquivos compartilhados no modo de armazenamento em massa.',
         usb3: 'Abra o disco virtual no seu computador e copie o arquivo de imagem para o diretório raiz do disco virtual.',
+        usb4: 'Ejete o disco quando a cópia terminar: a imagem aparecerá na lista.',
         scp1: 'Certifique-se de que o NanoKVM e seu computador estão na mesma rede local.',
         scp2: 'Abra um terminal no seu computador e use o comando SCP para fazer upload do arquivo de imagem para o diretório /data no NanoKVM.',
         scp3: 'Exemplo: scp seu-caminho-da-imagem root@seu-ip-nanokvm:/data',
@@ -204,7 +265,68 @@ const pt_br = {
         tf3: 'Insira o cartão TF em um leitor de cartão e conecte-o ao seu computador.',
         tf4: 'Copie o arquivo de imagem para o diretório /data no cartão TF.',
         tf5: 'Insira o cartão TF no NanoKVM.'
-      }
+      },
+      job: {
+        running: 'Processando {{name}}'
+      },
+      enableDisk: {
+        title: 'Ativar o disco virtual?',
+        desc: 'Montar uma mídia exige o disco virtual, que está desativado no momento. Ativá-lo agora? O teclado e o mouse da máquina remota serão desconectados por um instante.',
+        menuHint: 'O disco virtual está desativado. Ative-o em Configurações - Dispositivo.'
+      },
+      add: {
+        title: 'Adicionar mídia',
+        upload: 'Enviar uma ISO ou IMG',
+        fromUrl: 'Baixar de uma URL',
+        url: 'URL da imagem',
+        urlRequired: 'Informe uma URL',
+        onlyImages: 'Só é possível montar arquivos .iso e .img',
+        dropHint: 'Arraste uma ISO ou IMG aqui, ou clique para escolher um arquivo',
+        cdromOnlyIso: 'Um CD-ROM só pode conter uma imagem ISO 9660',
+        uploadFailed: 'Falha no envio',
+        downloadFailed: 'Falha no download',
+        uploading: 'Enviando {{name}}',
+        downloading: 'Baixando {{name}}',
+        done: '{{name}} está pronto',
+        checksumFailed: 'A imagem não corresponde ao checksum SHA-256.',
+        blocked: 'A máquina remota está usando o disco',
+        copyHint:
+          'Você também pode copiar uma imagem para a partição de dados via SCP, ou a partir da máquina remota.'
+      },
+      files: {
+        selectMedium: 'Selecione uma mídia para ver os arquivos dentro dela.',
+        reasonAttached: 'Esta mídia está conectada à máquina remota.',
+        reasonAttachedHint:
+          'Ejete-a primeiro: a máquina remota precisa liberar o disco antes que seus arquivos possam ser lidos.',
+        reasonNotBrowsable:
+          'Esta mídia contém um sistema de arquivos que o gerenciador não consegue abrir.',
+        reasonNoLoop: 'Este dispositivo não consegue montar imagens de disco (sem suporte a loop).',
+        reasonISOImage:
+          'Uma imagem ISO 9660 não pode ser navegada aqui. Ela ainda pode ser montada na máquina remota.',
+        empty: 'Esta pasta está vazia',
+        noMatch: 'Nenhum arquivo corresponde à busca.',
+        free: '{{size}} livres',
+        search: 'Buscar nesta pasta',
+        sort: {
+          name: 'Nome',
+          size: 'Tamanho',
+          type: 'Tipo',
+          asc: 'Crescente',
+          desc: 'Decrescente'
+        },
+        upload: 'Enviar um arquivo para a mídia',
+        deleteFolderTitle: 'Excluir pasta',
+        deleteFolderConfirm:
+          'Excluir a pasta {{name}} e todo o seu conteúdo? Esta ação não pode ser desfeita.',
+        uploading: 'Enviando…',
+        uploadFailed: 'Falha no envio',
+        download: 'Baixar',
+        delete: 'Excluir',
+        deleteTitle: 'Excluir arquivo',
+        deleteConfirm: 'Excluir {{name}} da mídia?'
+      },
+      yes: 'Sim',
+      no: 'Não'
     },
     script: {
       title: 'Scripts',
@@ -246,13 +368,13 @@ const pt_br = {
       ok: 'Ok'
     },
     download: {
-      title: 'Baixador de Imagens',
-      input: 'Por favor, digite uma URL de imagem remota',
-      ok: 'Ok',
-      disabled: 'A partição /data é RO, então não podemos baixar a imagem',
-      uploadbox: 'Solte o arquivo aqui ou clique para selecionar',
-      inputfile: 'Por favor insira o arquivo de imagem',
-      NoISO: 'Sem ISO'
+      disabled:
+        'A partição de dados fica somente leitura enquanto a máquina remota a usa: novas imagens não podem ser gravadas, mas os arquivos existentes continuam podendo ser baixados.',
+      sha256: 'SHA-256 (opcional)',
+      sha256Placeholder: 'Digite um checksum SHA-256 de 64 caracteres',
+      invalidSHA256: 'SHA-256 deve ser uma sequência hexadecimal de 64 caracteres',
+      cancel: 'Cancelar',
+      cancelFailed: 'Falha ao cancelar o download'
     },
     power: {
       title: 'Energia',
@@ -269,6 +391,25 @@ const pt_br = {
     },
     settings: {
       title: 'Configurações',
+      mcp: {
+        title: 'Serviço MCP',
+        service: 'Controle remoto MCP',
+        serviceDesc:
+          'Permitir que clientes MCP confiáveis controlem o teclado e o mouse e capturem imagens da tela',
+        securityWarning:
+          'Qualquer pessoa com esta chave de API pode controlar o host remoto e visualizar sua tela. Use HTTPS e habilite o serviço somente em redes confiáveis.',
+        endpoint: 'Endpoint',
+        apiKey: 'Chave de API',
+        regenerateConfirmTitle: 'Gerar novamente a chave de API MCP?',
+        regenerateConfirmDesc: 'A chave atual deixará de funcionar imediatamente.',
+        enableConfirmTitle: 'Habilitar o controle MCP externo?',
+        enableConfirmDesc:
+          'Habilitar o MCP interromperá o PicoClaw e fechará todas as sessões ativas do PicoClaw.',
+        failed: 'Falha na operação MCP',
+        copyFailed: 'Falha ao copiar. Copie manualmente.',
+        okBtn: 'Confirmar',
+        cancelBtn: 'Cancelar'
+      },
       about: {
         title: 'Sobre o NanoKVM',
         information: 'Informação',
@@ -302,9 +443,25 @@ const pt_br = {
           modeOff: 'Desligado',
           modeAuto: 'Ocultar automaticamente',
           modeAlways: 'Sempre visível',
+          keyboardLedStatus: 'Indicadores de bloqueio do teclado',
+          keyboardLedStatusDesc:
+            'Exibir o estado de Num Lock, Caps Lock e Scroll Lock do computador remoto',
           icons: 'Ícones do submenu',
           iconsDesc: 'Exibir ícones de submenus na barra de menu'
         }
+      },
+      keyboardLedStatus: {
+        groupLabel: 'Estado dos bloqueios do teclado remoto',
+        indicatorLabel: '{{label}}: {{state}}',
+        numLock: 'Num Lock',
+        numLockShort: 'Num',
+        capsLock: 'Caps Lock',
+        capsLockShort: 'Caps',
+        scrollLock: 'Scroll Lock',
+        scrollLockShort: 'Scr',
+        on: 'Ativado',
+        off: 'Desativado',
+        unknown: 'Desconhecido'
       },
       device: {
         title: 'Dispositivo',
@@ -344,7 +501,10 @@ const pt_br = {
           tip: 'Desligue se não for necessário'
         },
         hdmi: {
-          description: 'Habilitar saída HDMI/monitor'
+          description: 'Habilitar saída HDMI/monitor',
+          idleTimeoutTitle: 'Tempo limite de captura inativa',
+          idleTimeoutDescription: 'Parar a captura HDMI após não haver visualizadores ativos por',
+          minutes: 'min'
         },
         autostart: {
           title: 'Configurações de scripts de inicialização automática',
@@ -367,7 +527,12 @@ const pt_br = {
         reboot: 'Reiniciar',
         rebootDesc: 'Tem certeza de que deseja reiniciar o NanoKVM?',
         okBtn: 'Sim',
-        cancelBtn: 'Não'
+        cancelBtn: 'Não',
+        diskLocked: 'Desligado enquanto uma imagem estiver montada (ligá-lo cancela a montagem)',
+        diskCancelMount:
+          'Ativar o disco virtual cancela a imagem montada e interrompe um download ou upload de imagem em andamento. Continuar?',
+        diskBreakDownload: 'Ativar o disco virtual interrompe o download de imagens. Continuar?',
+        attention: 'Atenção'
       },
       network: {
         title: 'Rede',
@@ -471,10 +636,29 @@ const pt_br = {
         previewDesc: 'Tenha acesso antecipado a novos recursos e melhorias',
         previewTip:
           'Esteja ciente de que as versões de prévia podem conter bugs ou funcionalidade incompleta!',
+        customServer: {
+          title: 'Servidor de atualização personalizado',
+          desc: 'Verifique e baixe atualizações online de um servidor especificado',
+          invalidUrl:
+            'Insira um diretório de servidor HTTP ou HTTPS válido, sem parâmetros de consulta, fragmentos ou latest.json.',
+          loadFailed: 'Não foi possível carregar a configuração do servidor de atualização.',
+          saveFailed: 'Não foi possível salvar a configuração do servidor de atualização.',
+          saved: 'Configuração do servidor de atualização salva.',
+          save: 'Salvar',
+          confirmTitle: 'Usar um servidor de atualização personalizado?',
+          confirmDesc:
+            'O SHA-512 apenas verifica se o pacote corresponde ao manifesto fornecido por este servidor. Ele não comprova que o pacote seja uma versão oficial do NanoKVM. Um servidor com falha ou mal-intencionado pode inutilizar o dispositivo, causar perda de dados ou comprometer o sistema.',
+          confirm: 'Usar mesmo assim',
+          previewDisabled:
+            'As atualizações de prévia ficam indisponíveis enquanto um servidor de atualização personalizado estiver ativado.'
+        },
         offline: {
           title: 'Atualizações off-line',
           desc: 'Atualização através do pacote de instalação local',
           upload: 'Upload',
+          checksumPlaceholder: 'Soma de verificação SHA-256 (opcional)',
+          invalidChecksum: 'A soma de verificação SHA-256 deve conter 64 caracteres hexadecimais.',
+          checksumMismatch: 'A verificação SHA-256 falhou. O pacote pode estar corrompido.',
           invalidName: 'Formato de nome de arquivo inválido. Faça download das versões do GitHub.',
           updateFailed: 'Falha na atualização. Por favor, tente novamente.'
         }
@@ -487,7 +671,28 @@ const pt_br = {
         logoutBtn: 'Sair',
         logoutDesc: 'Tem certeza de que deseja sair?',
         okBtn: 'Sim',
-        cancelBtn: 'Não'
+        cancelBtn: 'Não',
+        role: 'Função',
+        roles: {
+          admin: 'Administrador',
+          user: 'Usuário'
+        },
+        users: {
+          title: 'Usuários',
+          create: 'Criar usuário',
+          enabled: 'Ativado',
+          disabled: 'Desativado',
+          deviceOwner: 'Proprietário do dispositivo',
+          resetPassword: 'Redefinir senha',
+          delete: 'Excluir',
+          deleteConfirm: 'Excluir este usuário e revogar todas as sessões dele?',
+          created: 'Usuário criado',
+          deleted: 'Usuário excluído',
+          passwordUpdated: 'Senha atualizada',
+          loadFailed: 'Falha ao carregar os usuários',
+          saveFailed: 'Falha ao salvar o usuário',
+          deleteFailed: 'Falha ao excluir o usuário'
+        }
       }
     },
     picoclaw: {
@@ -514,19 +719,30 @@ const pt_br = {
         runtimeStarted: 'Runtime do PicoClaw iniciado',
         runtimeStartFailed: 'Falha ao iniciar o runtime do PicoClaw',
         runtimeStopped: 'Runtime do PicoClaw interrompido',
-        runtimeStopFailed: 'Falha ao parar o runtime do PicoClaw'
+        runtimeStopFailed: 'Falha ao parar o runtime do PicoClaw',
+        controlSwitchedToMCP: 'Controle transferido para o serviço MCP externo'
       },
       connection: {
         runtime: {
           checking: 'Verificando',
+          restoring: 'Restoring PicoClaw',
           ready: 'Runtime pronto',
           stopped: 'Runtime interrompido',
+          blockedByMCP: 'O controle MCP externo está ativo',
+          readyBlockedByMCP:
+            'The runtime is running, but external MCP currently controls device input.',
+          readyWithoutControl:
+            'The runtime is running. Grant PicoClaw device control before reconnecting.',
           unavailable: 'Runtime indisponível',
           configError: 'Erro de configuração'
         },
         transport: {
           connecting: 'Conectando',
-          connected: 'Conectado'
+          connected: 'Conectado',
+          disconnected: 'Disconnected',
+          reconnect: 'Reconnect',
+          reconnectDescription: 'Reconnect to the running PicoClaw session.',
+          reconnectBlocked: 'PicoClaw needs device control before reconnecting.'
         },
         run: {
           idle: 'Inativo',
@@ -540,6 +756,30 @@ const pt_br = {
       },
       overlay: {
         locked: 'PicoClaw está controlando o dispositivo. A entrada manual está pausada.'
+      },
+      control: {
+        picoclaw: 'Controle do dispositivo: PicoClaw',
+        picoclawDescription: 'PicoClaw can write keyboard and mouse input. Manual input may pause.',
+        mcp: 'Controle do dispositivo: MCP externo',
+        mcpDescription: 'External MCP can write to the device. PicoClaw will not take over input.',
+        off: 'Controle do dispositivo: desativado',
+        offDescription:
+          'AI will not write keyboard or mouse input. Manual control remains available.',
+        transitioning: 'Device control: switching',
+        transitioningDescription: 'Device control is syncing. Please wait.',
+        grant: 'Conceder controle',
+        release: 'Liberar',
+        releasing: 'Releasing...',
+        switching: 'Switching...',
+        releasingLabel: 'Device control: releasing',
+        releasingDescription:
+          'Device control is being returned. PicoClaw has stopped current writes.',
+        granted: 'Controle do PicoClaw concedido',
+        released: 'Controle do PicoClaw liberado',
+        grantFailed: 'Falha ao conceder controle ao PicoClaw',
+        releaseFailed: 'Falha ao liberar controle do PicoClaw',
+        grantConfirmTitle: 'Alternar controle do dispositivo para PicoClaw?',
+        grantConfirmDesc: 'As gravações de dispositivo do MCP externo serão interrompidas.'
       },
       install: {
         install: 'Instalar PicoClaw',
@@ -601,15 +841,22 @@ const pt_br = {
         deleteConfirmOk: 'Excluir',
         deleteConfirmCancel: 'Cancelar',
         messageCount_one: '{{count}} mensagem',
-        messageCount_other: '{{count}} mensagens'
+        messageCount_other: '{{count}} mensagens',
+        messageCount: '{{count}} mensagens'
       },
       config: {
         startRuntime: 'Iniciar PicoClaw',
         stopRuntime: 'Parar PicoClaw'
       },
       start: {
+        enableConfirmTitle: 'Transferir o controle para o PicoClaw?',
+        enableConfirmDesc: 'Iniciar o PicoClaw desabilitará o serviço MCP externo.',
+        enableConfirmOk: 'Iniciar PicoClaw',
+        enableConfirmCancel: 'Cancelar',
         title: 'Iniciar PicoClaw',
-        description: 'Inicie o runtime para começar a usar o assistente PicoClaw.'
+        description: 'Inicie o runtime para começar a usar o assistente PicoClaw.',
+        switchFromMCP: 'Switch to PicoClaw and start',
+        takeoverAndStart: 'Take over and start'
       }
     },
     error: {

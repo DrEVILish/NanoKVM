@@ -1,8 +1,8 @@
 package vm
 
 import (
+	"NanoKVM-Server/middleware"
 	"encoding/json"
-	"net/http"
 	"os"
 	"os/exec"
 	"time"
@@ -26,9 +26,7 @@ type WinSize struct {
 var upgrader = websocket.Upgrader{
 	ReadBufferSize:  maxMessageSize,
 	WriteBufferSize: maxMessageSize,
-	CheckOrigin: func(r *http.Request) bool {
-		return true
-	},
+	CheckOrigin:     middleware.CheckWebSocketOrigin,
 }
 
 func (s *Service) Terminal(c *gin.Context) {
@@ -37,11 +35,14 @@ func (s *Service) Terminal(c *gin.Context) {
 		log.Errorf("failed to init websocket: %s", err)
 		return
 	}
+	stopSessionWatcher := middleware.WatchWebSocket(c.Request.Context(), ws)
+	defer stopSessionWatcher()
 	defer func() {
 		_ = ws.Close()
 	}()
 
-	cmd := exec.Command("/bin/sh")
+	cmd := exec.Command("/bin/sh", "-l")
+	cmd.Dir = "/root"
 	ptmx, err := pty.Start(cmd)
 	if err != nil {
 		log.Errorf("failed to start pty: %s", err)

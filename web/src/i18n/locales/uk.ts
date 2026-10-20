@@ -5,7 +5,8 @@ const uk = {
       login: 'Вхід',
       changePassword: 'Змінити пароль',
       terminal: 'Термінал',
-      wifi: 'Wi-Fi'
+      wifi: 'Wi-Fi',
+      storage: 'Образи та обмін файлами'
     },
     auth: {
       login: 'Вхід',
@@ -40,7 +41,10 @@ const uk = {
         change2: 'Пароль для входу у веб-інтерфейс',
         change3: 'Системний root пароль (пароль для входу в систему по SSH)',
         change4: 'Щоб скинути паролі, натисніть і утримуйте кнопку BOOT на NanoKVM.'
-      }
+      },
+      placeholderCurrentPassword: 'Поточний пароль',
+      passwordLength: 'Пароль має містити від 8 до 72 символів',
+      invalidCurrentPassword: 'Поточний пароль неправильний'
     },
     wifi: {
       title: 'Wi-Fi',
@@ -65,6 +69,37 @@ const uk = {
       video: 'Відеорежим',
       videoDirectTips: 'Увімкніть HTTPS у "Налаштування > Пристрій", щоб використовувати цей режим',
       resolution: 'Роздільна здатність',
+      controlRegion: {
+        title: 'Калібрування миші',
+        description:
+          'Використовуйте це налаштування, якщо керований пристрій має роздільну здатність зі співвідношенням сторін, відмінним від 16:9, а курсор зміщений по горизонталі або вертикалі.',
+        off: 'Вимкнено',
+        auto: 'Автоматично',
+        autoWarning:
+          'Калібрування може завершитися невдало, якщо користувацька програма має повністю чорне тло.',
+        manual: 'Вручну',
+        selectedResolution: 'Роздільна здатність вибраної області',
+        unused: 'Не використовується',
+        originalResolution: 'Початкова роздільна здатність',
+        selectResolution: 'Виберіть початкову роздільну здатність',
+        addResolution: 'Додати власну роздільну здатність',
+        add: 'Додати',
+        duplicateResolution: 'Така роздільна здатність уже існує.',
+        width: 'Ширина',
+        height: 'Висота',
+        apply: 'Обчислити й застосувати',
+        invalidResolution: 'Введіть дійсну початкову роздільну здатність після появи відео.',
+        select: 'Вибрати область',
+        clear: 'Відновити автоматично',
+        saveFailed: 'Не вдалося зберегти область введення.',
+        tooSmall: 'Вибрана область замала.',
+        previewUnavailable: 'Попередній перегляд недоступний',
+        clearConfirm: 'Відновити автоматичне виявлення чорних полів?',
+        dragHint: 'Перетягніть, щоб вибрати область віддаленого робочого столу',
+        finish: 'Готово',
+        confirm: 'Підтвердити',
+        cancel: 'Скасувати'
+      },
       auto: 'Автоматично',
       autoTips:
         'Може виникнути розрив зображення або зміщення миші при певних роздільних здатностях. Розгляньте можливість налаштування роздільної здатності віддаленого хоста або вимкнення автоматичного режиму для передачі відеопотоку.',
@@ -79,6 +114,15 @@ const uk = {
       frameDetectTip:
         'Обчислює різницю між кадрами. Зупиняє передачу відеопотоку, коли на екрані віддаленого хоста не виявлено змін.',
       resetHdmi: 'Перезавантажити HDMI підсистему',
+      mixedH264: {
+        title: 'Конфлікт потоків H.264',
+        description:
+          'H.264 Direct і H.264 WebRTC використовуються одночасно. Це може спричинити розриви зображення або пошкодження відео. Використовуйте лише один режим H.264.'
+      },
+      webrtcConnectionFailed: {
+        title: 'Не вдалося підключитися через WebRTC',
+        description: 'Перевірте мережеве з’єднання або змініть режим відео.'
+      },
       captureStatus: {
         hdmiError: 'Помилка зображення HDMI',
         unsupportedResolution: 'Поточна роздільна здатність не підтримується',
@@ -175,27 +219,44 @@ const uk = {
         disable: 'Ввимкнути режим "лише HID"'
       }
     },
-    image: {
-      title: 'Образи',
-      loading: 'Завантаження...',
-      empty: 'Нічого не знайдено',
+    storage: {
+      title: 'Образи та обмін файлами',
+      empty:
+        "Образів ще немає. Завантажте ISO або IMG чи скопіюйте образ на диск із цільового комп'ютера.",
+      notAttached: 'Нічого не підключено',
+      attached: 'Підключено: {{name}}',
+      eject: 'Витягти',
+      mount: 'Підключити',
       mountMode: 'Режим монтування',
-      mountFailed: 'Не вдалося змонтувати образ у режимі CD-ROM',
-      mountDesc:
-        'У деяких системах необхідно витягнути віртуальний диск на віддаленому хості перед монтуванням файлу образа.',
-      unmountFailed: 'Не вдалося розмонтувати',
-      unmountDesc:
-        'У деяких системах вам потрібно вручну вийти з віддаленого хоста перед демонтуванням образу.',
-      refresh: 'Оновіть список образів',
-      attention: 'Увага',
-      deleteConfirm: 'Ви впевнені, що хочете видалити це зображення?',
-      okBtn: 'Так',
-      cancelBtn: 'Ні',
+      mountModeDisk: 'Знімний диск',
+      mountModeCdrom: 'CD-ROM',
+      openManager: 'Відкрити файловий менеджер',
+      refresh: 'Оновити',
+      delete: 'Видалити',
+      deleteTitle: 'Видалити носій',
+      deleteConfirm: 'Видалити {{name}}? Файли в ньому буде втрачено.',
+      downloadImage: 'Завантажити образ',
+      typePartition: 'Спільні файли',
+      volumeLabel: 'Знімний диск',
+      groups: {
+        share: 'Обмін файлами',
+        images: 'Образи'
+      },
+      failed: 'Операція не вдалася',
+      hidOnly: 'Режим лише HID: віртуальний диск недоступний',
+      disabled: 'Віртуальний диск вимкнено (Налаштування - Пристрій)',
+      force: {
+        title: 'Забрати носій примусово?',
+        desc: "Цільовий комп'ютер усе ще використовує цей носій. Примусове вилучення заново перелічить USB-пристрій і може втратити все, що ще не записано на диск.",
+        menuHint:
+          "Цільовий комп'ютер використовує цей носій. Відкрийте файловий менеджер, щоб забрати його примусово."
+      },
       tips: {
         title: 'Як завантажити',
         usb1: "Під'єднайте NanoKVM до вашого комп'ютера через USB.",
-        usb2: 'Переконайтеся, що віртуальний диск змонтовано (Налаштування - Віртуальний диск).',
+        usb2: 'На цій сторінці підключіть спільні файли в режимі накопичувача.',
         usb3: "Відкрийте віртуальний диск на вашому комп'ютері та скопіюйте файл зображення до кореневого каталогу віртуального диска.",
+        usb4: "Після копіювання вийміть диск: образ з'явиться у списку.",
         scp1: "Переконайтеся, що NanoKVM і ваш комп'ютер знаходяться в одній локальній мережі.",
         scp2: "Відкрийте термінал на вашому комп'ютері та використовуйте команду SCP для завантаження файлу зображення до каталогу /data на NanoKVM.",
         scp3: 'Приклад: scp ваш-шлях-до-зображення root@ваш-ip-nanokvm:/data',
@@ -205,7 +266,66 @@ const uk = {
         tf3: "Вставте TF карту в кардрідер і під'єднайте її до вашого комп'ютера.",
         tf4: 'Скопіюйте файл зображення до каталогу /data на TF карті.',
         tf5: 'Вставте TF карту в NanoKVM.'
-      }
+      },
+      job: {
+        running: 'Обробка {{name}}'
+      },
+      enableDisk: {
+        title: 'Увімкнути віртуальний диск?',
+        desc: "Для підключення носія потрібен віртуальний диск, який зараз вимкнено. Увімкнути його? Клавіатура й миша цільового комп'ютера на мить відключаться.",
+        menuHint: 'Віртуальний диск вимкнено. Увімкніть його в розділі Налаштування - Пристрій.'
+      },
+      add: {
+        title: 'Додати носій',
+        upload: 'Завантажити ISO або IMG',
+        fromUrl: 'Завантажити за URL-адресою',
+        url: 'URL-адреса образу',
+        urlRequired: 'Введіть URL-адресу',
+        onlyImages: 'Підключати можна лише файли .iso та .img',
+        dropHint: 'Перетягніть сюди ISO або IMG чи натисніть, щоб вибрати файл',
+        cdromOnlyIso: 'На CD-ROM можна записати лише образ ISO 9660',
+        uploadFailed: 'Не вдалося завантажити',
+        downloadFailed: 'Не вдалося звантажити',
+        uploading: 'Завантаження {{name}}',
+        downloading: 'Звантаження {{name}}',
+        done: '{{name}} готовий',
+        checksumFailed: 'Образ не збігається з контрольною сумою SHA-256.',
+        blocked: "Цільовий комп'ютер використовує диск",
+        copyHint:
+          'Образ також можна скопіювати в розділ даних через SCP або з цільового комп’ютера.'
+      },
+      files: {
+        selectMedium: 'Виберіть носій, щоб переглянути файли на ньому.',
+        reasonAttached: "Цей носій підключено до цільового комп'ютера.",
+        reasonAttachedHint:
+          "Спочатку витягніть його: цільовий комп'ютер має звільнити диск, перш ніж його файли можна буде прочитати.",
+        reasonNotBrowsable: 'Цей носій містить файлову систему, яку менеджер не може відкрити.',
+        reasonNoLoop: 'Цей пристрій не може підключати образи дисків (немає підтримки loop).',
+        reasonISOImage:
+          "Вміст образу ISO 9660 тут не переглядається. Сам образ усе ще можна підключити до цільового комп'ютера.",
+        empty: 'Ця тека порожня',
+        noMatch: 'Жоден файл не відповідає пошуку.',
+        free: '{{size}} вільно',
+        search: 'Пошук у цій теці',
+        sort: {
+          name: "Ім'я",
+          size: 'Розмір',
+          type: 'Тип',
+          asc: 'За зростанням',
+          desc: 'За спаданням'
+        },
+        upload: 'Завантажити файл на носій',
+        deleteFolderTitle: 'Видалити теку',
+        deleteFolderConfirm: 'Видалити теку {{name}} з усім вмістом? Цю дію неможливо скасувати.',
+        uploading: 'Завантаження…',
+        uploadFailed: 'Не вдалося завантажити',
+        download: 'Звантажити',
+        delete: 'Видалити',
+        deleteTitle: 'Видалити файл',
+        deleteConfirm: 'Видалити {{name}} з носія?'
+      },
+      yes: 'Так',
+      no: 'Ні'
     },
     script: {
       title: 'Скрипти',
@@ -247,13 +367,13 @@ const uk = {
       ok: 'Ок'
     },
     download: {
-      title: 'Завантажувач образів',
-      input: 'Введіть URL-адресу віддаленого образу',
-      ok: 'Так',
-      disabled: 'Розділ даних /data у режимі лише для читання, тому ми не можемо завантажити образ',
-      uploadbox: 'Перетягніть файл сюди або натисніть, щоб вибрати',
-      inputfile: 'Будь ласка, введіть файл зображення',
-      NoISO: 'Немає ISO'
+      disabled:
+        'Розділ даних доступний лише для читання, поки його використовує цільовий комп’ютер: нові образи записати не можна, але наявні файли все одно можна завантажити.',
+      sha256: 'SHA-256 (необов’язково)',
+      sha256Placeholder: 'Введіть контрольну суму SHA-256 із 64 символів',
+      invalidSHA256: 'SHA-256 має бути шістнадцятковим рядком із 64 символів',
+      cancel: 'Скасувати',
+      cancelFailed: 'Не вдалося скасувати завантаження'
     },
     power: {
       title: 'Живлення',
@@ -270,6 +390,24 @@ const uk = {
     },
     settings: {
       title: 'Налаштування',
+      mcp: {
+        title: 'Служба MCP',
+        service: 'Віддалене керування MCP',
+        serviceDesc:
+          'Дозволити довіреним клієнтам MCP керувати клавіатурою та мишею і робити знімки екрана',
+        securityWarning:
+          'Будь-хто, хто має цей ключ API, може керувати віддаленим хостом і переглядати його екран. Використовуйте HTTPS і вмикайте службу лише в довірених мережах.',
+        endpoint: 'Кінцева точка',
+        apiKey: 'Ключ API',
+        regenerateConfirmTitle: 'Створити новий ключ API MCP?',
+        regenerateConfirmDesc: 'Поточний ключ негайно припинить працювати.',
+        enableConfirmTitle: 'Увімкнути зовнішнє керування MCP?',
+        enableConfirmDesc: 'Увімкнення MCP зупинить PicoClaw і закриє всі активні сеанси PicoClaw.',
+        failed: 'Операція MCP завершилася помилкою',
+        copyFailed: 'Не вдалося скопіювати. Скопіюйте вручну.',
+        okBtn: 'Підтвердити',
+        cancelBtn: 'Скасувати'
+      },
       about: {
         title: 'Про NanoKVM',
         information: 'Інформація',
@@ -303,9 +441,25 @@ const uk = {
           modeOff: 'Вимк',
           modeAuto: 'Автоматичне приховування',
           modeAlways: 'Завжди видно',
+          keyboardLedStatus: 'Індикатори блокування клавіатури',
+          keyboardLedStatusDesc:
+            'Показувати стан Num Lock, Caps Lock і Scroll Lock віддаленого комп’ютера',
           icons: 'Значки підменю',
           iconsDesc: 'Відображення значків підменю на панелі меню'
         }
+      },
+      keyboardLedStatus: {
+        groupLabel: 'Стан блокувань віддаленої клавіатури',
+        indicatorLabel: '{{label}}: {{state}}',
+        numLock: 'Num Lock',
+        numLockShort: 'Num',
+        capsLock: 'Caps Lock',
+        capsLockShort: 'Caps',
+        scrollLock: 'Scroll Lock',
+        scrollLockShort: 'Scr',
+        on: 'Увімкнено',
+        off: 'Вимкнено',
+        unknown: 'Невідомо'
       },
       device: {
         title: 'Пристрій',
@@ -345,7 +499,10 @@ const uk = {
           tip: 'Вимкнути, якщо це не потрібно'
         },
         hdmi: {
-          description: 'Увімкнути вихід HDMI/monitor'
+          description: 'Увімкнути вихід HDMI/monitor',
+          idleTimeoutTitle: 'Час очікування неактивного захоплення',
+          idleTimeoutDescription: 'Зупинити захоплення HDMI, якщо активних глядачів немає протягом',
+          minutes: 'хв'
         },
         autostart: {
           title: 'Налаштування сценаріїв автозапуску',
@@ -367,7 +524,13 @@ const uk = {
         reboot: 'Перезавантажити',
         rebootDesc: 'Ви впевнені, що хочете перезавантажити NanoKVM?',
         okBtn: 'Так',
-        cancelBtn: 'Ні'
+        cancelBtn: 'Ні',
+        diskLocked: 'Вимкнено, поки змонтовано образ (увімкнення скасує монтування)',
+        diskCancelMount:
+          'Увімкнення віртуального диска скасує змонтований образ і перерве поточне завантаження чи вивантаження образу. Продовжити?',
+        diskBreakDownload:
+          'Увімкнення віртуального диска перерве завантаження образів. Продовжити?',
+        attention: 'Увага'
       },
       network: {
         title: 'Мережа',
@@ -471,10 +634,29 @@ const uk = {
         previewDesc: 'Отримайте ранній доступ до нових функцій та вдосконалень',
         previewTip:
           'Будь ласка, майте на увазі, що випуски бета релізів можуть містити помилки або неповну функціональність!',
+        customServer: {
+          title: 'Користувацький сервер оновлень',
+          desc: 'Перевіряйте наявність оновлень і завантажуйте їх із зазначеного сервера',
+          invalidUrl:
+            'Введіть коректну адресу каталогу HTTP- або HTTPS-сервера без рядка запиту, фрагмента чи файлу latest.json.',
+          loadFailed: 'Не вдалося завантажити конфігурацію сервера оновлень.',
+          saveFailed: 'Не вдалося зберегти конфігурацію сервера оновлень.',
+          saved: 'Конфігурацію сервера оновлень збережено.',
+          save: 'Зберегти',
+          confirmTitle: 'Використовувати користувацький сервер оновлень?',
+          confirmDesc:
+            'SHA-512 перевіряє лише відповідність пакета маніфесту, наданому цим сервером. Це не підтверджує, що пакет є офіційним випуском NanoKVM. Несправний або зловмисний сервер може вивести пристрій із ладу, спричинити втрату даних або поставити під загрозу безпеку системи.',
+          confirm: 'Усе одно використовувати',
+          previewDisabled:
+            'Попередні оновлення недоступні, доки ввімкнено користувацький сервер оновлень.'
+        },
         offline: {
           title: 'Оновлення в автономному режимі',
           desc: 'Оновлення через локальний інсталяційний пакет',
           upload: 'Завантажити',
+          checksumPlaceholder: "Контрольна сума SHA-256 (необов'язково)",
+          invalidChecksum: 'Контрольна сума SHA-256 має містити 64 шістнадцяткові символи.',
+          checksumMismatch: 'Не вдалося перевірити SHA-256. Пакунок може бути пошкоджений.',
           invalidName: 'Недійсний формат імені файлу. Завантажте випуски з GitHub.',
           updateFailed: 'Оновлення не вдалося. Будь ласка, спробуйте ще раз.'
         }
@@ -487,7 +669,28 @@ const uk = {
         logoutBtn: 'Вийти',
         logoutDesc: 'Ви впевнені, що хочете вийти?',
         okBtn: 'Так',
-        cancelBtn: 'Ні'
+        cancelBtn: 'Ні',
+        role: 'Роль',
+        roles: {
+          admin: 'Адміністратор',
+          user: 'Користувач'
+        },
+        users: {
+          title: 'Користувачі',
+          create: 'Створити користувача',
+          enabled: 'Увімкнено',
+          disabled: 'Вимкнено',
+          deviceOwner: 'Власник пристрою',
+          resetPassword: 'Скинути пароль',
+          delete: 'Видалити',
+          deleteConfirm: 'Видалити цього користувача й відкликати всі його сеанси?',
+          created: 'Користувача створено',
+          deleted: 'Користувача видалено',
+          passwordUpdated: 'Пароль оновлено',
+          loadFailed: 'Не вдалося завантажити користувачів',
+          saveFailed: 'Не вдалося зберегти користувача',
+          deleteFailed: 'Не вдалося видалити користувача'
+        }
       }
     },
     picoclaw: {
@@ -514,19 +717,30 @@ const uk = {
         runtimeStarted: 'Runtime PicoClaw запущено',
         runtimeStartFailed: 'Не вдалося запустити runtime PicoClaw',
         runtimeStopped: 'Runtime PicoClaw зупинено',
-        runtimeStopFailed: 'Не вдалося зупинити runtime PicoClaw'
+        runtimeStopFailed: 'Не вдалося зупинити runtime PicoClaw',
+        controlSwitchedToMCP: 'Керування перемкнено на зовнішню службу MCP'
       },
       connection: {
         runtime: {
           checking: 'Перевірка',
+          restoring: 'Restoring PicoClaw',
           ready: 'Runtime готовий',
           stopped: 'Runtime зупинено',
+          blockedByMCP: 'Зовнішнє керування MCP активне',
+          readyBlockedByMCP:
+            'The runtime is running, but external MCP currently controls device input.',
+          readyWithoutControl:
+            'The runtime is running. Grant PicoClaw device control before reconnecting.',
           unavailable: 'Runtime недоступний',
           configError: 'Помилка конфігурації'
         },
         transport: {
           connecting: 'Підключення',
-          connected: 'Підключено'
+          connected: 'Підключено',
+          disconnected: 'Disconnected',
+          reconnect: 'Reconnect',
+          reconnectDescription: 'Reconnect to the running PicoClaw session.',
+          reconnectBlocked: 'PicoClaw needs device control before reconnecting.'
         },
         run: {
           idle: 'Бездіяльність',
@@ -540,6 +754,30 @@ const uk = {
       },
       overlay: {
         locked: 'PicoClaw керує пристроєм. Ручне введення призупинено.'
+      },
+      control: {
+        picoclaw: 'Керування пристроєм: PicoClaw',
+        picoclawDescription: 'PicoClaw can write keyboard and mouse input. Manual input may pause.',
+        mcp: 'Керування пристроєм: зовнішній MCP',
+        mcpDescription: 'External MCP can write to the device. PicoClaw will not take over input.',
+        off: 'Керування пристроєм: вимкнено',
+        offDescription:
+          'AI will not write keyboard or mouse input. Manual control remains available.',
+        transitioning: 'Device control: switching',
+        transitioningDescription: 'Device control is syncing. Please wait.',
+        grant: 'Надати керування',
+        release: 'Звільнити',
+        releasing: 'Releasing...',
+        switching: 'Switching...',
+        releasingLabel: 'Device control: releasing',
+        releasingDescription:
+          'Device control is being returned. PicoClaw has stopped current writes.',
+        granted: 'Керування PicoClaw надано',
+        released: 'Керування PicoClaw звільнено',
+        grantFailed: 'Не вдалося надати керування PicoClaw',
+        releaseFailed: 'Не вдалося звільнити керування PicoClaw',
+        grantConfirmTitle: 'Перемкнути керування пристроєм на PicoClaw?',
+        grantConfirmDesc: 'Записи пристрою зовнішнім MCP буде перервано.'
       },
       install: {
         install: 'Встановити PicoClaw',
@@ -601,15 +839,22 @@ const uk = {
         deleteConfirmOk: 'Видалити',
         deleteConfirmCancel: 'Скасувати',
         messageCount_one: '{{count}} повідомлення',
-        messageCount_other: '{{count}} повідомлень'
+        messageCount_other: '{{count}} повідомлень',
+        messageCount: '{{count}} повідомлень'
       },
       config: {
         startRuntime: 'Запустити PicoClaw',
         stopRuntime: 'Зупинити PicoClaw'
       },
       start: {
+        enableConfirmTitle: 'Перемкнути керування на PicoClaw?',
+        enableConfirmDesc: 'Запуск PicoClaw вимкне зовнішню службу MCP.',
+        enableConfirmOk: 'Запустити PicoClaw',
+        enableConfirmCancel: 'Скасувати',
         title: 'Запустити PicoClaw',
-        description: 'Запустіть runtime, щоб почати використовувати помічника PicoClaw.'
+        description: 'Запустіть runtime, щоб почати використовувати помічника PicoClaw.',
+        switchFromMCP: 'Switch to PicoClaw and start',
+        takeoverAndStart: 'Take over and start'
       }
     },
     error: {

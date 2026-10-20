@@ -5,7 +5,8 @@ const tr = {
       login: 'Giriş',
       changePassword: 'Şifreyi değiştir',
       terminal: 'Uçbirim',
-      wifi: 'Wi-Fi'
+      wifi: 'Wi-Fi',
+      storage: 'Disk imajları ve dosya paylaşımı'
     },
     auth: {
       login: 'Giriş',
@@ -40,7 +41,10 @@ const tr = {
         change3: 'Sistem yöneticisi şifresi (Güvenli Kabuk Bağlantısı (SSH) giriş şifresi)',
         change4:
           'Şifreleri sıfırlamak için NanoKVM üzerinde bulunan BOOT tuşuna 10 saniye boyunca basılı tutun.'
-      }
+      },
+      placeholderCurrentPassword: 'Geçerli şifre',
+      passwordLength: 'Şifre 8 ile 72 karakter arasında olmalıdır',
+      invalidCurrentPassword: 'Geçerli şifre yanlış'
     },
     wifi: {
       title: 'Wi-Fi',
@@ -65,6 +69,37 @@ const tr = {
       video: 'Görüntü modu',
       videoDirectTips: 'kullanmak için "Ayarlar > Cihaz" HTTPS aktif edin',
       resolution: 'Çözünürlük',
+      controlRegion: {
+        title: 'Fare Kalibrasyonu',
+        description:
+          'Kontrol edilen cihaz 16:9 dışında bir çözünürlük kullandığında ve imleç yatay veya dikey olarak hizalanmadığında bu ayarı kullanın.',
+        off: 'Kapalı',
+        auto: 'Otomatik',
+        autoWarning:
+          'Kullanıcı uygulamasının arka planı tamamen siyah olduğunda kalibrasyon başarısız olabilir.',
+        manual: 'Manuel',
+        selectedResolution: 'Seçili Alan Çözünürlüğü',
+        unused: 'Kullanılmıyor',
+        originalResolution: 'Orijinal Çözünürlük',
+        selectResolution: 'Orijinal çözünürlüğü seçin',
+        addResolution: 'Özel çözünürlük ekle',
+        add: 'Ekle',
+        duplicateResolution: 'Bu çözünürlük zaten mevcut.',
+        width: 'Genişlik',
+        height: 'Yükseklik',
+        apply: 'Hesapla ve Uygula',
+        invalidResolution: 'Video hazır olduktan sonra geçerli bir orijinal çözünürlük girin.',
+        select: 'Alan Seç',
+        clear: 'Otomatik Ayarı Geri Yükle',
+        saveFailed: 'Giriş alanı kaydedilemedi.',
+        tooSmall: 'Seçili alan çok küçük.',
+        previewUnavailable: 'Önizleme kullanılamıyor',
+        clearConfirm: 'Otomatik siyah kenar algılama geri yüklensin mi?',
+        dragHint: 'Uzak masaüstü alanını seçmek için sürükleyin',
+        finish: 'Bitti',
+        confirm: 'Onayla',
+        cancel: 'İptal'
+      },
       auto: 'Otomatik',
       autoTips:
         'Belirli çözünürlüklerde ekran yırtılması veya fare kayması meydana gelebilir. Bu durumda uzak ana bilgisayarın çözünürlüğünü ayarlamayı ya da otomatik modu devre dışı bırakmayı deneyin.',
@@ -79,6 +114,15 @@ const tr = {
       frameDetectTip:
         'Gönderilen kareler arasındaki farkı hesaplar. Uzak ana bilgisayardan gönderilen yayında bir değişiklik yoksa görüntü yayınını durdurur.',
       resetHdmi: 'HDMI sıfırla',
+      mixedH264: {
+        title: 'H.264 akış çakışması',
+        description:
+          'H.264 Direct ve H.264 WebRTC aynı anda kullanılıyor. Bu, ekran yırtılmasına veya bozuk videoya neden olabilir. Lütfen yalnızca bir H.264 modu kullanın.'
+      },
+      webrtcConnectionFailed: {
+        title: 'WebRTC bağlantısı başarısız',
+        description: 'Ağ bağlantısını kontrol edin veya video modunu değiştirin.'
+      },
       captureStatus: {
         hdmiError: 'HDMI ekran hatası',
         unsupportedResolution: 'Geçerli çözünürlük desteklenmiyor',
@@ -173,27 +217,44 @@ const tr = {
         disable: 'Yalnızca HID modunu devre dışı bırak'
       }
     },
-    image: {
-      title: 'Disk İmajları',
-      loading: 'Yükleniyor...',
-      empty: 'Hiçbir şey bulunamadı',
+    storage: {
+      title: 'Disk imajları ve dosya paylaşımı',
+      empty:
+        'Henüz imaj yok. Bir ISO veya IMG yükleyin ya da hedef makineden diske bir tane kopyalayın.',
+      notAttached: 'Hiçbir şey bağlı değil',
+      attached: 'Bağlı: {{name}}',
+      eject: 'Çıkar',
+      mount: 'Bağla',
       mountMode: 'Montaj modu',
-      mountFailed: 'Bağlantı başarısız oldu',
-      mountDesc:
-        'Bazı sistemlerde, disk imajını bağlamadan önce uzak ana bilgisayardaki sanal diski çıkarmak gerekir.',
-      unmountFailed: 'Bağlantıyı kesme işlemi başarısız oldu',
-      unmountDesc:
-        'Bazı sistemlerde, görüntünün bağlantısını kesmeden önce uzak ana bilgisayardan manuel olarak çıkarmanız gerekir.',
-      refresh: 'Disk imajı listesini yenile',
-      attention: 'Dikkat',
-      deleteConfirm: 'Bu resmi silmek istediğinizden emin misiniz?',
-      okBtn: 'Evet',
-      cancelBtn: 'Hayır',
+      mountModeDisk: 'Yığın depolama',
+      mountModeCdrom: 'CD-ROM',
+      openManager: 'Dosya yöneticisini aç',
+      refresh: 'Yenile',
+      delete: 'Sil',
+      deleteTitle: 'Ortamı sil',
+      deleteConfirm: '{{name}} silinsin mi? İçindeki dosyalar kaybolur.',
+      downloadImage: 'İmajı indir',
+      typePartition: 'Paylaşılan dosyalar',
+      volumeLabel: 'Çıkarılabilir disk',
+      groups: {
+        share: 'Dosya paylaşımı',
+        images: 'İmajlar'
+      },
+      failed: 'İşlem başarısız oldu',
+      hidOnly: 'Yalnızca HID modu: sanal disk kullanılamıyor',
+      disabled: 'Sanal disk devre dışı (Ayarlar - Aygıt)',
+      force: {
+        title: 'Ortam zorla geri alınsın mı?',
+        desc: 'Hedef makine bu ortamı hâlâ kullanıyor. Geri almak USB aygıtını yeniden numaralandırır ve diske henüz yazmadığı her şeyi kaybedebilir.',
+        menuHint:
+          'Hedef makine bu ortamı kullanıyor. Zorla geri almak için dosya yöneticisini açın.'
+      },
       tips: {
         title: 'Nasıl yüklenir',
         usb1: "NanoKVM'i bilgisayarınıza USB ile bağlayın.",
-        usb2: 'Sanal diskin bağlı olduğundan emin olun (Ayarlar - Sanal Disk).',
+        usb2: 'Bu sayfada paylaşılan dosyaları yığın depolama modunda bağlayın.',
         usb3: 'Sanal diski bilgisayarınızda açın ve disk imajı dosyanızı sanal diskin kök dizinine kopyalayın.',
+        usb4: 'Kopyalama bitince diski çıkarın: imaj ardından listede görünür.',
         scp1: 'NanoKVM ve bilgisayarınızın aynı yerel ağda bulunduğundan emin olun.',
         scp2: "Bilgisayarınızda uçbirimi açın ve disk imajı dosyanını SCP komudunu kullanarak NanoKVM'in /data dizinine yükleyin.",
         scp3: 'Örnek: scp senin-disk-imajı-dizinin root@senin-nanokvm-ip:/data',
@@ -203,7 +264,66 @@ const tr = {
         tf3: 'micro SD kartı kart okuyucusuna takın ve bilgisayarınıza bağlayın.',
         tf4: 'Disk imajı dosyanını micro SD kartın /data dizinine kopyalayın.',
         tf5: "micro SD kartı NanoKVM'e geri yerleştirin."
-      }
+      },
+      job: {
+        running: '{{name}} işleniyor'
+      },
+      enableDisk: {
+        title: 'Sanal disk etkinleştirilsin mi?',
+        desc: 'Bir ortamı bağlamak için şu anda kapalı olan sanal disk gerekir. Şimdi etkinleştirilsin mi? Hedef makinenin klavyesi ve faresinin bağlantısı bir an kesilir.',
+        menuHint: 'Sanal disk devre dışı. Ayarlar - Aygıt bölümünden etkinleştirin.'
+      },
+      add: {
+        title: 'Ortam ekle',
+        upload: 'ISO veya IMG yükle',
+        fromUrl: "URL'den indir",
+        url: "İmaj URL'si",
+        urlRequired: 'Lütfen bir URL girin',
+        onlyImages: 'Yalnızca .iso ve .img dosyaları bağlanabilir',
+        dropHint: 'ISO veya IMG dosyasını buraya sürükleyin ya da seçmek için tıklayın',
+        cdromOnlyIso: 'Bir CD-ROM yalnızca ISO 9660 imajı taşıyabilir',
+        uploadFailed: 'Yükleme başarısız oldu',
+        downloadFailed: 'İndirme başarısız oldu',
+        uploading: '{{name}} yükleniyor',
+        downloading: '{{name}} indiriliyor',
+        done: '{{name}} hazır',
+        checksumFailed: 'İmaj, SHA-256 sağlama toplamıyla eşleşmiyor.',
+        blocked: 'Hedef makine diski kullanıyor',
+        copyHint: 'İmajı SCP ile veri bölümüne ya da hedef makineden doğrudan kopyalayabilirsiniz.'
+      },
+      files: {
+        selectMedium: 'Dosyalarını görmek için bir ortam seçin.',
+        reasonAttached: 'Bu ortam hedef makineye bağlı.',
+        reasonAttachedHint:
+          'Önce çıkarın: dosyalarının okunabilmesi için hedef makinenin diski bırakması gerekir.',
+        reasonNotBrowsable: 'Bu ortam, dosya yöneticisinin açamadığı bir dosya sistemi içeriyor.',
+        reasonNoLoop: 'Bu aygıt disk imajlarını bağlayamıyor (loop desteği yok).',
+        reasonISOImage:
+          'ISO 9660 imajının içeriği burada görüntülenemez. İmaj hedef makineye yine bağlanabilir.',
+        empty: 'Bu klasör boş',
+        noMatch: 'Aramanızla eşleşen dosya yok.',
+        free: '{{size}} boş',
+        search: 'Bu klasörde ara',
+        sort: {
+          name: 'Ad',
+          size: 'Boyut',
+          type: 'Tür',
+          asc: 'Artan',
+          desc: 'Azalan'
+        },
+        upload: 'Ortama dosya yükle',
+        deleteFolderTitle: 'Klasörü sil',
+        deleteFolderConfirm:
+          '{{name}} klasörü ve içindeki her şey silinsin mi? Bu işlem geri alınamaz.',
+        uploading: 'Yükleniyor…',
+        uploadFailed: 'Yükleme başarısız oldu',
+        download: 'İndir',
+        delete: 'Sil',
+        deleteTitle: 'Dosyayı sil',
+        deleteConfirm: '{{name}} ortamdan silinsin mi?'
+      },
+      yes: 'Evet',
+      no: 'Hayır'
     },
     script: {
       title: 'Betikler',
@@ -245,13 +365,13 @@ const tr = {
       ok: 'Tamam'
     },
     download: {
-      title: 'Disk İmajı İndirici',
-      input: 'Uzak imaj URL’sini girin',
-      ok: 'Tamam',
-      disabled: '/data bölüntüsü salt okunur modda, disk imajı indirilemiyor.',
-      uploadbox: 'Dosyayı buraya bırakın veya seçmek için tıklayın',
-      inputfile: 'Lütfen resim dosyasını giriniz',
-      NoISO: 'ISO yok'
+      disabled:
+        'Veri bölümü, hedef makine kullandığı sürece salt okunurdur: yeni imaj yazılamaz, mevcut dosyalar indirilebilir.',
+      sha256: 'SHA-256 (isteğe bağlı)',
+      sha256Placeholder: '64 karakterlik SHA-256 sağlama toplamını girin',
+      invalidSHA256: 'SHA-256, 64 karakterlik bir onaltılık dize olmalıdır',
+      cancel: 'İptal',
+      cancelFailed: 'İndirme iptal edilemedi'
     },
     power: {
       title: 'Güç',
@@ -268,6 +388,25 @@ const tr = {
     },
     settings: {
       title: 'Ayarlar',
+      mcp: {
+        title: 'MCP Hizmeti',
+        service: 'MCP uzaktan kumanda',
+        serviceDesc:
+          'Güvenilir MCP istemcilerinin klavye ve fareyi kontrol etmesine ve ekran görüntüsü almasına izin verin',
+        securityWarning:
+          'Bu API anahtarına sahip herkes uzak ana bilgisayarı kontrol edebilir ve ekranını görebilir. HTTPS kullanın ve hizmeti yalnızca güvenilir ağlarda etkinleştirin.',
+        endpoint: 'Uç nokta',
+        apiKey: 'API anahtarı',
+        regenerateConfirmTitle: 'MCP API anahtarı yeniden oluşturulsun mu?',
+        regenerateConfirmDesc: 'Geçerli anahtar hemen çalışmayı durduracaktır.',
+        enableConfirmTitle: 'Harici MCP kontrolü etkinleştirilsin mi?',
+        enableConfirmDesc:
+          'MCP etkinleştirildiğinde PicoClaw durdurulur ve tüm etkin PicoClaw oturumları kapatılır.',
+        failed: 'MCP işlemi başarısız oldu',
+        copyFailed: 'Kopyalama başarısız. Elle kopyalayın.',
+        okBtn: 'Onayla',
+        cancelBtn: 'İptal'
+      },
       about: {
         title: 'NanoKVM Hakkında',
         information: 'Bilgi',
@@ -301,9 +440,25 @@ const tr = {
           modeOff: 'Kapalı',
           modeAuto: 'Otomatik gizle',
           modeAlways: 'Her zaman görünür',
+          keyboardLedStatus: 'Klavye kilidi göstergeleri',
+          keyboardLedStatusDesc:
+            'Uzak bilgisayarın Num Lock, Caps Lock ve Scroll Lock durumunu göster',
           icons: 'Alt Menü Simgeleri',
           iconsDesc: 'Menü çubuğunda alt menü simgelerini görüntüle'
         }
+      },
+      keyboardLedStatus: {
+        groupLabel: 'Uzak klavye kilidi durumu',
+        indicatorLabel: '{{label}}: {{state}}',
+        numLock: 'Num Lock',
+        numLockShort: 'Num',
+        capsLock: 'Caps Lock',
+        capsLockShort: 'Caps',
+        scrollLock: 'Scroll Lock',
+        scrollLockShort: 'Scr',
+        on: 'Açık',
+        off: 'Kapalı',
+        unknown: 'Bilinmiyor'
       },
       device: {
         title: 'Cihaz',
@@ -343,7 +498,11 @@ const tr = {
           tip: 'Kullanmıyorsanız devre dışı bırakabilirsiniz'
         },
         hdmi: {
-          description: 'HDMI/Momitör çıktısını aktifleştir'
+          description: 'HDMI/Momitör çıktısını aktifleştir',
+          idleTimeoutTitle: 'Etkin olmayan yakalama zaman aşımı',
+          idleTimeoutDescription:
+            'Etkin görüntüleyici olmadığında HDMI yakalamayı şu süre sonunda durdur:',
+          minutes: 'dk'
         },
         autostart: {
           title: 'Otomatik Başlatılan Komut Dosyaları Ayarları',
@@ -367,7 +526,12 @@ const tr = {
         reboot: 'Yeniden Başlat',
         rebootDesc: "NanoKVM'i yeniden başlatmak istediğinizden emin misiniz?",
         okBtn: 'Evet',
-        cancelBtn: 'Hayır'
+        cancelBtn: 'Hayır',
+        diskLocked: 'Bir imaj bağlıyken kapalı (açmak bağlamayı iptal eder)',
+        diskCancelMount:
+          'Sanal diski açmak, bağlı imajı iptal eder ve sürmekte olan imaj indirme veya yüklemeyi keser. Devam edilsin mi?',
+        diskBreakDownload: 'Sanal diski açmak imaj indirmeyi keser. Devam edilsin mi?',
+        attention: 'Dikkat'
       },
       network: {
         title: 'Ağ',
@@ -470,10 +634,29 @@ const tr = {
         previewDesc: 'En son geliştirmelere ve özelliklere erken erişin',
         previewTip:
           'Ön izleme güncellemelerinin tamamlanmamış olduğunu ve sorunlara sebep olabileceğini unutmayın!',
+        customServer: {
+          title: 'Özel güncelleme sunucusu',
+          desc: 'Belirtilen sunucudaki çevrimiçi güncellemeleri denetleyin ve indirin',
+          invalidUrl:
+            'Sorgu, parça tanımlayıcısı veya latest.json içermeyen geçerli bir HTTP ya da HTTPS sunucu dizini girin.',
+          loadFailed: 'Güncelleme sunucusu yapılandırması yüklenemedi.',
+          saveFailed: 'Güncelleme sunucusu yapılandırması kaydedilemedi.',
+          saved: 'Güncelleme sunucusu yapılandırması kaydedildi.',
+          save: 'Kaydet',
+          confirmTitle: 'Özel bir güncelleme sunucusu kullanılsın mı?',
+          confirmDesc:
+            'SHA-512 yalnızca paketin bu sunucunun sağladığı bildirimle eşleştiğini doğrular. Paketin resmi bir NanoKVM sürümü olduğunu kanıtlamaz. Hatalı veya kötü amaçlı bir sunucu cihazı kullanılamaz hâle getirebilir, veri kaybına yol açabilir ya da sistem güvenliğini tehlikeye atabilir.',
+          confirm: 'Yine de kullan',
+          previewDisabled:
+            'Özel bir güncelleme sunucusu etkinken önizleme güncellemeleri kullanılamaz.'
+        },
         offline: {
           title: 'Çevrimdışı Güncellemeler',
           desc: 'Yerel kurulum paketi aracılığıyla güncelleme',
           upload: 'Yükle',
+          checksumPlaceholder: 'SHA-256 sağlama toplamı (isteğe bağlı)',
+          invalidChecksum: 'SHA-256 sağlama toplamı 64 onaltılık karakter içermelidir.',
+          checksumMismatch: 'SHA-256 doğrulaması başarısız oldu. Paket bozulmuş olabilir.',
           invalidName: 'Geçersiz dosya adı biçimi. Lütfen GitHub sürümlerinden indirin.',
           updateFailed: 'Güncelleme başarısız oldu. Lütfen tekrar deneyin.'
         }
@@ -486,7 +669,28 @@ const tr = {
         logoutBtn: 'Çıkış  yap',
         logoutDesc: 'Çıkış yapmak istediğinizden emin misiniz?',
         okBtn: 'Evet',
-        cancelBtn: 'Hayır'
+        cancelBtn: 'Hayır',
+        role: 'Rol',
+        roles: {
+          admin: 'Yönetici',
+          user: 'Kullanıcı'
+        },
+        users: {
+          title: 'Kullanıcılar',
+          create: 'Kullanıcı oluştur',
+          enabled: 'Etkin',
+          disabled: 'Devre dışı',
+          deviceOwner: 'Aygıt sahibi',
+          resetPassword: 'Şifreyi sıfırla',
+          delete: 'Sil',
+          deleteConfirm: 'Bu kullanıcı silinsin ve tüm oturumları iptal edilsin mi?',
+          created: 'Kullanıcı oluşturuldu',
+          deleted: 'Kullanıcı silindi',
+          passwordUpdated: 'Şifre güncellendi',
+          loadFailed: 'Kullanıcılar yüklenemedi',
+          saveFailed: 'Kullanıcı kaydedilemedi',
+          deleteFailed: 'Kullanıcı silinemedi'
+        }
       }
     },
     picoclaw: {
@@ -513,19 +717,30 @@ const tr = {
         runtimeStarted: 'PicoClaw runtime başlatıldı',
         runtimeStartFailed: 'PicoClaw runtime başlatılamadı',
         runtimeStopped: 'PicoClaw runtime durduruldu',
-        runtimeStopFailed: 'PicoClaw runtime durdurulamadı'
+        runtimeStopFailed: 'PicoClaw runtime durdurulamadı',
+        controlSwitchedToMCP: 'Kontrol harici MCP hizmetine geçirildi'
       },
       connection: {
         runtime: {
           checking: 'Kontrol ediliyor',
+          restoring: 'Restoring PicoClaw',
           ready: 'Runtime hazır',
           stopped: 'Runtime durduruldu',
+          blockedByMCP: 'Harici MCP kontrolü etkin',
+          readyBlockedByMCP:
+            'The runtime is running, but external MCP currently controls device input.',
+          readyWithoutControl:
+            'The runtime is running. Grant PicoClaw device control before reconnecting.',
           unavailable: 'Runtime mevcut değil',
           configError: 'Yapılandırma hatası'
         },
         transport: {
           connecting: 'Bağlanıyor',
-          connected: 'Bağlandı'
+          connected: 'Bağlandı',
+          disconnected: 'Disconnected',
+          reconnect: 'Reconnect',
+          reconnectDescription: 'Reconnect to the running PicoClaw session.',
+          reconnectBlocked: 'PicoClaw needs device control before reconnecting.'
         },
         run: {
           idle: 'Boşta',
@@ -539,6 +754,30 @@ const tr = {
       },
       overlay: {
         locked: 'PicoClaw cihazı kontrol ediyor. Manuel giriş duraklatıldı.'
+      },
+      control: {
+        picoclaw: 'Cihaz kontrolü: PicoClaw',
+        picoclawDescription: 'PicoClaw can write keyboard and mouse input. Manual input may pause.',
+        mcp: 'Cihaz kontrolü: harici MCP',
+        mcpDescription: 'External MCP can write to the device. PicoClaw will not take over input.',
+        off: 'Cihaz kontrolü: kapalı',
+        offDescription:
+          'AI will not write keyboard or mouse input. Manual control remains available.',
+        transitioning: 'Device control: switching',
+        transitioningDescription: 'Device control is syncing. Please wait.',
+        grant: 'Kontrol ver',
+        release: 'Bırak',
+        releasing: 'Releasing...',
+        switching: 'Switching...',
+        releasingLabel: 'Device control: releasing',
+        releasingDescription:
+          'Device control is being returned. PicoClaw has stopped current writes.',
+        granted: 'PicoClaw kontrolü verildi',
+        released: 'PicoClaw kontrolü bırakıldı',
+        grantFailed: 'PicoClaw kontrolü verilemedi',
+        releaseFailed: 'PicoClaw kontrolü bırakılamadı',
+        grantConfirmTitle: "Cihaz kontrolü PicoClaw'a geçirilsin mi?",
+        grantConfirmDesc: 'Harici MCP cihaz yazmaları kesintiye uğrayacak.'
       },
       install: {
         install: 'Yükle PicoClaw',
@@ -600,15 +839,22 @@ const tr = {
         deleteConfirmOk: 'Sil',
         deleteConfirmCancel: 'İptal',
         messageCount_one: '{{count}} mesaj',
-        messageCount_other: '{{count}} mesaj'
+        messageCount_other: '{{count}} mesaj',
+        messageCount: '{{count}} mesaj'
       },
       config: {
         startRuntime: "PicoClaw'ı Başlat",
         stopRuntime: "PicoClaw'ı Durdur"
       },
       start: {
+        enableConfirmTitle: "Kontrol PicoClaw'a geçirilsin mi?",
+        enableConfirmDesc: "PicoClaw'ı başlatmak harici MCP hizmetini devre dışı bırakır.",
+        enableConfirmOk: "PicoClaw'ı Başlat",
+        enableConfirmCancel: 'İptal',
         title: "PicoClaw'ı Başlat",
-        description: "PicoClaw yardımcısını kullanmaya başlamak için runtime'ı başlatın."
+        description: "PicoClaw yardımcısını kullanmaya başlamak için runtime'ı başlatın.",
+        switchFromMCP: 'Switch to PicoClaw and start',
+        takeoverAndStart: 'Take over and start'
       }
     },
     error: {

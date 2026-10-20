@@ -1,20 +1,28 @@
 package webrtc
 
 import (
-	"NanoKVM-Server/common"
 	"NanoKVM-Server/service/stream"
-	"sync/atomic"
-	"time"
+	"NanoKVM-Server/service/vm"
 
 	"github.com/gorilla/websocket"
+	"github.com/pion/rtp"
+	"github.com/pion/rtp/codecs"
 	"github.com/pion/webrtc/v4/pkg/media"
 	log "github.com/sirupsen/logrus"
 )
 
 func NewWebRTCManager() *WebRTCManager {
 	m := &WebRTCManager{
-		clients:      make(map[*websocket.Conn]*Client),
-		videoSending: 0,
+		clients: make(map[*websocket.Conn]*Client),
+		videoPacketizer: rtp.NewPacketizer(
+			1200,
+			100,
+			0x1234ABCD,
+			&codecs.H264Payloader{},
+			rtp.NewRandomSequencer(),
+			90000,
+		),
+		videoSending: false,
 	}
 	m.updateClientSnapshotLocked()
 
@@ -22,12 +30,13 @@ func NewWebRTCManager() *WebRTCManager {
 }
 
 func (m *WebRTCManager) AddClient(ws *websocket.Conn, client *Client) {
-	client.track.updateExtension()
-
 	m.mutex.Lock()
 	m.clients[ws] = client
 	count := m.updateClientSnapshotLocked()
+	m.viewerVersion++
+	version := m.viewerVersion
 	m.mutex.Unlock()
+	vm.UpdateHdmiViewerSnapshot("webrtc", count, version)
 
 	log.Debugf("added client %s, total clients: %d", ws.RemoteAddr(), count)
 }
@@ -36,7 +45,10 @@ func (m *WebRTCManager) RemoveClient(ws *websocket.Conn) {
 	m.mutex.Lock()
 	delete(m.clients, ws)
 	count := m.updateClientSnapshotLocked()
+	m.viewerVersion++
+	version := m.viewerVersion
 	m.mutex.Unlock()
+	vm.UpdateHdmiViewerSnapshot("webrtc", count, version)
 
 	log.Debugf("removed client %s, total clients: %d", ws.RemoteAddr(), count)
 }
@@ -65,57 +77,87 @@ func (m *WebRTCManager) getClients() []*Client {
 }
 
 func (m *WebRTCManager) StartVideoStream() {
-	if atomic.CompareAndSwapInt32(&m.videoSending, 0, 1) {
-		go m.sendVideoStream()
-		log.Debugf("start sending h264 stream")
+	m.mutex.Lock()
+	if m.videoSending || len(m.clients) == 0 {
+		m.mutex.Unlock()
+		return
 	}
+	m.videoSending = true
+	m.mutex.Unlock()
+
+	go m.sendVideoStream()
+	log.Debugf("start sending h264 stream")
+}
+
+func (m *WebRTCManager) stopVideoStreamIfIdle() bool {
+	m.mutex.Lock()
+	defer m.mutex.Unlock()
+
+	if len(m.clients) > 0 {
+		return false
+	}
+
+	m.videoSending = false
+	return true
 }
 
 func (m *WebRTCManager) sendVideoStream() {
-	defer atomic.StoreInt32(&m.videoSending, 0)
+	subscription := stream.SubscribeH264()
+	defer subscription.Close()
+	samples, writerDone := m.startVideoWriter()
 
-	screen := common.GetScreen()
-	common.CheckScreen()
-	fps := screen.FPS
-	duration := time.Second / time.Duration(fps)
-
-	vision := common.GetKvmVision()
-
-	ticker := time.NewTicker(duration)
-	defer ticker.Stop()
-
-	for range ticker.C {
-		clients := m.getClients()
-		if len(clients) == 0 {
-			log.Debugf("stop sending h264 stream")
+	for {
+		frame, ok := subscription.Next()
+		if !ok {
+			close(samples)
+			<-writerDone
 			return
 		}
+		clients := m.getClients()
+		if len(clients) == 0 {
+			close(samples)
+			<-writerDone
+			if m.stopVideoStreamIfIdle() {
+				log.Debugf("stop sending h264 stream")
+				return
+			}
+			samples, writerDone = m.startVideoWriter()
 
-		data, result := vision.ReadH264(screen.Width, screen.Height, screen.BitRate)
-		stream.UpdateCaptureStatus(stream.CaptureModeH264, result)
-		if result < 0 || len(data) == 0 {
+			continue
+		}
+
+		stream.UpdateCaptureStatus(stream.CaptureModeH264, frame.Result)
+		if frame.Result < 0 || len(frame.Data) == 0 {
 			continue
 		}
 
 		sample := media.Sample{
-			Data:     data,
-			Duration: duration,
+			Data:     frame.Data,
+			Duration: frame.Duration,
 		}
 
-		for _, client := range clients {
-			if err := client.track.writeVideoSample(sample); err != nil {
-				log.Errorf("failed to write h264 video to client: %s", err)
-				m.RemoveClient(client.WsConn())
-				client.Close()
+		samples <- sample
+	}
+}
+
+func (m *WebRTCManager) startVideoWriter() (chan media.Sample, <-chan struct{}) {
+	samples := make(chan media.Sample, 1)
+	done := make(chan struct{})
+
+	go func() {
+		defer close(done)
+		for sample := range samples {
+			packets := m.videoPacketizer.Packetize(sample.Data, uint32(sample.Duration.Seconds()*90000))
+			for _, client := range m.getClients() {
+				err := client.track.writeVideoPackets(packets)
+				if err != nil {
+					log.Errorf("failed to write h264 video to client: %s", err)
+					m.RemoveClient(client.WsConn())
+					client.Close()
+				}
 			}
 		}
+	}()
 
-		if screen.FPS != fps && screen.FPS != 0 {
-			fps = screen.FPS
-			duration = time.Second / time.Duration(fps)
-			ticker.Reset(duration)
-		}
-
-		stream.GetFrameRateCounter().Update()
-	}
+	return samples, done
 }

@@ -4,6 +4,7 @@ const en = {
       desktop: 'Remote Desktop',
       login: 'Login',
       changePassword: 'Change Password',
+      storage: 'Images & File sharing',
       terminal: 'Terminal',
       wifi: 'Wi-Fi'
     },
@@ -11,14 +12,17 @@ const en = {
       login: 'Login',
       placeholderUsername: 'Username',
       placeholderPassword: 'Password',
+      placeholderCurrentPassword: 'Current password',
       placeholderPassword2: 'Please enter password again',
       noEmptyUsername: 'Username required',
       noEmptyPassword: 'Password required',
+      passwordLength: 'Password must be between 8 and 72 characters',
       noAccount: 'Failed to get user information, please refresh web page or reset password',
       invalidUser: 'Invalid username or password',
       locked: 'Too many logins, please try again later',
       globalLocked: 'System under protection, please try again later',
       error: 'Unexpected error',
+      invalidCurrentPassword: 'Current password is incorrect',
       changePassword: 'Change Password',
       changePasswordDesc: 'For the security of your device, please change the password!',
       differentPassword: 'Passwords do not match',
@@ -63,6 +67,36 @@ const en = {
       video: 'Video Mode',
       videoDirectTips: 'Enable HTTPS in "Settings > Device" to use this mode',
       resolution: 'Resolution',
+      controlRegion: {
+        title: 'Mouse Calibration',
+        description:
+          'Use this setting when the controlled device uses a non-16:9 resolution and the cursor is misaligned horizontally or vertically.',
+        off: 'Off',
+        auto: 'Auto',
+        autoWarning: 'Calibration may fail when the user application has a pure black background.',
+        manual: 'Manual',
+        selectedResolution: 'Selected Area Resolution',
+        unused: 'Not used',
+        originalResolution: 'Original Resolution',
+        selectResolution: 'Select original resolution',
+        addResolution: 'Add custom resolution',
+        add: 'Add',
+        duplicateResolution: 'This resolution already exists.',
+        width: 'Width',
+        height: 'Height',
+        apply: 'Calculate and Apply',
+        invalidResolution: 'Enter a valid original resolution after the video is ready.',
+        select: 'Select Area',
+        clear: 'Restore Automatic',
+        saveFailed: 'Failed to save the input area.',
+        tooSmall: 'The selected area is too small.',
+        previewUnavailable: 'Preview unavailable',
+        clearConfirm: 'Restore automatic black-border detection?',
+        dragHint: 'Drag to select the remote desktop area',
+        finish: 'Done',
+        confirm: 'Confirm',
+        cancel: 'Cancel'
+      },
       auto: 'Automatic',
       autoTips:
         "Screen tearing or mouse offset may occur at specific resolutions. Consider adjusting the remote host's resolution or disable automatic mode.",
@@ -77,6 +111,15 @@ const en = {
       frameDetectTip:
         "Calculate the difference between frames. Stop transmitting video stream when no changes are detected on the remote host's screen.",
       resetHdmi: 'Reset HDMI',
+      mixedH264: {
+        title: 'H.264 stream conflict',
+        description:
+          'H.264 Direct and H.264 WebRTC are being used at the same time. This may cause screen tearing or corrupted video. Please use only one H.264 mode.'
+      },
+      webrtcConnectionFailed: {
+        title: 'WebRTC connection failed',
+        description: 'Check the network connection or switch the video mode.'
+      },
       captureStatus: {
         hdmiError: 'HDMI screen error',
         unsupportedResolution: 'Current resolution is not supported',
@@ -172,27 +215,44 @@ const en = {
         disable: 'Disable HID-Only mode'
       }
     },
-    image: {
-      title: 'Images',
-      loading: 'Loading...',
-      empty: 'Nothing Found',
+    storage: {
+      title: 'Images & File sharing',
+      empty:
+        'No images yet. Upload an ISO or IMG, or copy one onto the disk from the target machine.',
+      notAttached: 'Nothing mounted',
+      attached: 'Mounted: {{name}}',
+      eject: 'Eject',
+      mount: 'Mount',
       mountMode: 'Mount mode',
-      mountFailed: 'Mount failed',
-      mountDesc:
-        'On some systems, you need to eject the virtual disk from the remote host before mounting the image.',
-      unmountFailed: 'Unmount failed',
-      unmountDesc:
-        'On some systems, you need to manually eject from the remote host before unmounting the image.',
-      refresh: 'Refresh the image list',
-      attention: 'Attention',
-      deleteConfirm: 'Are you sure you want to delete this image?',
-      okBtn: 'Yes',
-      cancelBtn: 'No',
+      mountModeDisk: 'Mass storage',
+      mountModeCdrom: 'CD-ROM',
+      openManager: 'Open file manager',
+      refresh: 'Refresh',
+      delete: 'Delete',
+      deleteTitle: 'Delete medium',
+      deleteConfirm: 'Delete {{name}}? The files inside it are lost.',
+      downloadImage: 'Download the image',
+      typePartition: 'Shared files',
+      volumeLabel: 'Removable disk',
+      groups: {
+        share: 'File sharing',
+        images: 'Images'
+      },
+      failed: 'Operation failed',
+      hidOnly: 'HID-only mode: the virtual disk is unavailable',
+      disabled: 'The virtual disk is disabled (Settings - Device)',
+      force: {
+        title: 'Take the medium back by force?',
+        desc: 'The target machine is still using this medium. Taking it back re-enumerates the USB device and can lose whatever it has not written to disk yet.',
+        menuHint:
+          'The target machine is using this medium. Open the file manager to take it back by force.'
+      },
       tips: {
         title: 'How to upload',
         usb1: 'Connect the NanoKVM to your computer via USB.',
-        usb2: 'Ensure that the virtual disk is mounted (Settings - Virtual Disk).',
+        usb2: 'On this page, mount the shared files in mass storage mode.',
         usb3: 'Open the virtual disk on your computer and copy the image file to the root directory of the virtual disk.',
+        usb4: 'Eject the disk when the copy is done: the image then shows up in the list.',
         scp1: 'Make sure the NanoKVM and your computer are on the same local network.',
         scp2: 'Open a terminal on your computer and use the SCP command to upload the image file to the /data directory on the NanoKVM.',
         scp3: 'Example: scp your-image-path root@your-nanokvm-ip:/data',
@@ -202,7 +262,67 @@ const en = {
         tf3: 'Insert the TF card into a card reader and connect it to your computer.',
         tf4: 'Copy the image file to the /data directory on the TF card.',
         tf5: 'Insert the TF card into the NanoKVM.'
-      }
+      },
+      job: {
+        running: 'Working on {{name}}'
+      },
+      enableDisk: {
+        title: 'Enable the virtual disk?',
+        desc: 'Mounting a medium needs the virtual disk, which is currently switched off. Enable it now? The keyboard and mouse of the target machine will disconnect for a moment.',
+        menuHint: 'The virtual disk is disabled. Enable it in Settings - Device.'
+      },
+      add: {
+        title: 'Add media',
+        upload: 'Upload an ISO or IMG',
+        fromUrl: 'Download from a URL',
+        url: 'Image URL',
+        urlRequired: 'Please enter a URL',
+        onlyImages: 'Only .iso and .img files can be mounted',
+        dropHint: 'Drag an ISO or IMG here, or click to choose a file',
+        cdromOnlyIso: 'A CD-ROM can only carry an ISO 9660 image',
+        uploadFailed: 'Upload failed',
+        downloadFailed: 'Download failed',
+        uploading: 'Uploading {{name}}',
+        downloading: 'Downloading {{name}}',
+        done: '{{name}} is ready',
+        checksumFailed: 'The image does not match the SHA-256 checksum.',
+        blocked: 'The target machine is using the disk',
+        copyHint:
+          'You can also copy an image into the data partition over SCP, or from the target machine.'
+      },
+      files: {
+        selectMedium: 'Select a medium to browse the files inside it.',
+        reasonAttached: 'This medium is attached to the target machine.',
+        reasonAttachedHint:
+          'Eject it first: the target machine has to release the disk before its files can be read.',
+        reasonNotBrowsable: 'This medium holds a filesystem the file manager cannot open.',
+        reasonNoLoop: 'This device cannot mount disk images (no loop support).',
+        reasonISOImage:
+          'An ISO 9660 image cannot be browsed here. It can still be mounted to the target machine.',
+        empty: 'This folder is empty',
+        noMatch: 'No files match the search.',
+        free: '{{size}} free',
+        search: 'Search this folder',
+        sort: {
+          name: 'Name',
+          size: 'Size',
+          type: 'Type',
+          asc: 'Ascending',
+          desc: 'Descending'
+        },
+        upload: 'Upload a file into the medium',
+        deleteFolderTitle: 'Delete folder',
+        deleteFolderConfirm:
+          'Delete the folder {{name}} and everything inside it? This cannot be undone.',
+        uploading: 'Uploading…',
+        uploadFailed: 'Upload failed',
+        download: 'Download',
+        delete: 'Delete',
+        deleteTitle: 'Delete file',
+        deleteConfirm: 'Delete {{name}} from the medium?'
+      },
+      yes: 'Yes',
+      no: 'No'
     },
     script: {
       title: 'Scripts',
@@ -244,13 +364,13 @@ const en = {
       ok: 'Ok'
     },
     download: {
-      title: 'Image Downloader',
-      input: 'Please enter a remote image URL',
-      ok: 'Ok',
-      disabled: '/data partition is RO, so we cannot download the image',
-      uploadbox: 'Drop file here or click to select',
-      inputfile: 'Please enter the image File',
-      NoISO: 'No ISO'
+      disabled:
+        'The data partition is read-only while the target machine uses it: new images cannot be written, existing files can still be downloaded.',
+      sha256: 'SHA-256 (optional)',
+      sha256Placeholder: 'Enter a 64-character SHA-256 checksum',
+      invalidSHA256: 'SHA-256 must be a 64-character hexadecimal string',
+      cancel: 'Cancel',
+      cancelFailed: 'Failed to cancel download'
     },
     power: {
       title: 'Power',
@@ -267,6 +387,24 @@ const en = {
     },
     settings: {
       title: 'Settings',
+      mcp: {
+        title: 'MCP Service',
+        service: 'Remote control MCP',
+        serviceDesc:
+          'Allow trusted MCP clients to control the keyboard and mouse and capture screenshots',
+        securityWarning:
+          'Anyone with this API key can control the remote host and view its screen. Use HTTPS and enable it only on trusted networks.',
+        endpoint: 'Endpoint',
+        apiKey: 'API Key',
+        regenerateConfirmTitle: 'Regenerate MCP API key?',
+        regenerateConfirmDesc: 'The current key will stop working immediately.',
+        enableConfirmTitle: 'Enable external MCP control?',
+        enableConfirmDesc: 'Enabling MCP will stop PicoClaw and close any active PicoClaw session.',
+        failed: 'MCP operation failed',
+        copyFailed: 'Copy failed. Copy manually.',
+        okBtn: 'Confirm',
+        cancelBtn: 'Cancel'
+      },
       about: {
         title: 'About NanoKVM',
         information: 'Information',
@@ -300,9 +438,24 @@ const en = {
           modeOff: 'Off',
           modeAuto: 'Auto hide',
           modeAlways: 'Always visible',
+          keyboardLedStatus: 'Keyboard lock indicators',
+          keyboardLedStatusDesc: 'Display remote Num Lock, Caps Lock, and Scroll Lock status',
           icons: 'Submenu Icons',
           iconsDesc: 'Display submenu icons in the menu bar'
         }
+      },
+      keyboardLedStatus: {
+        groupLabel: 'Remote keyboard lock status',
+        indicatorLabel: '{{label}}: {{state}}',
+        numLock: 'Num Lock',
+        numLockShort: 'Num',
+        capsLock: 'Caps Lock',
+        capsLockShort: 'Caps',
+        scrollLock: 'Scroll Lock',
+        scrollLockShort: 'Scr',
+        on: 'On',
+        off: 'Off',
+        unknown: 'Unknown'
       },
       device: {
         title: 'Device',
@@ -342,7 +495,10 @@ const en = {
           tip: "Turning it off if it's not needed"
         },
         hdmi: {
-          description: 'Enable HDMI/monitor output'
+          description: 'Enable HDMI/monitor output',
+          idleTimeoutTitle: 'Capture idle timeout',
+          idleTimeoutDescription: 'Stop HDMI capture after there are no active viewers for',
+          minutes: 'min'
         },
         autostart: {
           title: 'Autostart Scripts Settings',
@@ -364,7 +520,12 @@ const en = {
         reboot: 'Reboot',
         rebootDesc: 'Are you sure you want to reboot NanoKVM?',
         okBtn: 'Yes',
-        cancelBtn: 'No'
+        cancelBtn: 'No',
+        diskLocked: 'Off while an image is mounted (turning it on cancels the mount)',
+        diskCancelMount:
+          'Enabling the virtual disk cancels the mounted image and interrupts a running image download or upload. Continue?',
+        diskBreakDownload: 'Enabling the virtual disk interrupts the image download. Continue?',
+        attention: 'Attention'
       },
       network: {
         title: 'Network',
@@ -468,10 +629,28 @@ const en = {
         previewDesc: 'Get early access to new features and improvements',
         previewTip:
           'Please be aware that preview releases may contain bugs or incomplete functionality!',
+        customServer: {
+          title: 'Custom Update Server',
+          desc: 'Check for and download online updates from a specified server',
+          invalidUrl:
+            'Enter a valid HTTP or HTTPS server directory without a query, fragment, or latest.json.',
+          loadFailed: 'Failed to load the update server configuration.',
+          saveFailed: 'Failed to save the update server configuration.',
+          saved: 'Update server configuration saved.',
+          save: 'Save',
+          confirmTitle: 'Use a custom update server?',
+          confirmDesc:
+            'SHA-512 only checks that the package matches the manifest supplied by this server. It does not prove that the package is an official NanoKVM release. A faulty or malicious server may make the device unusable, cause data loss, or compromise the system.',
+          confirm: 'Use Anyway',
+          previewDisabled: 'Preview Updates are unavailable while a custom update server is enabled'
+        },
         offline: {
           title: 'Offline Updates',
           desc: 'Update through local installation package',
           upload: 'Upload',
+          checksumPlaceholder: 'SHA-256 checksum (optional)',
+          invalidChecksum: 'The SHA-256 checksum must contain 64 hexadecimal characters.',
+          checksumMismatch: 'SHA-256 verification failed. The package may be corrupted.',
           invalidName: 'Invalid filename format. Please download from GitHub releases.',
           updateFailed: 'Update failed. Please retry.'
         }
@@ -479,12 +658,33 @@ const en = {
       account: {
         title: 'Account',
         webAccount: 'Web Account Name',
+        role: 'Role',
+        roles: {
+          admin: 'Administrator',
+          user: 'User'
+        },
         password: 'Password',
         updateBtn: 'Change',
         logoutBtn: 'Logout',
         logoutDesc: 'Are you sure you want to logout?',
         okBtn: 'Yes',
-        cancelBtn: 'No'
+        cancelBtn: 'No',
+        users: {
+          title: 'Users',
+          create: 'Create User',
+          enabled: 'Enabled',
+          disabled: 'Disabled',
+          deviceOwner: 'Device owner',
+          resetPassword: 'Reset Password',
+          delete: 'Delete',
+          deleteConfirm: 'Delete this user and revoke all of their sessions?',
+          created: 'User created',
+          deleted: 'User deleted',
+          passwordUpdated: 'Password updated',
+          loadFailed: 'Failed to load users',
+          saveFailed: 'Failed to save user',
+          deleteFailed: 'Failed to delete user'
+        }
       }
     },
     picoclaw: {
@@ -511,19 +711,30 @@ const en = {
         runtimeStarted: 'PicoClaw runtime started',
         runtimeStartFailed: 'Failed to start PicoClaw runtime',
         runtimeStopped: 'PicoClaw runtime stopped',
-        runtimeStopFailed: 'Failed to stop PicoClaw runtime'
+        runtimeStopFailed: 'Failed to stop PicoClaw runtime',
+        controlSwitchedToMCP: 'Control switched to the external MCP service'
       },
       connection: {
         runtime: {
           checking: 'Checking',
+          restoring: 'Restoring PicoClaw',
           ready: 'Runtime ready',
           stopped: 'Runtime stopped',
+          blockedByMCP: 'External MCP control is active',
+          readyBlockedByMCP:
+            'The runtime is running, but external MCP currently controls device input.',
+          readyWithoutControl:
+            'The runtime is running. Grant PicoClaw device control before reconnecting.',
           unavailable: 'Runtime unavailable',
           configError: 'Configuration error'
         },
         transport: {
           connecting: 'Connecting',
-          connected: 'Connected'
+          connected: 'Connected',
+          disconnected: 'Disconnected',
+          reconnect: 'Reconnect',
+          reconnectDescription: 'Reconnect to the running PicoClaw session.',
+          reconnectBlocked: 'PicoClaw needs device control before reconnecting.'
         },
         run: {
           idle: 'Idle',
@@ -537,6 +748,30 @@ const en = {
       },
       overlay: {
         locked: 'PicoClaw is controlling the device. Manual input is paused.'
+      },
+      control: {
+        picoclaw: 'Device control: PicoClaw',
+        picoclawDescription: 'PicoClaw can write keyboard and mouse input. Manual input may pause.',
+        mcp: 'Device control: external MCP',
+        mcpDescription: 'External MCP can write to the device. PicoClaw will not take over input.',
+        off: 'Device control: manual/no AI',
+        offDescription:
+          'AI will not write keyboard or mouse input. Manual control remains available.',
+        transitioning: 'Device control: switching',
+        transitioningDescription: 'Device control is syncing. Please wait.',
+        grant: 'Take over',
+        release: 'Return control',
+        releasing: 'Releasing...',
+        switching: 'Switching...',
+        releasingLabel: 'Device control: releasing',
+        releasingDescription:
+          'Device control is being returned. PicoClaw has stopped current writes.',
+        granted: 'PicoClaw control granted',
+        released: 'Device control returned',
+        grantFailed: 'Failed to grant PicoClaw control',
+        releaseFailed: 'Failed to release PicoClaw control',
+        grantConfirmTitle: 'Switch device control to PicoClaw?',
+        grantConfirmDesc: 'External MCP device writes will be interrupted.'
       },
       install: {
         install: 'Install PicoClaw',
@@ -598,15 +833,22 @@ const en = {
         deleteConfirmOk: 'Delete',
         deleteConfirmCancel: 'Cancel',
         messageCount_one: '{{count}} message',
-        messageCount_other: '{{count}} messages'
+        messageCount_other: '{{count}} messages',
+        messageCount: '{{count}} messages'
       },
       config: {
         startRuntime: 'Start PicoClaw',
         stopRuntime: 'Stop PicoClaw'
       },
       start: {
+        enableConfirmTitle: 'Switch control to PicoClaw?',
+        enableConfirmDesc: 'External MCP device writes will be interrupted before PicoClaw starts.',
+        enableConfirmOk: 'Start PicoClaw',
+        enableConfirmCancel: 'Cancel',
         title: 'Start PicoClaw',
-        description: 'Start the runtime to begin using the PicoClaw assistant.'
+        description: 'Start the runtime to begin using the PicoClaw assistant.',
+        switchFromMCP: 'Switch to PicoClaw and start',
+        takeoverAndStart: 'Take over and start'
       }
     },
     error: {

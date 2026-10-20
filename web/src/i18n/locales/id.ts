@@ -5,7 +5,8 @@ const id = {
       login: 'Masuk',
       changePassword: 'Ubah Sandi',
       terminal: 'Terminal',
-      wifi: 'Wi-Fi'
+      wifi: 'Wi-Fi',
+      storage: 'Gambar dan berbagi file'
     },
     auth: {
       login: 'Masuk',
@@ -39,7 +40,10 @@ const id = {
         change2: 'Kata sandi login web',
         change3: 'Kata sandi root sistem (kata sandi login SSH)',
         change4: 'Untuk mengatur ulang kata sandi, tekan dan tahan tombol BOOT pada NanoKVM.'
-      }
+      },
+      placeholderCurrentPassword: 'Kata sandi saat ini',
+      passwordLength: 'Kata sandi harus antara 8 dan 72 karakter',
+      invalidCurrentPassword: 'Kata sandi saat ini salah'
     },
     wifi: {
       title: 'Wi-Fi',
@@ -64,6 +68,37 @@ const id = {
       video: 'Mode Video',
       videoDirectTips: 'Aktifkan HTTPS di "Pengaturan > Perangkat" untuk menggunakan mode ini',
       resolution: 'Resolusi',
+      controlRegion: {
+        title: 'Kalibrasi Tetikus',
+        description:
+          'Gunakan pengaturan ini saat perangkat yang dikontrol menggunakan resolusi selain 16:9 dan posisi kursor tidak sejajar secara horizontal atau vertikal.',
+        off: 'Nonaktif',
+        auto: 'Otomatis',
+        autoWarning:
+          'Kalibrasi mungkin gagal jika aplikasi pengguna menggunakan latar belakang hitam pekat.',
+        manual: 'Manual',
+        selectedResolution: 'Resolusi Area Terpilih',
+        unused: 'Tidak digunakan',
+        originalResolution: 'Resolusi Asli',
+        selectResolution: 'Pilih resolusi asli',
+        addResolution: 'Tambahkan resolusi khusus',
+        add: 'Tambah',
+        duplicateResolution: 'Resolusi ini sudah ada.',
+        width: 'Lebar',
+        height: 'Tinggi',
+        apply: 'Hitung dan Terapkan',
+        invalidResolution: 'Masukkan resolusi asli yang valid setelah video siap.',
+        select: 'Pilih Area',
+        clear: 'Pulihkan Otomatis',
+        saveFailed: 'Gagal menyimpan area input.',
+        tooSmall: 'Area yang dipilih terlalu kecil.',
+        previewUnavailable: 'Pratinjau tidak tersedia',
+        clearConfirm: 'Pulihkan deteksi batas hitam otomatis?',
+        dragHint: 'Seret untuk memilih area desktop jarak jauh',
+        finish: 'Selesai',
+        confirm: 'Konfirmasi',
+        cancel: 'Batal'
+      },
       auto: 'Otomatis',
       autoTips:
         'Tearing layar atau offset tetikus dapat terjadi pada resolusi tertentu. Pertimbangkan untuk menyesuaikan resolusi host jarak jauh atau menonaktifkan mode otomatis.',
@@ -78,6 +113,15 @@ const id = {
       frameDetectTip:
         'Hitung selisih antar frame. Hentikan transmisi aliran video saat tidak ada perubahan yang terdeteksi di layar host jarak jauh.',
       resetHdmi: 'Atur ulang HDMI',
+      mixedH264: {
+        title: 'Konflik aliran H.264',
+        description:
+          'H.264 Direct dan H.264 WebRTC sedang digunakan secara bersamaan. Hal ini dapat menyebabkan layar robek atau video rusak. Harap gunakan hanya satu mode H.264.'
+      },
+      webrtcConnectionFailed: {
+        title: 'Koneksi WebRTC gagal',
+        description: 'Periksa koneksi jaringan atau ganti mode video.'
+      },
       captureStatus: {
         hdmiError: 'Kesalahan layar HDMI',
         unsupportedResolution: 'Resolusi saat ini tidak didukung',
@@ -174,27 +218,43 @@ const id = {
         disable: 'Nonaktifkan mode HID-Hanya'
       }
     },
-    image: {
-      title: 'Gambar',
-      loading: 'Memuat...',
-      empty: 'Tidak ada yang ditemukan',
+    storage: {
+      title: 'Gambar dan berbagi file',
+      empty: 'Belum ada gambar. Unggah ISO atau IMG, atau salin satu ke disk dari komputer target.',
+      notAttached: 'Tidak ada yang terpasang',
+      attached: 'Terpasang: {{name}}',
+      eject: 'Keluarkan',
+      mount: 'Pasang',
       mountMode: 'Mode pemasangan',
-      mountFailed: 'Pemasangan Gagal',
-      mountDesc:
-        'Di beberapa sistem, perlu mengeluarkan disk virtual pada host jarak jauh sebelum memasang gambar.',
-      unmountFailed: 'Pelepasan gagal',
-      unmountDesc:
-        'Pada beberapa sistem, Anda perlu mengeluarkan secara manual dari host jarak jauh sebelum melepas gambar.',
-      refresh: 'Segarkan daftar gambar',
-      attention: 'Perhatian',
-      deleteConfirm: 'Apakah Anda yakin ingin menghapus gambar ini?',
-      okBtn: 'Ya',
-      cancelBtn: 'Tidak',
+      mountModeDisk: 'Penyimpanan massal',
+      mountModeCdrom: 'CD-ROM',
+      openManager: 'Buka pengelola file',
+      refresh: 'Segarkan',
+      delete: 'Hapus',
+      deleteTitle: 'Hapus media',
+      deleteConfirm: 'Hapus {{name}}? File di dalamnya akan hilang.',
+      downloadImage: 'Unduh gambar',
+      typePartition: 'File bersama',
+      volumeLabel: 'Disk yang dapat dilepas',
+      groups: {
+        share: 'Berbagi file',
+        images: 'Gambar'
+      },
+      failed: 'Operasi gagal',
+      hidOnly: 'Mode hanya HID: disk virtual tidak tersedia',
+      disabled: 'Disk virtual dinonaktifkan (Pengaturan - Perangkat)',
+      force: {
+        title: 'Ambil kembali media dengan paksa?',
+        desc: 'Komputer target masih menggunakan media ini. Mengambilnya kembali akan menghitung ulang perangkat USB dan dapat kehilangan apa pun yang belum ditulisnya ke disk.',
+        menuHint:
+          'Komputer target sedang menggunakan media ini. Buka pengelola file untuk mengambilnya kembali dengan paksa.'
+      },
       tips: {
         title: 'Cara mengunggah',
         usb1: 'Hubungkan NanoKVM ke komputer Anda melalui USB.',
-        usb2: 'Pastikan disk virtual telah terpasang (Pengaturan - Disk Virtual).',
+        usb2: 'Di halaman ini, pasang berkas bersama dalam mode penyimpanan massal.',
         usb3: 'Buka disk virtual di komputer Anda dan salin file gambar ke direktori root disk virtual.',
+        usb4: 'Keluarkan disk setelah penyalinan selesai: image kemudian muncul di daftar.',
         scp1: 'Pastikan NanoKVM dan komputer Anda berada di jaringan lokal yang sama.',
         scp2: 'Buka terminal di komputer Anda dan gunakan perintah SCP untuk mengunggah file gambar ke direktori /data di NanoKVM.',
         scp3: 'Contoh: scp jalur-gambar-anda root@ip-nanokvm-anda:/data',
@@ -204,7 +264,68 @@ const id = {
         tf3: 'Masukkan Kartu TF ke pembaca kartu dan hubungkan ke komputer Anda.',
         tf4: 'Salin berkas gambar ke direktori /data pada Kartu TF.',
         tf5: 'Masukkan Kartu TF ke dalam NanoKVM.'
-      }
+      },
+      job: {
+        running: 'Memproses {{name}}'
+      },
+      enableDisk: {
+        title: 'Aktifkan disk virtual?',
+        desc: 'Untuk memasang media diperlukan disk virtual, yang saat ini dimatikan. Aktifkan sekarang? Papan ketik dan tetikus komputer target akan terputus sebentar.',
+        menuHint: 'Disk virtual dinonaktifkan. Aktifkan di Pengaturan - Perangkat.'
+      },
+      add: {
+        title: 'Tambah media',
+        upload: 'Unggah ISO atau IMG',
+        fromUrl: 'Unduh dari URL',
+        url: 'URL gambar',
+        urlRequired: 'Masukkan URL',
+        onlyImages: 'Hanya file .iso dan .img yang dapat dipasang',
+        dropHint: 'Seret ISO atau IMG ke sini, atau klik untuk memilih file',
+        cdromOnlyIso: 'CD-ROM hanya dapat berisi citra ISO 9660',
+        uploadFailed: 'Unggahan gagal',
+        downloadFailed: 'Unduhan gagal',
+        uploading: 'Mengunggah {{name}}',
+        downloading: 'Mengunduh {{name}}',
+        done: '{{name}} siap',
+        checksumFailed: 'Image tidak cocok dengan checksum SHA-256.',
+        blocked: 'Komputer target sedang menggunakan disk',
+        copyHint:
+          'Anda juga dapat menyalin citra ke partisi data lewat SCP, atau dari komputer target.'
+      },
+      files: {
+        selectMedium: 'Pilih media untuk melihat file di dalamnya.',
+        reasonAttached: 'Media ini terpasang ke komputer target.',
+        reasonAttachedHint:
+          'Keluarkan dulu: komputer target harus melepaskan disk sebelum filenya dapat dibaca.',
+        reasonNotBrowsable:
+          'Media ini berisi sistem berkas yang tidak dapat dibuka pengelola file.',
+        reasonNoLoop: 'Perangkat ini tidak dapat memasang image disk (tanpa dukungan loop).',
+        reasonISOImage:
+          'Citra ISO 9660 tidak dapat dijelajahi di sini. Citra tetap dapat dipasang ke komputer target.',
+        empty: 'Folder ini kosong',
+        noMatch: 'Tidak ada file yang cocok dengan pencarian.',
+        free: '{{size}} kosong',
+        search: 'Cari di folder ini',
+        sort: {
+          name: 'Nama',
+          size: 'Ukuran',
+          type: 'Jenis',
+          asc: 'Naik',
+          desc: 'Turun'
+        },
+        upload: 'Unggah file ke media',
+        deleteFolderTitle: 'Hapus folder',
+        deleteFolderConfirm:
+          'Hapus folder {{name}} beserta seluruh isinya? Tindakan ini tidak dapat dibatalkan.',
+        uploading: 'Mengunggah…',
+        uploadFailed: 'Unggahan gagal',
+        download: 'Unduh',
+        delete: 'Hapus',
+        deleteTitle: 'Hapus file',
+        deleteConfirm: 'Hapus {{name}} dari media?'
+      },
+      yes: 'Ya',
+      no: 'Tidak'
     },
     script: {
       title: 'Script',
@@ -246,13 +367,13 @@ const id = {
       ok: 'Ok'
     },
     download: {
-      title: 'Pengunduh Gambar',
-      input: 'Silakan masukkan gambar jarak jauh URL',
-      ok: 'Ok',
-      disabled: 'Partisi /data adalah RO, jadi kami tidak dapat mengunduh gambarnya',
-      uploadbox: 'Letakkan file di sini atau klik untuk memilih',
-      inputfile: 'Silakan masukkan File gambar',
-      NoISO: 'Tidak ada ISO'
+      disabled:
+        'Partisi data bersifat hanya-baca selama komputer target memakainya: citra baru tidak dapat ditulis, file yang ada tetap dapat diunduh.',
+      sha256: 'SHA-256 (opsional)',
+      sha256Placeholder: 'Masukkan checksum SHA-256 64 karakter',
+      invalidSHA256: 'SHA-256 harus berupa string heksadesimal 64 karakter',
+      cancel: 'Batal',
+      cancelFailed: 'Gagal membatalkan unduhan'
     },
     power: {
       title: 'Daya',
@@ -269,6 +390,25 @@ const id = {
     },
     settings: {
       title: 'Pengaturan',
+      mcp: {
+        title: 'Layanan MCP',
+        service: 'Kontrol jarak jauh MCP',
+        serviceDesc:
+          'Izinkan klien MCP tepercaya mengontrol keyboard dan mouse serta mengambil tangkapan layar',
+        securityWarning:
+          'Siapa pun yang memiliki kunci API ini dapat mengontrol host jarak jauh dan melihat layarnya. Gunakan HTTPS dan aktifkan hanya pada jaringan tepercaya.',
+        endpoint: 'Endpoint',
+        apiKey: 'Kunci API',
+        regenerateConfirmTitle: 'Buat ulang kunci API MCP?',
+        regenerateConfirmDesc: 'Kunci saat ini akan langsung berhenti berfungsi.',
+        enableConfirmTitle: 'Aktifkan kontrol MCP eksternal?',
+        enableConfirmDesc:
+          'Mengaktifkan MCP akan menghentikan PicoClaw dan menutup semua sesi PicoClaw yang aktif.',
+        failed: 'Operasi MCP gagal',
+        copyFailed: 'Gagal menyalin. Salin secara manual.',
+        okBtn: 'Konfirmasi',
+        cancelBtn: 'Batal'
+      },
       about: {
         title: 'Tentang NanoKVM',
         information: 'Informasi',
@@ -302,9 +442,25 @@ const id = {
           modeOff: 'Mati',
           modeAuto: 'Sembunyikan otomatis',
           modeAlways: 'Selalu terlihat',
+          keyboardLedStatus: 'Indikator kunci keyboard',
+          keyboardLedStatusDesc:
+            'Tampilkan status Num Lock, Caps Lock, dan Scroll Lock komputer jarak jauh',
           icons: 'Ikon Submenu',
           iconsDesc: 'Menampilkan ikon submenu di bilah menu'
         }
+      },
+      keyboardLedStatus: {
+        groupLabel: 'Status kunci keyboard jarak jauh',
+        indicatorLabel: '{{label}}: {{state}}',
+        numLock: 'Num Lock',
+        numLockShort: 'Num',
+        capsLock: 'Caps Lock',
+        capsLockShort: 'Caps',
+        scrollLock: 'Scroll Lock',
+        scrollLockShort: 'Scr',
+        on: 'Aktif',
+        off: 'Nonaktif',
+        unknown: 'Tidak diketahui'
       },
       device: {
         title: 'Perangkat',
@@ -344,7 +500,10 @@ const id = {
           tip: 'Mematikan jika tidak diperlukan'
         },
         hdmi: {
-          description: 'Aktifkan keluaran HDMI/monitor'
+          description: 'Aktifkan keluaran HDMI/monitor',
+          idleTimeoutTitle: 'Batas waktu tangkapan tidak aktif',
+          idleTimeoutDescription: 'Hentikan tangkapan HDMI setelah tidak ada penonton aktif selama',
+          minutes: 'mnt'
         },
         autostart: {
           title: 'Pengaturan Skrip Mulai Otomatis',
@@ -366,7 +525,12 @@ const id = {
         reboot: 'Mulai ulang',
         rebootDesc: 'Apakah Anda yakin ingin me-reboot NanoKVM?',
         okBtn: 'Ya',
-        cancelBtn: 'Tidak'
+        cancelBtn: 'Tidak',
+        diskLocked: 'Off while an image is mounted (turning it on cancels the mount)',
+        diskCancelMount:
+          'Enabling the virtual disk cancels the mounted image and interrupts a running image download or upload. Continue?',
+        diskBreakDownload: 'Enabling the virtual disk interrupts the image download. Continue?',
+        attention: 'Perhatian'
       },
       network: {
         title: 'Jaringan',
@@ -470,10 +634,29 @@ const id = {
         previewDesc: 'Dapatkan akses awal ke fitur dan peningkatan baru',
         previewTip:
           'Perlu diketahui bahwa rilis pratinjau mungkin mengandung bug atau fungsi yang tidak lengkap!',
+        customServer: {
+          title: 'Server Pembaruan Kustom',
+          desc: 'Periksa dan unduh pembaruan daring dari server yang ditentukan',
+          invalidUrl:
+            'Masukkan direktori server HTTP atau HTTPS yang valid tanpa kueri, fragmen, atau latest.json.',
+          loadFailed: 'Gagal memuat konfigurasi server pembaruan.',
+          saveFailed: 'Gagal menyimpan konfigurasi server pembaruan.',
+          saved: 'Konfigurasi server pembaruan telah disimpan.',
+          save: 'Simpan',
+          confirmTitle: 'Gunakan server pembaruan kustom?',
+          confirmDesc:
+            'SHA-512 hanya memeriksa bahwa paket cocok dengan manifes yang disediakan oleh server ini. Pemeriksaan ini tidak membuktikan bahwa paket tersebut merupakan rilis resmi NanoKVM. Server yang bermasalah atau berbahaya dapat membuat perangkat tidak dapat digunakan, menyebabkan kehilangan data, atau membahayakan sistem.',
+          confirm: 'Tetap Gunakan',
+          previewDisabled:
+            'Pembaruan Pratinjau tidak tersedia saat server pembaruan kustom diaktifkan.'
+        },
         offline: {
           title: 'Pembaruan Offline',
           desc: 'Perbarui melalui paket instalasi lokal',
           upload: 'Mengunggah',
+          checksumPlaceholder: 'Checksum SHA-256 (opsional)',
+          invalidChecksum: 'Checksum SHA-256 harus berisi 64 karakter heksadesimal.',
+          checksumMismatch: 'Verifikasi SHA-256 gagal. Paket mungkin rusak.',
           invalidName: 'Format nama file tidak valid. Silakan unduh dari rilis GitHub.',
           updateFailed: 'Gagal memperbarui, tolong coba lagi.'
         }
@@ -486,7 +669,28 @@ const id = {
         logoutBtn: 'Keluar',
         logoutDesc: 'Apakah Anda yakin ingin logout?',
         okBtn: 'Ya',
-        cancelBtn: 'Tidak'
+        cancelBtn: 'Tidak',
+        role: 'Peran',
+        roles: {
+          admin: 'Administrator',
+          user: 'Pengguna'
+        },
+        users: {
+          title: 'Pengguna',
+          create: 'Buat pengguna',
+          enabled: 'Diaktifkan',
+          disabled: 'Dinonaktifkan',
+          deviceOwner: 'Pemilik perangkat',
+          resetPassword: 'Setel ulang kata sandi',
+          delete: 'Hapus',
+          deleteConfirm: 'Hapus pengguna ini dan cabut semua sesinya?',
+          created: 'Pengguna dibuat',
+          deleted: 'Pengguna dihapus',
+          passwordUpdated: 'Kata sandi diperbarui',
+          loadFailed: 'Gagal memuat pengguna',
+          saveFailed: 'Gagal menyimpan pengguna',
+          deleteFailed: 'Gagal menghapus pengguna'
+        }
       }
     },
     picoclaw: {
@@ -513,19 +717,30 @@ const id = {
         runtimeStarted: 'Runtime PicoClaw dimulai',
         runtimeStartFailed: 'Gagal memulai Runtime PicoClaw',
         runtimeStopped: 'Runtime PicoClaw dihentikan',
-        runtimeStopFailed: 'Gagal menghentikan Runtime PicoClaw'
+        runtimeStopFailed: 'Gagal menghentikan Runtime PicoClaw',
+        controlSwitchedToMCP: 'Kontrol dialihkan ke layanan MCP eksternal'
       },
       connection: {
         runtime: {
           checking: 'Memeriksa',
+          restoring: 'Restoring PicoClaw',
           ready: 'Runtime siap',
           stopped: 'Runtime dihentikan',
+          blockedByMCP: 'Kontrol MCP eksternal sedang aktif',
+          readyBlockedByMCP:
+            'The runtime is running, but external MCP currently controls device input.',
+          readyWithoutControl:
+            'The runtime is running. Grant PicoClaw device control before reconnecting.',
           unavailable: 'Runtime tidak tersedia',
           configError: 'Kesalahan konfigurasi'
         },
         transport: {
           connecting: 'Menghubungkan',
-          connected: 'Terhubung'
+          connected: 'Terhubung',
+          disconnected: 'Disconnected',
+          reconnect: 'Reconnect',
+          reconnectDescription: 'Reconnect to the running PicoClaw session.',
+          reconnectBlocked: 'PicoClaw needs device control before reconnecting.'
         },
         run: {
           idle: 'Menganggur',
@@ -539,6 +754,30 @@ const id = {
       },
       overlay: {
         locked: 'PicoClaw sedang mengendalikan perangkat. Input manual dijeda.'
+      },
+      control: {
+        picoclaw: 'Kontrol perangkat: PicoClaw',
+        picoclawDescription: 'PicoClaw can write keyboard and mouse input. Manual input may pause.',
+        mcp: 'Kontrol perangkat: MCP eksternal',
+        mcpDescription: 'External MCP can write to the device. PicoClaw will not take over input.',
+        off: 'Kontrol perangkat: nonaktif',
+        offDescription:
+          'AI will not write keyboard or mouse input. Manual control remains available.',
+        transitioning: 'Device control: switching',
+        transitioningDescription: 'Device control is syncing. Please wait.',
+        grant: 'Berikan kontrol',
+        release: 'Lepaskan',
+        releasing: 'Releasing...',
+        switching: 'Switching...',
+        releasingLabel: 'Device control: releasing',
+        releasingDescription:
+          'Device control is being returned. PicoClaw has stopped current writes.',
+        granted: 'Kontrol PicoClaw diberikan',
+        released: 'Kontrol PicoClaw dilepaskan',
+        grantFailed: 'Gagal memberikan kontrol PicoClaw',
+        releaseFailed: 'Gagal melepaskan kontrol PicoClaw',
+        grantConfirmTitle: 'Alihkan kontrol perangkat ke PicoClaw?',
+        grantConfirmDesc: 'Penulisan perangkat MCP eksternal akan dihentikan.'
       },
       install: {
         install: 'Instal PicoClaw',
@@ -600,15 +839,22 @@ const id = {
         deleteConfirmOk: 'Hapus',
         deleteConfirmCancel: 'Batalkan',
         messageCount_one: '{{count}} pesan',
-        messageCount_other: '{{count}} pesan'
+        messageCount_other: '{{count}} pesan',
+        messageCount: '{{count}} pesan'
       },
       config: {
         startRuntime: 'Mulai PicoClaw',
         stopRuntime: 'Hentikan PicoClaw'
       },
       start: {
+        enableConfirmTitle: 'Alihkan kontrol ke PicoClaw?',
+        enableConfirmDesc: 'Memulai PicoClaw akan menonaktifkan layanan MCP eksternal.',
+        enableConfirmOk: 'Mulai PicoClaw',
+        enableConfirmCancel: 'Batal',
         title: 'Mulai PicoClaw',
-        description: 'Mulai runtime untuk mulai menggunakan asisten PicoClaw.'
+        description: 'Mulai runtime untuk mulai menggunakan asisten PicoClaw.',
+        switchFromMCP: 'Switch to PicoClaw and start',
+        takeoverAndStart: 'Take over and start'
       }
     },
     error: {
